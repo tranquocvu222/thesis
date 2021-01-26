@@ -1,5 +1,6 @@
 package ces.riccico.repository;
 
+
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +13,5 @@ public interface UserRepository extends CrudRepository<Users, Integer> {
 
 	@Query(value = "SELECT * FROM users", nativeQuery = true)
 	List<Users> findAllUsers();
+
 }
