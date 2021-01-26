@@ -1,5 +1,6 @@
 package ces.riccico.service;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.Optional;
 
@@ -26,4 +27,8 @@ public interface UserService {
 	List<Users> findAllUsers();
 
 
+=======
+public interface UserService {
+
+>>>>>>> e4ef1c1... set up user service
 }
