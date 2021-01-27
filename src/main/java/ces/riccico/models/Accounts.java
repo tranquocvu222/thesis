@@ -9,26 +9,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
-
 @Entity
 @Table(name = "accounts")
 public class Accounts {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column( name = "idAccount", length = 5)
-	private String idAccount;
-	
-	@Column( name = "Username", length = 200)
-	private String Username;
-	
-	@Column( name = "Password", length = 100)
-	private String Password;
-	
-	@Column( name = "isBanded")
-	private boolean Isbanded;
-	
+	@Column(name = "idAccount", length = 5)
+	private int idAccount;
+
+	@Column(name = "username", length = 200)
+	private String username;
+
+	@Column(name = "password", length = 100)
+	private String password;
+
+	@Column(name = "isBanded")
+	private boolean isBanded;
+
 	@ManyToOne
 	@JoinColumn(name = "idRole")
 	private Roles role;
@@ -37,45 +35,47 @@ public class Accounts {
 		super();
 	}
 
-	public Accounts(String idAccount, String username, String password, boolean isbanded, Roles role) {
+	public Accounts(int idAccount, String username, String password, boolean isbanded, Roles role) {
 		super();
 		this.idAccount = idAccount;
-		Username = username;
-		Password = password;
-		Isbanded = isbanded;
+		this.username = username;
+		this.password = password;
+		isBanded = isbanded;
 		this.role = role;
 	}
 
-	public String getIdAccount() {
+	public int getIdAccount() {
 		return idAccount;
 	}
 
-	public void setIdAccount(String idAccount) {
+	public void setIdAccount(int idAccount) {
 		this.idAccount = idAccount;
 	}
 
+	
+
 	public String getUsername() {
-		return Username;
+		return username;
 	}
 
 	public void setUsername(String username) {
-		Username = username;
+		this.username = username;
 	}
 
 	public String getPassword() {
-		return Password;
+		return password;
 	}
 
 	public void setPassword(String password) {
-		Password = password;
+		this.password = password;
 	}
 
-	public boolean isIsbanded() {
-		return Isbanded;
+	public boolean isBanded() {
+		return isBanded;
 	}
 
-	public void setIsbanded(boolean isbanded) {
-		Isbanded = isbanded;
+	public void setBanded(boolean isBanded) {
+		this.isBanded = isBanded;
 	}
 
 	public Roles getRole() {
@@ -85,5 +85,5 @@ public class Accounts {
 	public void setRole(Roles role) {
 		this.role = role;
 	}
-	
+
 }

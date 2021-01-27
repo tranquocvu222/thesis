@@ -1,17 +1,17 @@
 package ces.riccico.models;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-
 
 @Entity
 @Table(name = "roles")
@@ -19,17 +19,17 @@ public class Roles {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column( name = "idRole", length = 5)
+	@Column(name = "idRole", length = 5)
 	private String idRole;
-	
-	@Column( name = "roleName", length = 100)
+
+	@Column(name = "roleName", length = 100)
 	private String roleName;
-	
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
-	private Set<Accounts> idAccount;
+
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Accounts> idAccount = new HashSet<>();
 
 	public Roles() {
-	
+
 	}
 
 	public Roles(String idRole, String roleName) {
@@ -52,6 +52,5 @@ public class Roles {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
-	
-	
+
 }
