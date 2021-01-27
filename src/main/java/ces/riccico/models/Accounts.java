@@ -17,7 +17,7 @@ public class Accounts {
 	
 	@Id
 //	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column( name = "idAccount", length = 200)
+	@Column( name = "idAccount", length = 500)
 	private String idAccount;
 	
 	@Column( name = "userName", length = 100)
