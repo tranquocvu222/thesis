@@ -7,16 +7,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class AccountDetail implements UserDetails {
-	private int idUser;
+	private String idUser;
 	private String username;
 	private String password;
 	 private Collection authorities;
 
-	public int getIdUser() {
+	public String getIdUser() {
 		return idUser;
 	}
 
-	public void setIdUser(int idUser) {
+	public void setIdUser(String idUser) {
 		this.idUser = idUser;
 	}
 

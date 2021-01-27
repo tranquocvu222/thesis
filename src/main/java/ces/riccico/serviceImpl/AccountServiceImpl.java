@@ -34,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountDetail loadUserByUsername(String username) {
-		Accounts account = accountRepository.findByUsername(username);
+		Accounts account = accountRepository.findByUserName(username);
 		AccountDetail accountDetail = new AccountDetail();
 		if (account == null) {
 			return null;
@@ -44,8 +44,8 @@ public class AccountServiceImpl implements AccountService {
 				authorities.add(account.getRole().getRoleName());
 			}
 			accountDetail.setIdUser(account.getIdAccount());
-			accountDetail.setUsername(account.getUsername());
-			accountDetail.setPassword(account.getPassword());
+			accountDetail.setUsername(account.getUserName());
+			accountDetail.setPassword(account.getPassWord());
 			accountDetail.setAuthorities(authorities);
 		}
 		return accountDetail;
@@ -53,22 +53,22 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public ResponseEntity<?> login(Accounts account) {
-		if (account.getUsername() == null || account.getUsername().isEmpty()) {
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is empty");
+		if(account.getUserName() == null || account.getUserName().isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your username");
 		}
-		if (account.getPassword() == null || account.getPassword().isEmpty()) {
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password is empty");
+		if(account.getPassWord() == null || account.getPassWord().isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your password");
 		}
-		AccountDetail accountDetail = loadUserByUsername(account.getUsername());
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		AccountDetail accountDetail = loadUserByUsername(account.getUserName());
+//		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 //		if (accountRepository.findByUsername(account.getUsername()) == null
 //				|| !encoder.matches(account.getPassword(), accountDetail.getPassword())) {
 //			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
 //		}
-		if(accountRepository.findByUsername(account.getUsername()) == null) {
+		if(account == null || !account.getPassWord().equals(accountDetail.getPassword())) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
 		}
-		if (accountRepository.findByUsername(account.getUsername()).isBanded()) {
+		if (accountRepository.findByUserName(account.getUserName()).isBanded()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Your account is banned");
 		}
 		Token token = new Token();

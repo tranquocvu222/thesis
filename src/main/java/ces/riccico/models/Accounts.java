@@ -2,8 +2,6 @@ package ces.riccico.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,15 +12,15 @@ import javax.persistence.Table;
 public class Accounts {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idAccount", length = 5)
-	private int idAccount;
+	private String idAccount;
 
-	@Column(name = "username", length = 200)
-	private String username;
+	@Column(name = "userName", length = 100)
+	private String userName;
 
-	@Column(name = "password", length = 100)
-	private String password;
+	@Column(name = "passWord", length = 100)
+	private String passWord;
 
 	@Column(name = "isBanded")
 	private boolean isBanded;
@@ -32,42 +30,39 @@ public class Accounts {
 	private Roles role;
 
 	public Accounts() {
-		super();
+
 	}
 
-	public Accounts(int idAccount, String username, String password, boolean isbanded, Roles role) {
-		super();
+	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
 		this.idAccount = idAccount;
-		this.username = username;
-		this.password = password;
-		isBanded = isbanded;
+		this.userName = userName;
+		this.passWord = passWord;
+		this.isBanded = isBanded;
 		this.role = role;
 	}
 
-	public int getIdAccount() {
+	public String getIdAccount() {
 		return idAccount;
 	}
 
-	public void setIdAccount(int idAccount) {
+	public void setIdAccount(String idAccount) {
 		this.idAccount = idAccount;
 	}
 
-	
-
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPassWord() {
+		return passWord;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassWord(String passWord) {
+		this.passWord = passWord;
 	}
 
 	public boolean isBanded() {
