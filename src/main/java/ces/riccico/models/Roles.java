@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 public class Roles {
 
 	@Id
@@ -25,7 +25,7 @@ public class Roles {
 	@Column( name = "roleName", length = 100)
 	private String roleName;
 	
-	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
 	private Set<Accounts> idAccount;
 
 	public Roles() {
