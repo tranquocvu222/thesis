@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.models.Accounts;
-import ces.riccico.models.Roles;
 import ces.riccico.service.AccountService;
 
 @CrossOrigin
