@@ -22,6 +22,12 @@ public class AccountDetail implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+
+	}
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -31,10 +37,13 @@ public class AccountDetail implements UserDetails {
 
 	public void setUsername(String username) {
 		this.username = username;
+		return null;
+
 	}
 
 	@Override
 	public String getUsername() {
+
 		return username;
 	}
 
@@ -43,6 +52,8 @@ public class AccountDetail implements UserDetails {
 	}
 	public void setAuthorities(Collection authorities) {
 		this.authorities = authorities;
+		return null;
+
 	}
 
 	@Override
@@ -62,7 +73,10 @@ public class AccountDetail implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
+
 		return false;
 	}
+
+	
 
 }
