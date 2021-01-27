@@ -12,8 +12,10 @@ import javax.persistence.Table;
 public class Accounts {
 
 	@Id
+
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idAccount", length = 500)
+
 	private String idAccount;
 
 	@Column(name = "username", length = 100)
@@ -86,9 +88,11 @@ public class Accounts {
 		this.role = role;
 	}
 
+
 	@Override
 	public String toString() {
 		return "Accounts [idAccount=" + idAccount + ", userName=" + username + ", passWord=" + password + ", isBanded="
 				+ isBanded + ", role=" + role + "]";
 	}
+
 }

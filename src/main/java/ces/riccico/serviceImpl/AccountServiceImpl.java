@@ -2,6 +2,7 @@ package ces.riccico.serviceImpl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,7 @@ import ces.riccico.service.TokenService;
 public class AccountServiceImpl implements AccountService {
 
 	@Autowired
-	private AccountRepository accountRepository;
-
+	AccountRepository accountRepository;
 	@Autowired
 	private TokenService tokenService;
 	@Autowired
@@ -53,19 +53,19 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public ResponseEntity<?> login(Accounts account) {
-		if(account.getUserName() == null || account.getUserName().isEmpty()) {
+		if (account.getUserName() == null || account.getUserName().isEmpty()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your username");
 		}
-		if(account.getPassWord() == null || account.getPassWord().isEmpty()) {
+		if (account.getPassWord() == null || account.getPassWord().isEmpty()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your password");
 		}
 		AccountDetail accountDetail = loadUserByUsername(account.getUserName());
-//		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//		if (accountRepository.findByUsername(account.getUsername()) == null
-//				|| !encoder.matches(account.getPassword(), accountDetail.getPassword())) {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
-//		}
-		if(account == null || !account.getPassWord().equals(accountDetail.getPassword())) {
+//	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//	if (accountRepository.findByUsername(account.getUsername()) == null
+//			|| !encoder.matches(account.getPassword(), accountDetail.getPassword())) {
+//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
+//	}
+		if (account == null || !account.getPassWord().equals(accountDetail.getPassword())) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
 		}
 		if (accountRepository.findByUserName(account.getUserName()).isBanded()) {
@@ -79,8 +79,39 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public List<Accounts> getAll() {
-		return accountRepository.findAll();
+	public Accounts save(Accounts entity) {
+		return accountRepository.save(entity);
+	}
+
+	@Override
+	public Optional<Accounts> findById(String id) {
+		return accountRepository.findById(id);
+	}
+
+	@Override
+	public List<Accounts> findAll() {
+		return (List<Accounts>) accountRepository.findAll();
+	}
+
+	@Override
+	public List<Accounts> findAllById(Iterable<String> ids) {
+		return (List<Accounts>) accountRepository.findAllById(ids);
+	}
+
+	@Override
+	public void deleteById(String id) {
+		accountRepository.deleteById(id);
+	}
+
+	@Override
+	public void delete(Accounts entity) {
+		accountRepository.delete(entity);
+	}
+
+	@Override
+	public Accounts findByUserName(String username) {
+		return accountRepository.findByUserName(username);
 	}
 
 }
+
