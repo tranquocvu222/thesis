@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+
 public class AccountDetail implements UserDetails {
 	private String idUser;
 	private String username;
@@ -23,7 +24,17 @@ public class AccountDetail implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public int getIdUser() {
+		return idUser;
+	}
 
+	public void setIdUser(int idUser) {
+		this.idUser = idUser;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	@Override
@@ -34,12 +45,10 @@ public class AccountDetail implements UserDetails {
 	public void setUsername(String username) {
 		this.username = username;
 		return null;
-
 	}
 
 	@Override
 	public String getUsername() {
-
 		return username;
 	}
 
@@ -49,7 +58,6 @@ public class AccountDetail implements UserDetails {
 	public void setAuthorities(Collection authorities) {
 		this.authorities = authorities;
 		return null;
-
 	}
 
 	@Override
@@ -69,10 +77,7 @@ public class AccountDetail implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-
 		return false;
 	}
-
-	
 
 }
