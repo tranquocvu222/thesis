@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.models.Accounts;
-import ces.riccico.models.Roles;
 import ces.riccico.service.AccountService;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
