@@ -20,8 +20,8 @@ public class Accounts {
 	@Column( name = "idAccount", length = 5)
 	private String idAccount;
 	
-	@Column( name = "Email", length = 200)
-	private String Email;
+	@Column( name = "Username", length = 200)
+	private String Username;
 	
 	@Column( name = "Password", length = 100)
 	private String Password;
@@ -37,10 +37,10 @@ public class Accounts {
 		super();
 	}
 
-	public Accounts(String idAccount, String email, String password, boolean isbanded, Roles role) {
+	public Accounts(String idAccount, String username, String password, boolean isbanded, Roles role) {
 		super();
 		this.idAccount = idAccount;
-		Email = email;
+		Username = username;
 		Password = password;
 		Isbanded = isbanded;
 		this.role = role;
@@ -54,12 +54,12 @@ public class Accounts {
 		this.idAccount = idAccount;
 	}
 
-	public String getEmail() {
-		return Email;
+	public String getUsername() {
+		return Username;
 	}
 
-	public void setEmail(String email) {
-		Email = email;
+	public void setUsername(String username) {
+		Username = username;
 	}
 
 	public String getPassword() {
@@ -85,8 +85,5 @@ public class Accounts {
 	public void setRole(Roles role) {
 		this.role = role;
 	}
-	
-	
-
 	
 }
