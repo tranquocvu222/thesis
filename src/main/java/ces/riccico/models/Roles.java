@@ -18,9 +18,9 @@ import javax.persistence.Table;
 public class Roles {
 
 	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column( name = "idRole", length = 5)
-	private String idRole;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column( name = "idRole")
+	private Integer idRole;
 	
 	@Column( name = "roleName", length = 100)
 	private String roleName;
@@ -32,16 +32,18 @@ public class Roles {
 	
 	}
 
-	public Roles(String idRole, String roleName) {
+	public Roles(Integer idRole, String roleName) {
+		
 		this.idRole = idRole;
 		this.roleName = roleName;
+		
 	}
 
-	public String getIdRole() {
+	public Integer getIdRole() {
 		return idRole;
 	}
 
-	public void setIdRole(String idRole) {
+	public void setIdRole(Integer idRole) {
 		this.idRole = idRole;
 	}
 

@@ -20,29 +20,28 @@ public class Accounts {
 	@Column( name = "idAccount", length = 5)
 	private String idAccount;
 	
-	@Column( name = "Email", length = 200)
-	private String Email;
+	@Column( name = "userName", length = 100)
+	private String userName;
 	
-	@Column( name = "Password", length = 100)
-	private String Password;
+	@Column( name = "passWord", length = 100)
+	private String passWord;
 	
 	@Column( name = "isBanded")
-	private boolean Isbanded;
+	private boolean isBanded;
 	
 	@ManyToOne
 	@JoinColumn(name = "idRole")
 	private Roles role;
 
 	public Accounts() {
-		super();
+		
 	}
 
-	public Accounts(String idAccount, String email, String password, boolean isbanded, Roles role) {
-		super();
+	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
 		this.idAccount = idAccount;
-		Email = email;
-		Password = password;
-		Isbanded = isbanded;
+		this.userName = userName;
+		this.passWord = passWord;
+		this.isBanded = isBanded;
 		this.role = role;
 	}
 
@@ -54,28 +53,28 @@ public class Accounts {
 		this.idAccount = idAccount;
 	}
 
-	public String getEmail() {
-		return Email;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setEmail(String email) {
-		Email = email;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
-	public String getPassword() {
-		return Password;
+	public String getPassWord() {
+		return passWord;
 	}
 
-	public void setPassword(String password) {
-		Password = password;
+	public void setPassWord(String passWord) {
+		this.passWord = passWord;
 	}
 
-	public boolean isIsbanded() {
-		return Isbanded;
+	public boolean isBanded() {
+		return isBanded;
 	}
 
-	public void setIsbanded(boolean isbanded) {
-		Isbanded = isbanded;
+	public void setBanded(boolean isBanded) {
+		this.isBanded = isBanded;
 	}
 
 	public Roles getRole() {
@@ -85,6 +84,11 @@ public class Accounts {
 	public void setRole(Roles role) {
 		this.role = role;
 	}
+	
+	
+
+	
+	
 	
 	
 
