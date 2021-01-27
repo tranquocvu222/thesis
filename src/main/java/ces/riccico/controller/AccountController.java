@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.models.Accounts;
+import ces.riccico.models.Roles;
 import ces.riccico.service.AccountService;
+import ces.riccico.service.RoleService;
 
 @CrossOrigin
 @RestController
@@ -35,6 +37,9 @@ public class AccountController {
 
 	@Autowired
 	AccountService accountService;
+	
+	@Autowired
+	RoleService rs;
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public List<Accounts> getAll() {
@@ -48,10 +53,14 @@ public class AccountController {
 		}
 	}
 	
+	
 	@RequestMapping(value = "/account/new", method = RequestMethod.POST)
 	public void addAdmin(@RequestBody Accounts model) {
 		try {
 			UUID uuid = UUID.randomUUID();
+			rs.findAll();
+		    model.setRole(rs.findAll().get(1));
+		    model.setBanded(false);
 			model.setIdAccount(String.valueOf(uuid));
 			accountService.save(model);
 		} catch (Exception e) {

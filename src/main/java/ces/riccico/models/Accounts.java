@@ -12,10 +12,8 @@ import javax.persistence.Table;
 public class Accounts {
 
 	@Id
-
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idAccount", length = 500)
-
 	private String idAccount;
 
 	@Column(name = "username", length = 100)
@@ -26,6 +24,7 @@ public class Accounts {
 
 	@Column(name = "isBanded")
 	private boolean isBanded;
+	
 //    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
 //    @PrimaryKeyJoinColumn
 //    private Users user;
