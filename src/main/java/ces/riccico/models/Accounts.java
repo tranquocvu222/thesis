@@ -1,10 +1,16 @@
 package ces.riccico.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -29,8 +35,10 @@ public class Accounts {
 	@JoinColumn(name = "idRole")
 	private Roles role;
 
+	@OneToMany(mappedBy ="account", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	private Set<House> houses = new HashSet<>();
+	
 	public Accounts() {
-
 	}
 
 	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
