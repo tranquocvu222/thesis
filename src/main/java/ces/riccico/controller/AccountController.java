@@ -3,6 +3,7 @@ package ces.riccico.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,6 @@ import ces.riccico.service.AccountService;
 
 
 import java.util.List;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +25,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.models.Accounts;
-import ces.riccico.models.Roles;
+
+import ces.riccico.models.Users;
 import ces.riccico.service.AccountService;
 import ces.riccico.service.RoleService;
+import ces.riccico.service.UserService;
 
 @CrossOrigin
 @RestController
@@ -38,8 +38,13 @@ public class AccountController {
 	@Autowired
 	AccountService accountService;
 	
+	
+	@Autowired
+	UserService us;
+	
 	@Autowired
 	RoleService rs;
+	
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public List<Accounts> getAll() {
@@ -55,14 +60,19 @@ public class AccountController {
 	
 	
 	@RequestMapping(value = "/account/new", method = RequestMethod.POST)
-	public void addAdmin(@RequestBody Accounts model) {
+	public void addAccount(@RequestBody Accounts model, Users user) {
 		try {
 			UUID uuid = UUID.randomUUID();
-			rs.findAll();
 		    model.setRole(rs.findAll().get(1));
 		    model.setBanded(false);
 			model.setIdAccount(String.valueOf(uuid));
 			accountService.save(model);
+			user.setAccount(model);
+            System.out.println("getIdUsers======= " + user.getAccount());
+			System.out.println("getIdUsers " + user.getIdUser());
+			accountService.save(model);
+			us.save(user);
+
 		} catch (Exception e) {
 			System.out.println("addAccount: " + e);
 		}
@@ -74,4 +84,5 @@ public class AccountController {
 		return accountService.login(account);
 	}
 	
+
 }

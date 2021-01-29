@@ -1,11 +1,14 @@
 package ces.riccico.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @Table(name = "accounts")
@@ -25,9 +28,6 @@ public class Accounts {
 	@Column(name = "isBanded")
 	private boolean isBanded;
 	
-//    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
-//    @PrimaryKeyJoinColumn
-//    private Users user;
 
 	@ManyToOne
 	@JoinColumn(name = "idRole")
@@ -43,6 +43,7 @@ public class Accounts {
 		this.username = userName;
 		this.password = passWord;
 		this.isBanded = isBanded;
+
 		this.role = role;
 	}
 
@@ -79,6 +80,8 @@ public class Accounts {
 		this.isBanded = isBanded;
 	}
 
+
+
 	public Roles getRole() {
 		return role;
 	}
@@ -93,5 +96,6 @@ public class Accounts {
 		return "Accounts [idAccount=" + idAccount + ", userName=" + username + ", passWord=" + password + ", isBanded="
 				+ isBanded + ", role=" + role + "]";
 	}
+
 
 }
