@@ -75,7 +75,7 @@ public class AccountServiceImpl implements AccountService {
 		token.setToken(jwtUtil.generateToken(accountDetail));
 		token.setTokenExpDate(jwtUtil.generateExpirationDate());
 		tokenService.save(token);
-		return ResponseEntity.ok(token.getToken());
+		return ResponseEntity.ok(token);
 	}
 
 	@Override
