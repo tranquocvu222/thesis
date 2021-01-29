@@ -1,5 +1,6 @@
 package ces.riccico.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 
 
@@ -29,6 +32,10 @@ public class Accounts {
 	@Column( name = "isBanded")
 	private boolean isBanded;
 	
+//	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+//    @PrimaryKeyJoinColumn
+//    private Users user;
+	
 	@ManyToOne
 	@JoinColumn(name = "idRole")
 	private Roles role;
@@ -38,10 +45,12 @@ public class Accounts {
 	}
 
 	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
+		super();
 		this.idAccount = idAccount;
 		this.userName = userName;
 		this.passWord = passWord;
 		this.isBanded = isBanded;
+
 		this.role = role;
 	}
 
@@ -77,6 +86,8 @@ public class Accounts {
 		this.isBanded = isBanded;
 	}
 
+
+
 	public Roles getRole() {
 		return role;
 	}
@@ -84,5 +95,13 @@ public class Accounts {
 	public void setRole(Roles role) {
 		this.role = role;
 	}
+
+	@Override
+	public String toString() {
+		return "Accounts [idAccount=" + idAccount + ", userName=" + userName + ", passWord=" + passWord + ", isBanded="
+				+ isBanded + ", role=" + role + "]";
+	}
+
+	
 
 }
