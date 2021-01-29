@@ -11,32 +11,35 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "houses")
-public class House extends Auditable{
+public class House extends Auditable {
 	@Id
 	@Column(name = "_idHouse")
 	private String id;
-	
+
 	@Column(name = "name", length = 50)
 	private String name;
-	
+
 	@Column(name = "country", length = 50)
 	private String country;
-	
+
 	@Column(name = "city", length = 50)
 	private String city;
-	
+
 	@Column(name = "address", length = 100)
 	private String address;
-	
+
 	@Column(name = "location", length = 200)
 	private String location;
-	
-	@Column(name ="price")
+
+	@Column(name = "price")
 	private double price;
-	
-	@Column(name ="isApproved")
+
+	@Column(name = "isApproved")
 	private boolean isApproved;
-	
+
+	@Column(name = "image")
+	private String image;
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_account", nullable = false)
 	private Accounts account;
@@ -97,6 +100,14 @@ public class House extends Auditable{
 		this.price = price;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	public boolean isApproved() {
 		return isApproved;
 	}
@@ -112,7 +123,5 @@ public class House extends Auditable{
 	public void setAccount(Accounts account) {
 		this.account = account;
 	}
-	
-	
 
 }

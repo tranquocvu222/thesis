@@ -89,4 +89,13 @@ public class Accounts {
 		this.role = role;
 	}
 
+	public Set<House> getHouses() {
+		return houses;
+	}
+
+	public void setHouses(Set<House> houses) {
+		this.houses = houses;
+	}
+	
+
 }
