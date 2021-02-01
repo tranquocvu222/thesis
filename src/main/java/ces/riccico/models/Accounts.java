@@ -19,6 +19,7 @@ public class Accounts {
 	@Column(name = "idAccount", length = 500)
 	private String idAccount;
 
+
 	@Column(name = "username", length = 100)
 	private String username;
 
@@ -26,6 +27,9 @@ public class Accounts {
 	private String password;
 
 	@Column(name = "isBanded")
+
+	
+	@Column( name = "isBanded")
 	private boolean isBanded;
 	
 
@@ -61,7 +65,6 @@ public class Accounts {
 
 	public void setUserName(String userName) {
 		this.username = userName;
-
 	}
 
 	public String getPassWord() {

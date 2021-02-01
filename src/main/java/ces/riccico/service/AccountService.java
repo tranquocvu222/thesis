@@ -28,6 +28,7 @@ public interface AccountService {
 
 	Accounts save(Accounts entity);
 
+<<<<<<< HEAD
 	AccountDetail loadUserByUsername(String username);
 
 
@@ -36,5 +37,8 @@ public interface AccountService {
 
 	Optional<Accounts> findById(String id);
 
+=======
+	List<Accounts> findByUsername(String username);
+>>>>>>> 5829613 (update register and setup validation register)
 
 }
