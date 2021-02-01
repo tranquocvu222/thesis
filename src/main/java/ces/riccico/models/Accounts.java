@@ -35,7 +35,7 @@ public class Accounts {
 	@JoinColumn(name = "idRole")
 	private Roles role;
 
-	@OneToMany(mappedBy ="account", fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@OneToMany(mappedBy ="account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<House> houses = new HashSet<>();
 	
 	public Accounts() {

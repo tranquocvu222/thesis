@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Table(name = "houses")
 public class House extends Auditable {
 	@Id
-	@Column(name = "_idHouse")
+	@Column(name = "idHouse")
 	private String id;
 
 	@Column(name = "name", length = 50)

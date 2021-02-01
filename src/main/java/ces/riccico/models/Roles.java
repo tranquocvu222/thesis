@@ -26,7 +26,7 @@ public class Roles {
 	@Column( name = "roleName", length = 100)
 	private String roleName;
 	
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "role", cascade = CascadeType.REFRESH)
 	private Set<Accounts> idAccount;
 
 	public Roles() {
