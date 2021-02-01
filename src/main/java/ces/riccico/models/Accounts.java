@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "accounts")
 public class Accounts {
@@ -33,9 +35,11 @@ public class Accounts {
 
 	@ManyToOne
 	@JoinColumn(name = "idRole")
+	@JsonIgnore
 	private Roles role;
 
-	@OneToMany(mappedBy ="account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy ="account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Set<House> houses = new HashSet<>();
 	
 	public Accounts() {

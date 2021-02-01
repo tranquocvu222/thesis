@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "houses")
 public class House extends Auditable {
@@ -40,8 +42,9 @@ public class House extends Auditable {
 	@Column(name = "image")
 	private String image;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_account", nullable = false)
+	@JsonIgnore
 	private Accounts account;
 
 	public String getId() {

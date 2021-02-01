@@ -115,13 +115,15 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok("delete success by admin");
 			} else {
 				if (!idCurrent.equals(houseRepository.findById(idHouse).get().getAccount().getIdAccount())) {
-					return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("You don't have permission");
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You don't have permission");
 				}
 				houseRepository.deleteById(idHouse);
 				return ResponseEntity.ok("delete success by user");
 			}
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+//		houseRepository.deleteById(idHouse);
+//		return ResponseEntity.ok("delete success by user");
 	}
 
 	@Override
@@ -132,7 +134,7 @@ public class HouseServiceImpl implements HouseService {
 		} else if (!houseRepository.findById(idHouse).isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("House doesn't exist");
 		} else if (!houseRepository.findById(idHouse).get().getAccount().getIdAccount().equals(idCurrent)) {
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("You don't have permission");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You don't have permission");
 		}
 		House houseUpdate = houseRepository.findById(idHouse).get();
 		houseUpdate.setName(house.getName());
