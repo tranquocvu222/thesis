@@ -23,11 +23,11 @@ public class Accounts {
 	@Column( name = "idAccount", length = 500)
 	private String idAccount;
 	
-	@Column( name = "userName", length = 100)
-	private String userName;
+	@Column( name = "username", length = 100)
+	private String username;
 	
-	@Column( name = "passWord", length = 100)
-	private String passWord;
+	@Column( name = "password", length = 100)
+	private String password;
 	
 	@Column( name = "isBanded")
 	private boolean isBanded;
@@ -47,8 +47,8 @@ public class Accounts {
 	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
 		super();
 		this.idAccount = idAccount;
-		this.userName = userName;
-		this.passWord = passWord;
+		this.username = userName;
+		this.password = passWord;
 		this.isBanded = isBanded;
 
 		this.role = role;
@@ -63,19 +63,19 @@ public class Accounts {
 	}
 
 	public String getUserName() {
-		return userName;
+		return username;
 	}
 
 	public void setUserName(String userName) {
-		this.userName = userName;
+		this.username = userName;
 	}
 
 	public String getPassWord() {
-		return passWord;
+		return password;
 	}
 
 	public void setPassWord(String passWord) {
-		this.passWord = passWord;
+		this.password = passWord;
 	}
 
 	public boolean isBanded() {
@@ -98,10 +98,11 @@ public class Accounts {
 
 	@Override
 	public String toString() {
-		return "Accounts [idAccount=" + idAccount + ", userName=" + userName + ", passWord=" + passWord + ", isBanded="
+		return "Accounts [idAccount=" + idAccount + ", userName=" + username + ", passWord=" + password + ", isBanded="
 				+ isBanded + ", role=" + role + "]";
 	}
 
+	
 	
 
 }

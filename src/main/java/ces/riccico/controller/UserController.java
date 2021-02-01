@@ -27,7 +27,6 @@ public class UserController {
 	@Autowired
 	AccountService as;
 	
-	
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public List<Users> getAll() {
 		try {
@@ -40,14 +39,12 @@ public class UserController {
 		}
 	}
 	
-	
 	@RequestMapping(value = "/user/new", method = RequestMethod.POST)
 	public void addUsers(@RequestBody Users model) {
 		try {
 //			List<Accounts> listAccount = as.findAll();
 //			model.setAccount(listAccount.);
 //			System.out.println("addUsers: " + model);
-	
 			us.save(model);
 		} catch (Exception e) {
 			System.out.println("addUsers: " + e);

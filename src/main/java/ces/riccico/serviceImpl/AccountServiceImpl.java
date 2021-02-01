@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Accounts;
+import ces.riccico.models.Roles;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.service.AccountService;
 
@@ -55,6 +56,11 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public void deleteAll() {
 		ar.deleteAll();
+	}
+
+	@Override
+	public List<Accounts> findByUsername(String username) {
+		return ar.findByUsername(username);
 	}
 
 	

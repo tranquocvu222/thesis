@@ -22,8 +22,8 @@ public class Roles {
 	@Column( name = "idRole")
 	private Integer idRole;
 	
-	@Column( name = "roleName", length = 100)
-	private String roleName;
+	@Column( name = "rolename", length = 100)
+	private String rolename;
 	
 	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
 	private Set<Accounts> idAccount;
@@ -35,7 +35,7 @@ public class Roles {
 	public Roles(Integer idRole, String roleName) {
 		
 		this.idRole = idRole;
-		this.roleName = roleName;
+		this.rolename = roleName;
 		
 	}
 
@@ -48,11 +48,11 @@ public class Roles {
 	}
 
 	public String getRoleName() {
-		return roleName;
+		return rolename;
 	}
 
 	public void setRoleName(String roleName) {
-		this.roleName = roleName;
+		this.rolename = roleName;
 	}
 	
 	

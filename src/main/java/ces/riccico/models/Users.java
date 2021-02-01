@@ -29,11 +29,11 @@ public class Users {
 	@Column(name = "email", length = 200)
 	private String email;
 
-	@Column(name = "firstName", length = 100)
-	private String firstName;
+	@Column(name = "firstname", length = 100)
+	private String firstname;
 
-	@Column(name = "lastName", length = 100)
-	private String lastName;
+	@Column(name = "lastname", length = 100)
+	private String lastname;
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@Temporal(TemporalType.DATE)
@@ -66,8 +66,8 @@ public class Users {
 		super();
 		this.id = id;
 		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.firstname = firstName;
+		this.lastname = lastName;
 		this.birthDay = birthDay;
 		this.city = city;
 		this.country = country;
@@ -92,19 +92,19 @@ public class Users {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return firstname;
 	}
 
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		this.firstname = firstName;
 	}
 
 	public String getLastName() {
-		return lastName;
+		return lastname;
 	}
 
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
+		this.lastname = lastName;
 	}
 
 	public Date getBirthDay() {
@@ -149,7 +149,7 @@ public class Users {
 
 	@Override
 	public String toString() {
-		return "Users [id=" + id + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
+		return "Users [id=" + id + ", email=" + email + ", firstName=" + firstname + ", lastName=" + lastname
 				+ ", birthDay=" + birthDay + ", city=" + city + ", country=" + country + ", address=" + address
 				+ ", account=" + account + "]";
 	}
