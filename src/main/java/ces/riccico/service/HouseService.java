@@ -14,13 +14,13 @@ public interface HouseService {
 	
 	List<House> getAllNotApproved();
 	
-	ResponseEntity<?> findByAccountId(String idAccount);
+	ResponseEntity<?> findHouseByUsername(String userName);
 	
-	ResponseEntity<?> save(House house);
+	ResponseEntity<?> postNewHouse(House house);
 	
-	ResponseEntity<?> delete(String houseId);
+	ResponseEntity<?> deleteHouse(String houseId);
 	
-	ResponseEntity<?> update (String idHouse, House house);
+	ResponseEntity<?> updateHouse (String idHouse, House house);
 	
 	ResponseEntity<?> updateStatus(String idHouse);
 }

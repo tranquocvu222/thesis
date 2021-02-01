@@ -14,18 +14,17 @@ import ces.riccico.models.Accounts;
 import ces.riccico.service.AccountService;
 
 @RestController
+@CrossOrigin
 public class AccountController {
 	
 	@Autowired
 	private AccountService accountService;
 	
-	@CrossOrigin
 	@PostMapping("/login")
 	public ResponseEntity<?> login (@RequestBody Accounts account){
 		return accountService.login(account);
 	}
 	
-	@CrossOrigin
 	@GetMapping("/allAccounts")
 	public List<Accounts> getAll(){
 		return accountService.getAll();

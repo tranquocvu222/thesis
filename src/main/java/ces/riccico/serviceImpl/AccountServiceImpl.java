@@ -72,14 +72,11 @@ public class AccountServiceImpl implements AccountService {
 		if (accountRepository.findByUserName(account.getUserName()).isBanded()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Your account is banned");
 		}
-		List<Object> lstObject = new ArrayList<Object>();
 		Token token = new Token();
 		token.setToken(jwtUtil.generateToken(accountDetail));
 		token.setTokenExpDate(jwtUtil.generateExpirationDate());
 		tokenService.save(token);
-		lstObject.add(token);
-		lstObject.add(account.getRole());
-		return ResponseEntity.ok(lstObject);
+		return ResponseEntity.ok(token);
 	}
 
 	@Override
