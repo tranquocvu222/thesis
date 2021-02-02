@@ -34,7 +34,7 @@ public class AccountController {
 	}
 	
 	@DeleteMapping("/log-out")
-//	@PreAuthorize("hasAnyAuthority('user','admin')")
+	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> logout(){
 		return accountService.logout();
 	}
