@@ -47,6 +47,7 @@ public class AccountServiceImpl implements AccountService {
 			accountDetail.setIdUser(account.getIdAccount());
 			accountDetail.setUsername(account.getUserName());
 			accountDetail.setPassword(account.getPassWord());
+			accountDetail.setRole(account.getRole().getRoleName());
 			accountDetail.setAuthorities(authorities);
 		}
 		return accountDetail;
