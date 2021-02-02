@@ -87,19 +87,19 @@ public class AccountController {
 	// Thêm mới tài khoản
 	@RequestMapping(value = "/account/new", method = RequestMethod.POST)
 	public String addAccount(@RequestBody Accounts account, Users user) {
-try {
-			Accounts checkAccount = accountService.findByUserName(account.getUserName());
-			String validationUsername = "^[a-z0-9._-]{6,12}$"; 
+		try {
+			List<Accounts> checkAccount = accountService.findByListUserName(account.getUserName());
+			String validationUsername = "^[a-z0-9._-]{6,12}$";
 			String validationPassword = "((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!.#$@_+,?-]).{6,30})";
 			if (account.getUserName().equals("")) {
 				return UserNotification.usernameNull;
-			}else if (account.getPassWord().equals("")) {
+			} else if (account.getPassWord().equals("")) {
 				return UserNotification.passwordNull;
-			}else if (! account.getUserName().matches(validationUsername)) {
+			} else if (!account.getUserName().matches(validationUsername)) {
 				return UserNotification.invalidUsernameFormat;
-			}else if (! account.getPassWord().matches(validationPassword)) {
+			} else if (!account.getPassWord().matches(validationPassword)) {
 				return UserNotification.invalidPasswordFormat;
-			} else if (!checkAccount.equals(account.getUserName()))  {
+			} else if (accountService.findByUserName(account.getUserName())== null) {
 				UUID uuid = UUID.randomUUID();
 				account.setRole(roleService.findAll().get(1));
 				account.setBanded(false);
@@ -110,9 +110,9 @@ try {
 				user.setAccount(account);
 				accountService.save(account);
 				userService.save(user);
-				
+
 				return UserNotification.registerSuccess;
-			}else {
+			} else {
 				return UserNotification.usernameExists;
 			}
 

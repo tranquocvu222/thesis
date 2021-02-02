@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ces.riccico.models.Accounts;
 
 public interface AccountRepository extends JpaRepository<Accounts, String>{
-	Accounts findByUserName(String username);
+	Accounts findByUsername(String username);
+	@Query(value="SELECT * FROM accounts a WHERE a.username = ?1", nativeQuery = true)
+	List<Accounts> findByListUserName (String username);
 
 }

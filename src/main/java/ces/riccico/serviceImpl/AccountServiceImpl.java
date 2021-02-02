@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public AccountDetail loadUserByUsername(String username) {
-		Accounts account = accountRepository.findByUserName(username);
+		Accounts account = accountRepository.findByUsername(username);
 		AccountDetail accountDetail = new AccountDetail();
 		if (account == null) {
 			return null;
@@ -50,6 +50,7 @@ public class AccountServiceImpl implements AccountService {
 			accountDetail.setIdUser(account.getIdAccount());
 			accountDetail.setUsername(account.getUserName());
 			accountDetail.setPassword(account.getPassWord());
+			accountDetail.setRole(account.getRole().getRoleName());
 			accountDetail.setAuthorities(authorities);
 		}
 		return accountDetail;
@@ -64,22 +65,19 @@ public class AccountServiceImpl implements AccountService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your password");
 		}
 		AccountDetail accountDetail = loadUserByUsername(account.getUserName());
-//	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//	if (accountRepository.findByUsername(account.getUsername()) == null
-//			|| !encoder.matches(account.getPassword(), accountDetail.getPassword())) {
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
-//	}
-		if (account == null || !account.getPassWord().equals(accountDetail.getPassword())) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
-		}
-		if (accountRepository.findByUserName(account.getUserName()).isBanded()) {
+	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+	if (accountRepository.findByUsername(account.getUserName()) == null
+			|| !encoder.matches(account.getPassWord(), accountDetail.getPassword())) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
+	}
+		if (accountRepository.findByUsername(account.getUserName()).isBanded()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Your account is banned");
 		}
 		Token token = new Token();
 		token.setToken(jwtUtil.generateToken(accountDetail));
 		token.setTokenExpDate(jwtUtil.generateExpirationDate());
 		tokenService.save(token);
-		return ResponseEntity.ok(token);
+		return ResponseEntity.ok(token.getToken());
 	}
 
 	@Override
@@ -114,8 +112,15 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public Accounts findByUserName(String username) {
-		return accountRepository.findByUserName(username);
+		return accountRepository.findByUsername(username);
 	}
+
+	@Override
+	public List<Accounts> findByListUserName(String username) {
+		return accountRepository.findByListUserName(username);
+	}
+	
+	
 
 
 }

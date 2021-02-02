@@ -12,6 +12,7 @@ public class AccountDetail implements UserDetails {
 	private String idUser;
 	private String username;
 	private String password;
+	private String role;
 	 private Collection authorities;
 
 	public String getIdUser() {
@@ -37,6 +38,14 @@ public class AccountDetail implements UserDetails {
 	@Override
 	public String getUsername() {
 		return username;
+	}
+	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public Collection getAuthorities() {
