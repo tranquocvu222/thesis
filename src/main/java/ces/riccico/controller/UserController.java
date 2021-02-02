@@ -18,7 +18,7 @@ import ces.riccico.models.Users;
 import ces.riccico.service.AccountService;
 import ces.riccico.service.UserService;
 
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin
 @RestController
 public class UserController {
 

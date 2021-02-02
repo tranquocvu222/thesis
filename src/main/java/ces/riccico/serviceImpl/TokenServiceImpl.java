@@ -1,5 +1,7 @@
 package ces.riccico.serviceImpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,15 @@ public class TokenServiceImpl implements TokenService {
 	@Override
 	public Token findByToken(String token) {
 		return tokenRepository.findByToken(token);
+	}
+	@Override
+	public List<Token> getAll() {
+		return tokenRepository.findAll();
+	}
+
+	@Override
+	public void deleteById(int idToken) {
+		tokenRepository.deleteById(idToken);
 	}
 
 }

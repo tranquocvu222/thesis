@@ -79,6 +79,24 @@ public class AccountServiceImpl implements AccountService {
 		tokenService.save(token);
 		return ResponseEntity.ok(token.getToken());
 	}
+	
+	@Override
+	public ResponseEntity<?> logout() {
+		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		if (idCurrent == null || idCurrent.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must login");
+		}
+		else {
+			List<Token> listToken = tokenService.getAll();
+			for(Token token : listToken) {
+				if(idCurrent.equals(jwtUtil.getUserFromToken(token.getToken()).getIdUser())) {
+					tokenService.deleteById(token.getId());
+				}
+			}
+			return ResponseEntity.ok("Logout success");
+		}
+	}
+	
 
 	@Override
 	public Accounts save(Accounts entity) {
@@ -119,9 +137,6 @@ public class AccountServiceImpl implements AccountService {
 	public List<Accounts> findByListUserName(String username) {
 		return accountRepository.findByListUserName(username);
 	}
-	
-	
-
 
 }
 

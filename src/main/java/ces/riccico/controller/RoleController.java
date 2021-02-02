@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ces.riccico.models.Roles;
 import ces.riccico.service.RoleService;
 
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin
 @RestController
 public class RoleController {
 

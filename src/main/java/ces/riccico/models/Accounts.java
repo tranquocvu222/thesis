@@ -7,15 +7,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
+
 
 @Entity
 @Table(name = "accounts")
 public class Accounts {
 
 	@Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idAccount", length = 500)
 	private String idAccount;
 
@@ -37,8 +35,6 @@ public class Accounts {
 	public Accounts() {
 
 	}
-
-
 	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
 		super();
 		this.idAccount = idAccount;

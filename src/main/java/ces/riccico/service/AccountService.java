@@ -31,6 +31,8 @@ public interface AccountService {
 	Accounts findByUserName(String username);
 
 	AccountDetail loadUserByUsername(String username);
+	
+	ResponseEntity<?> logout();
 
 	List<Accounts> findByListUserName(String username);
 
