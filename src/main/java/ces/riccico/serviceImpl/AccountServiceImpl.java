@@ -25,7 +25,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private AccountRepository accountRepository;
-
 	@Autowired
 	private TokenService tokenService;
 	@Autowired
@@ -55,10 +54,10 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public ResponseEntity<?> login(Accounts account) {
-		if(account.getUserName() == null || account.getUserName().isEmpty()) {
+		if (account.getUserName() == null || account.getUserName().isEmpty()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your username");
 		}
-		if(account.getPassWord() == null || account.getPassWord().isEmpty()) {
+		if (account.getPassWord() == null || account.getPassWord().isEmpty()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your password");
 		}
 		AccountDetail accountDetail = loadUserByUsername(account.getUserName());
@@ -67,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
 //				|| !encoder.matches(account.getPassword(), accountDetail.getPassword())) {
 //			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
 //		}
-		if(account == null || !account.getPassWord().equals(accountDetail.getPassword())) {
+		if (account == null || !account.getPassWord().equals(accountDetail.getPassword())) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
 		}
 		if (accountRepository.findByUserName(account.getUserName()).isBanded()) {
@@ -83,6 +82,25 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public List<Accounts> getAll() {
 		return accountRepository.findAll();
+	}
+
+	@Override
+	public ResponseEntity<?> logout() {
+		// TODO Auto-generated method stub
+		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		if (idCurrent == null || idCurrent.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must login");
+		}
+		else {
+			List<Token> listToken = tokenService.getAll();
+			for(Token token : listToken) {
+				if(idCurrent.equals(jwtUtil.getUserFromToken(token.getToken()).getIdUser())) {
+					tokenService.deleteById(token.getId());
+				}
+			}
+			return ResponseEntity.ok("Delete token success");
+		}
+		
 	}
 
 }

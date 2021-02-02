@@ -13,4 +13,6 @@ public interface AccountService {
 	AccountDetail loadUserByUsername(String username);
 
 	List<Accounts> getAll();
+	
+	ResponseEntity<?> logout();
 }
