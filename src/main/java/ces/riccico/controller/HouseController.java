@@ -27,7 +27,7 @@ public class HouseController {
 	private HouseService houseService;
 	
 	@GetMapping
-//	@PreAuthorize("hasAnyAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAll(){
 		return houseService.getAll();
 	}
@@ -38,7 +38,7 @@ public class HouseController {
 	}
 	
 	@GetMapping("/notApproved")
-//	@PreAuthorize("hasAnyAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAllNotApproved(){
 		return houseService.getAllNotApproved();
 	}
@@ -61,13 +61,13 @@ public class HouseController {
 	}
 	
 	@DeleteMapping("/{idHouse}")
-//	@PreAuthorize("hasAnyAuthority('user')")
+	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> deleteHouse(@PathVariable String idHouse){
 		return houseService.deleteHouse(idHouse);
 	}
 	
 	@PutMapping("/approve/{idHouse}")
-//	@PreAuthorize("hasAnyAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> approveHouse(@PathVariable String idHouse){
 		return houseService.approveHouse(idHouse);
 	}
