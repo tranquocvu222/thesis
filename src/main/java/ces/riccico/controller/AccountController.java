@@ -104,8 +104,8 @@ try {
 				account.setRole(roleService.findAll().get(1));
 				account.setBanded(false);
 				account.setIdAccount(String.valueOf(uuid));
-//				account.setPassWord(new BCryptPasswordEncoder().encode(account.getPassWord()));
-				account.setPassWord("h");
+				account.setPassWord(new BCryptPasswordEncoder().encode(account.getPassWord()));
+//				account.setPassWord("h");
 				System.out.println("getPassword======= " + account.getPassWord());
 				user.setAccount(account);
 				accountService.save(account);
