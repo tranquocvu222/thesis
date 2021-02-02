@@ -1,23 +1,22 @@
-package ces.riccico.controller;
 
+package ces.riccico.controller;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import ces.riccico.models.Accounts;
 import ces.riccico.service.AccountService;
-
-
 import java.util.List;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,18 +37,16 @@ public class AccountController {
 
 	@Autowired
 	AccountService accountService;
-	
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	RoleService roleService;
-	
+
 	@Autowired
 	UserNotification notification;
-	
-	
+
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public List<Accounts> getAll() {
 		try {
@@ -61,8 +58,8 @@ public class AccountController {
 			return null;
 		}
 	}
-	
-	//Validation form
+
+	// Validation form
 //	public boolean validation() {
 //		try {
 //			Accounts account = new Accounts();
@@ -86,43 +83,32 @@ public class AccountController {
 //		}
 //		return true;
 //	}
-	
-	//Thêm mới tài khoản
+
+	// Thêm mới tài khoản
 	@RequestMapping(value = "/account/new", method = RequestMethod.POST)
-	public String addAccount(@RequestBody Accounts model, Users user) {
-		try {
-			UUID uuid = UUID.randomUUID();
-		    model.setRole(rs.findAll().get(1));
-		    model.setBanded(false);
-			model.setIdAccount(String.valueOf(uuid));
-			accountService.save(model);
-			user.setAccount(model);
-            System.out.println("getIdUsers======= " + user.getAccount());
-			System.out.println("getIdUsers " + user.getIdUser());
-			accountService.save(model);
-			us.save(user);
-
-
-			List<Accounts> checkAccount = accountService.findByUsername(model.getUserName()) ;
+	public String addAccount(@RequestBody Accounts account, Users user) {
+try {
+			Accounts checkAccount = accountService.findByUserName(account.getUserName());
 			String validationUsername = "^[a-z0-9._-]{6,12}$"; 
 			String validationPassword = "((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!.#$@_+,?-]).{6,30})";
-			if (model.getUserName().equals("")) {
+			if (account.getUserName().equals("")) {
 				return UserNotification.usernameNull;
-			}else if (model.getPassWord().equals("")) {
+			}else if (account.getPassWord().equals("")) {
 				return UserNotification.passwordNull;
-			}else if (! model.getUserName().matches(validationUsername)) {
+			}else if (! account.getUserName().matches(validationUsername)) {
 				return UserNotification.invalidUsernameFormat;
-			}else if (! model.getPassWord().matches(validationPassword)) {
+			}else if (! account.getPassWord().matches(validationPassword)) {
 				return UserNotification.invalidPasswordFormat;
-			} else if (checkAccount.size()==0)  {
+			} else if (!checkAccount.equals(account.getUserName()))  {
 				UUID uuid = UUID.randomUUID();
-			    model.setRole(roleService.findAll().get(1));
-			    model.setBanded(false);
-				model.setIdAccount(String.valueOf(uuid));
-				user.setAccount(model);
-	            System.out.println("getIdUsers======= " + user.getAccount());
-				System.out.println("getIdUsers " + user.getIdUser());
-				accountService.save(model);
+				account.setRole(roleService.findAll().get(1));
+				account.setBanded(false);
+				account.setIdAccount(String.valueOf(uuid));
+//				account.setPassWord(new BCryptPasswordEncoder().encode(account.getPassWord()));
+				account.setPassWord("h");
+				System.out.println("getPassword======= " + account.getPassWord());
+				user.setAccount(account);
+				accountService.save(account);
 				userService.save(user);
 				
 				return UserNotification.registerSuccess;
@@ -134,14 +120,13 @@ public class AccountController {
 			System.out.println("addAccount: " + e);
 			return UserNotification.registerFail;
 		}
-
 	}
+
 	@CrossOrigin
 	@PostMapping("/login")
-	public ResponseEntity<?> login (@RequestBody Accounts account){
+	public ResponseEntity<?> login(@RequestBody Accounts account) {
 		return accountService.login(account);
 
 	}
-	
 
 }

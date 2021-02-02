@@ -15,7 +15,6 @@ public interface AccountService {
 
 	ResponseEntity<?> login(Accounts account);
 
-
 	void delete(Accounts entity);
 
 	void deleteById(String id);
@@ -24,21 +23,17 @@ public interface AccountService {
 
 	List<Accounts> findAll();
 
-
-
 	Accounts save(Accounts entity);
-
-<<<<<<< HEAD
-	AccountDetail loadUserByUsername(String username);
-
-
-	Accounts findByUserName(String username);
 
 
 	Optional<Accounts> findById(String id);
 
-=======
-	List<Accounts> findByUsername(String username);
->>>>>>> 5829613 (update register and setup validation register)
+	Accounts findByUserName(String username);
+
+	AccountDetail loadUserByUsername(String username);
+
+
+	
+
 
 }

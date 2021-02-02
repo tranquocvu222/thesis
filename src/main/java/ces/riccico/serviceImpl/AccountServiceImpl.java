@@ -12,11 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Accounts;
-<<<<<<< HEAD
+
 import ces.riccico.models.Token;
-=======
+
 import ces.riccico.models.Roles;
->>>>>>> 5829613 (update register and setup validation register)
+
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.security.AccountDetail;
 import ces.riccico.service.AccountService;
@@ -117,15 +117,6 @@ public class AccountServiceImpl implements AccountService {
 		return accountRepository.findByUserName(username);
 	}
 
-<<<<<<< HEAD
-=======
-	@Override
-	public List<Accounts> findByUsername(String username) {
-		return ar.findByUsername(username);
-	}
 
-	
-	
->>>>>>> 5829613 (update register and setup validation register)
 }
 
