@@ -95,7 +95,6 @@ public class AccountServiceImpl implements AccountService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.loginFail);
 		}
 	}
-
 	@Override
 	public ResponseEntity<?> logout() {
 		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
