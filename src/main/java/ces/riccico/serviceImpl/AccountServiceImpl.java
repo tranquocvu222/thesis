@@ -1,6 +1,5 @@
 package ces.riccico.serviceImpl;
 
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +68,7 @@ public class AccountServiceImpl implements AccountService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.passwordNull);
 			} else {
 				if (!usernameOrEmail.matches(Validation.USERNAME_PATTERN)) {
-					if(accountRepository.findByEmail(usernameOrEmail) == null) {
+					if (accountRepository.findByEmail(usernameOrEmail) == null) {
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
 					}
 					usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUserName();
@@ -95,22 +94,26 @@ public class AccountServiceImpl implements AccountService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.loginFail);
 		}
 	}
+
 	@Override
 	public ResponseEntity<?> logout() {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		if (idCurrent == null || idCurrent.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must login");
-		} else {
-			List<Token> listToken = tokenService.getAll();
-			for (Token token : listToken) {
-				if (idCurrent.equals(jwtUtil.getUserFromToken(token.getToken()).getIdUser())) {
-					tokenService.deleteById(token.getId());
+		try {
+			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			if (idCurrent == null || idCurrent.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must login");
+			} else {
+				List<Token> listToken = tokenService.getAll();
+				for (Token token : listToken) {
+					if (idCurrent.equals(jwtUtil.getUserFromToken(token.getToken()).getIdUser())) {
+						tokenService.deleteById(token.getId());
+					}
 				}
+				return ResponseEntity.ok("Logout success");
 			}
-			return ResponseEntity.ok("Logout success");
+		} catch (Exception e) {
+			return ResponseEntity.ok("Logout fail");
 		}
 	}
-
 
 	@Override
 	public Accounts save(Accounts entity) {
@@ -151,6 +154,5 @@ public class AccountServiceImpl implements AccountService {
 	public List<Accounts> findByListUserName(String username) {
 		return accountRepository.findByListUserName(username);
 	}
-
 
 }
