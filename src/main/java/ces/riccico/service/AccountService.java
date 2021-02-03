@@ -26,6 +26,14 @@ public interface AccountService  {
 
 	Accounts save(Accounts entity);
 
-	List<Accounts> findByUsername(String username);
+	Accounts findByUsername(String username);
+
+//	Accounts findByEmail(String email);
+
+//	List<Accounts> findByListEmail(String email);
+
+	Accounts findByEmail(String email);
+
+
 
 }

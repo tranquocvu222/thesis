@@ -26,11 +26,18 @@ public class Accounts {
 	@Column( name = "username", length = 100)
 	private String username;
 	
+	@Column( name = "email", length = 200)
+	private String email;
+	
 	@Column( name = "password", length = 100)
 	private String password;
 	
 	@Column( name = "isBanded")
 	private boolean isBanded;
+	
+	@Column( name = "isActive")
+	private boolean isActive;
+
 	
 //	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
 //    @PrimaryKeyJoinColumn
@@ -44,13 +51,15 @@ public class Accounts {
 		
 	}
 
-	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
+	public Accounts(String idAccount, String username, String email, String password, boolean isBanded,
+			boolean isActive, Roles role) {
 		super();
 		this.idAccount = idAccount;
-		this.username = userName;
-		this.password = passWord;
+		this.username = username;
+		this.email = email;
+		this.password = password;
 		this.isBanded = isBanded;
-
+		this.isActive = isActive;
 		this.role = role;
 	}
 
@@ -86,8 +95,6 @@ public class Accounts {
 		this.isBanded = isBanded;
 	}
 
-
-
 	public Roles getRole() {
 		return role;
 	}
@@ -96,11 +103,33 @@ public class Accounts {
 		this.role = role;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
 	@Override
 	public String toString() {
-		return "Accounts [idAccount=" + idAccount + ", userName=" + username + ", passWord=" + password + ", isBanded="
-				+ isBanded + ", role=" + role + "]";
+		return "Accounts [idAccount=" + idAccount + ", username=" + username + ", email=" + email + ", password="
+				+ password + ", isBanded=" + isBanded + ", isActive=" + isActive + ", role=" + role + "]";
 	}
+	
+	
+
+
 
 	
 	

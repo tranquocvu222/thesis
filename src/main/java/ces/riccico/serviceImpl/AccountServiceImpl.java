@@ -30,12 +30,12 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public List<Accounts> findAll() {
-		return (List<Accounts>)ar.findAll();
+		return (List<Accounts>) ar.findAll();
 	}
 
 	@Override
 	public List<Accounts> findAllById(Iterable<String> ids) {
-		return (List<Accounts>)ar.findAllById(ids);
+		return (List<Accounts>) ar.findAllById(ids);
 	}
 
 	@Override
@@ -58,11 +58,29 @@ public class AccountServiceImpl implements AccountService {
 		ar.deleteAll();
 	}
 
+//	@Override
+//	public List<Accounts> findByUserName(String username) {
+//		return ar.findByUserName(username);
+//	}
+//
+//	@Override
+//	public List<Accounts> findByEmail(String email) {
+//		return ar.findByEmail(email);
+//	}
+
 	@Override
-	public List<Accounts> findByUsername(String username) {
+	public Accounts findByUsername(String username) {
 		return ar.findByUsername(username);
 	}
 
-	
-	
+	@Override
+	public Accounts findByEmail(String email) {
+		return ar.findByEmail(email);
+	}
+
+//	@Override
+//	public List<Accounts> findByListEmail(String email) {
+//		return ar.findByListEmail(email);
+//	}
+
 }
