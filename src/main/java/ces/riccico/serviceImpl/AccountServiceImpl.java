@@ -12,9 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Accounts;
-
+import ces.riccico.models.LoginModel;
 import ces.riccico.models.Token;
-
+import ces.riccico.notification.UserNotification;
 import ces.riccico.models.Roles;
 
 import ces.riccico.repository.AccountRepository;
@@ -23,6 +23,7 @@ import ces.riccico.service.AccountService;
 import ces.riccico.security.JwtUtil;
 import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.TokenService;
+import ces.riccico.validation.Validation;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -51,33 +52,48 @@ public class AccountServiceImpl implements AccountService {
 			accountDetail.setUsername(account.getUserName());
 			accountDetail.setPassword(account.getPassWord());
 			accountDetail.setRole(account.getRole().getRoleName());
+			accountDetail.setEmail(account.getEmail());
 			accountDetail.setAuthorities(authorities);
 		}
 		return accountDetail;
 	}
 
 	@Override
-	public ResponseEntity<?> login(Accounts account) {
-		if (account.getUserName() == null || account.getUserName().isEmpty()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your username");
+	public ResponseEntity<?> login(LoginModel account) {
+		try {
+			String usernameOrEmail = account.getUsernameOrEmail();
+			String password = account.getPassword();
+			if (usernameOrEmail == null || usernameOrEmail.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.usernameNull);
+			} else if (password == null || password.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.passwordNull);
+			} else {
+				if (!usernameOrEmail.matches(Validation.USERNAME_PATTERN)) {
+					if(accountRepository.findByEmail(usernameOrEmail) == null) {
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
+					}
+					usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUserName();
+				}
+				AccountDetail accountDetail = loadUserByUsername(usernameOrEmail);
+				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+				if (accountRepository.findByUsername(usernameOrEmail) == null
+						|| !encoder.matches(account.getPassword(), accountDetail.getPassword())) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.invalidAccount);
+				} else if (accountRepository.findByUsername(usernameOrEmail).isBanded()) {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UserNotification.isBanned);
+				} else if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UserNotification.notActivated);
+				} else {
+					Token token = new Token();
+					token.setToken(jwtUtil.generateToken(accountDetail));
+					token.setTokenExpDate(jwtUtil.generateExpirationDate());
+					tokenService.save(token);
+					return ResponseEntity.ok(token.getToken());
+				}
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.loginFail);
 		}
-		if (account.getPassWord() == null || account.getPassWord().isEmpty()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter your password");
-		}
-		AccountDetail accountDetail = loadUserByUsername(account.getUserName());
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		if (accountRepository.findByUsername(account.getUserName()) == null
-				|| !encoder.matches(account.getPassWord(), accountDetail.getPassword())) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is wrong");
-		}
-		if (accountRepository.findByUsername(account.getUserName()).isBanded()) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Your account is banned");
-		}
-		Token token = new Token();
-		token.setToken(jwtUtil.generateToken(accountDetail));
-		token.setTokenExpDate(jwtUtil.generateExpirationDate());
-		tokenService.save(token);
-		return ResponseEntity.ok(token.getToken());
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import ces.riccico.models.Accounts;
+import ces.riccico.models.LoginModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.security.AccountDetail;
 
@@ -29,7 +30,7 @@ public interface AccountService {
 
 	Accounts findByUserName(String username);
 	
-	ResponseEntity<?> login(Accounts account);
+	ResponseEntity<?> login(LoginModel account);
 
 	AccountDetail loadUserByUsername(String username);
 	

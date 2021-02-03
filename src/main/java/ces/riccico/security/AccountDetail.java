@@ -12,6 +12,7 @@ public class AccountDetail implements UserDetails {
 	private String idUser;
 	private String username;
 	private String password;
+	private String email;
 	private String role;
 	 private Collection authorities;
 
@@ -46,6 +47,14 @@ public class AccountDetail implements UserDetails {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Collection getAuthorities() {

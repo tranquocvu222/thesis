@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ces.riccico.models.Accounts;
+import ces.riccico.models.LoginModel;
 import ces.riccico.service.AccountService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -89,7 +90,7 @@ public class AccountController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody Accounts account) {
+	public ResponseEntity<?> login(@RequestBody LoginModel account) {
 		return accountService.login(account);
 
 	}

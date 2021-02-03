@@ -16,7 +16,13 @@ public class Accounts {
 	@Id
 	@Column(name = "idAccount", length = 500)
 	private String idAccount;
+	
+	@Column( name = "isActive")
+	private boolean isActive;
 
+
+	@Column( name = "email", length = 200)
+	private String email;
 
 
 	@Column(name = "username", length = 100)
@@ -77,8 +83,6 @@ public class Accounts {
 		this.isBanded = isBanded;
 	}
 
-
-
 	public Roles getRole() {
 		return role;
 	}
@@ -87,7 +91,18 @@ public class Accounts {
 		this.role = role;
 	}
 
-
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	@Override
 	public String toString() {
 		return "Accounts [idAccount=" + idAccount + ", userName=" + username + ", passWord=" + password + ", isBanded="
