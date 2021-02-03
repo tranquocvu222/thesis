@@ -1,12 +1,20 @@
 package ces.riccico.models;
 
+
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -36,10 +44,14 @@ public class Accounts {
 
 	@ManyToOne
 	@JoinColumn(name = "idRole")
+	@JsonIgnore
 	private Roles role;
 
+	@OneToMany(mappedBy ="account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<House> houses = new HashSet<>();
+	
 	public Accounts() {
-
 	}
 	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
 		super();
@@ -90,7 +102,6 @@ public class Accounts {
 	public void setRole(Roles role) {
 		this.role = role;
 	}
-
 	public boolean isActive() {
 		return isActive;
 	}
@@ -108,4 +119,14 @@ public class Accounts {
 		return "Accounts [idAccount=" + idAccount + ", userName=" + username + ", passWord=" + password + ", isBanded="
 				+ isBanded + ", role=" + role + "]";
 	}
+
+	public Set<House> getHouses() {
+		return houses;
+	}
+
+	public void setHouses(Set<House> houses) {
+		this.houses = houses;
+	}
+	
+
 }

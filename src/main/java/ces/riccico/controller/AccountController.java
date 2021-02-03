@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,7 +57,6 @@ public class AccountController {
 	@RequestMapping(value = "/account/new", method = RequestMethod.POST)
 	public String addAccount(@RequestBody Accounts account, Users user) {
 		try {
-			List<Accounts> checkAccount = accountService.findByListUserName(account.getUserName());
 			String validationUsername = "^[a-z0-9._-]{6,12}$";
 			String validationPassword = "((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!.#$@_+,?-]).{6,30})";
 			if (account.getUserName().equals("")) {
@@ -94,10 +94,11 @@ public class AccountController {
 		return accountService.login(account);
 
 	}
-
+	
+	
 	@DeleteMapping("/log-out")
-	public ResponseEntity<?> logout() {
+	@PreAuthorize("hasAnyAuthority('user','admin')")
+	public ResponseEntity<?> logout(){
 		return accountService.logout();
 	}
-
 }

@@ -21,5 +21,6 @@ public class SecurityAuditorAware implements AuditorAware<String> {
 			return Optional.of("null");
 		}
 		return Optional.of(((AccountDetail) authentication.getPrincipal()).getIdUser());
+
 	}
 }

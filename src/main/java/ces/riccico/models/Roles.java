@@ -5,11 +5,17 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
+
 
 @Entity
 @Table(name = "roles")
@@ -23,7 +29,9 @@ public class Roles {
 	@Column(name = "rolename", length = 100)
 	private String rolename;
 
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+	
+	@OneToMany(mappedBy = "role", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Set<Accounts> idAccount;
 
 	public Roles() {

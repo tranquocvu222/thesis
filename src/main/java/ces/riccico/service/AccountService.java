@@ -13,8 +13,6 @@ import ces.riccico.security.AccountDetail;
 
 public interface AccountService {
 
-
-
 	void delete(Accounts entity);
 
 	void deleteById(String id);
@@ -25,21 +23,16 @@ public interface AccountService {
 
 	Accounts save(Accounts entity);
 
-
 	Optional<Accounts> findById(String id);
 
 	Accounts findByUserName(String username);
-	
+
 	ResponseEntity<?> login(LoginModel account);
 
 	AccountDetail loadUserByUsername(String username);
-	
+
 	ResponseEntity<?> logout();
 
 	List<Accounts> findByListUserName(String username);
-
-
-	
-
 
 }

@@ -10,7 +10,7 @@ public interface TokenService {
 	
 	Token save(Token token);
 	
-	void deleteById(int idToken);
-	
 	Token findByToken(String token);
+	
+	void deleteById(int idToken);
 }

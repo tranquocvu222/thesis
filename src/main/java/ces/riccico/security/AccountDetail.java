@@ -16,6 +16,7 @@ public class AccountDetail implements UserDetails {
 	private String role;
 	 private Collection authorities;
 
+
 	public String getIdUser() {
 		return idUser;
 	}
@@ -41,20 +42,20 @@ public class AccountDetail implements UserDetails {
 		return username;
 	}
 	
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public Collection getAuthorities() {

@@ -1,5 +1,6 @@
 package ces.riccico.serviceImpl;
 
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +16,6 @@ import ces.riccico.models.Accounts;
 import ces.riccico.models.LoginModel;
 import ces.riccico.models.Token;
 import ces.riccico.notification.UserNotification;
-import ces.riccico.models.Roles;
 
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.security.AccountDetail;
@@ -29,7 +29,7 @@ import ces.riccico.validation.Validation;
 public class AccountServiceImpl implements AccountService {
 
 	@Autowired
-	AccountRepository accountRepository;
+	private AccountRepository accountRepository;
 	@Autowired
 	private TokenService tokenService;
 	@Autowired
@@ -111,6 +111,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 	}
 
+
 	@Override
 	public Accounts save(Accounts entity) {
 		return accountRepository.save(entity);
@@ -150,5 +151,6 @@ public class AccountServiceImpl implements AccountService {
 	public List<Accounts> findByListUserName(String username) {
 		return accountRepository.findByListUserName(username);
 	}
+
 
 }
