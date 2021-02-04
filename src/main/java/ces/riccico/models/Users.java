@@ -26,9 +26,6 @@ public class Users {
 	@Column(name = "idUser", length = 500)
 	private Integer id;
 
-//	@Column(name = "email", length = 200)
-//	private String email;
-
 	@Column(name = "firstname", length = 100)
 	private String firstname;
 
@@ -81,6 +78,7 @@ public class Users {
 	public void setIdUser(Integer idUser) {
 		this.id = idUser;
 	}
+
 
 	public String getFirstName() {
 		return firstname;
@@ -140,6 +138,7 @@ public class Users {
 
 	@Override
 	public String toString() {
+
 		return "Users [id=" + id + ", firstName=" + firstname + ", lastName=" + lastname
 				+ ", birthDay=" + birthDay + ", city=" + city + ", country=" + country + ", address=" + address
 				+ ", account=" + account + "]";

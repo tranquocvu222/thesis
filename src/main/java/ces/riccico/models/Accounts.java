@@ -1,52 +1,58 @@
 package ces.riccico.models;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "accounts")
 public class Accounts {
-	
+
 	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column( name = "idAccount", length = 500)
+	@Column(name = "idAccount", length = 500)
 	private String idAccount;
-	
-	@Column( name = "username", length = 100)
-	private String username;
-	
-	@Column( name = "email", length = 200)
-	private String email;
-	
-	@Column( name = "password", length = 100)
-	private String password;
-	
-	@Column( name = "isBanded")
-	private boolean isBanded;
 	
 	@Column( name = "isActive")
 	private boolean isActive;
 
-	
-//	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
-//    @PrimaryKeyJoinColumn
-//    private Users user;
-	
+
+	@Column( name = "email", length = 200)
+	private String email;
+
+
+	@Column(name = "username", length = 100)
+	private String username;
+
+	@Column(name = "password", length = 100)
+	private String password;
+
+	@Column( name = "isBanded")
+	private boolean isBanded;
+
+
 	@ManyToOne
 	@JoinColumn(name = "idRole")
+	@JsonIgnore
 	private Roles role;
 
+	@OneToMany(mappedBy ="account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<House> houses = new HashSet<>();
+	
 	public Accounts() {
 		
 	}
@@ -102,36 +108,37 @@ public class Accounts {
 	public void setRole(Roles role) {
 		this.role = role;
 	}
-
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 	public String getEmail() {
 		return email;
 	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
 	
-	
-
-	public boolean isActive() {
-		return isActive;
+	public Set<House> getHouses() {
+		return houses;
 	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setHouses(Set<House> houses) {
+		this.houses = houses;
 	}
 
 	@Override
 	public String toString() {
-		return "Accounts [idAccount=" + idAccount + ", username=" + username + ", email=" + email + ", password="
-				+ password + ", isBanded=" + isBanded + ", isActive=" + isActive + ", role=" + role + "]";
+		return "Accounts [idAccount=" + idAccount + ", isActive=" + isActive + ", email=" + email + ", username="
+				+ username + ", password=" + password + ", isBanded=" + isBanded + ", role=" + role + ", houses="
+				+ houses + "]";
 	}
 	
 	
 
 
 
-	
-	
 
 }

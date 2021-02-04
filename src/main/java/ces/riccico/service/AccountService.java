@@ -3,22 +3,21 @@ package ces.riccico.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
+import org.springframework.http.ResponseEntity;
 import ces.riccico.models.Accounts;
+import ces.riccico.models.LoginModel;
+import ces.riccico.security.AccountDetail;
 
-@Service
+
 public interface AccountService  {
 
-	void deleteAll();
+	Accounts findByEmail(String email);
 
-	void deleteAll(List<Accounts> entities);
+	Accounts findByUserName(String username);
 
 	void delete(Accounts entity);
 
 	void deleteById(String id);
-
-	List<Accounts> findAllById(Iterable<String> ids);
 
 	List<Accounts> findAll();
 
@@ -26,13 +25,11 @@ public interface AccountService  {
 
 	Accounts save(Accounts entity);
 
-	Accounts findByUsername(String username);
+	ResponseEntity<?> logout();
 
-//	Accounts findByEmail(String email);
+	ResponseEntity<?> login(LoginModel account);
 
-//	List<Accounts> findByListEmail(String email);
-
-	Accounts findByEmail(String email);
+	AccountDetail loadUserByUsername(String username);
 
 
 
