@@ -39,10 +39,8 @@ public class Roles {
 	}
 
 	public Roles(Integer idRole, String roleName) {
-
 		this.idRole = idRole;
 		this.rolename = roleName;
-
 	}
 
 	public Integer getIdRole() {

@@ -1,6 +1,5 @@
 package ces.riccico.models;
 
-
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -12,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,6 +43,7 @@ public class Accounts {
 	@Column( name = "isBanded")
 	private boolean isBanded;
 
+
 	@ManyToOne
 	@JoinColumn(name = "idRole")
 	@JsonIgnore
@@ -52,13 +54,18 @@ public class Accounts {
 	private Set<House> houses = new HashSet<>();
 	
 	public Accounts() {
+		
 	}
-	public Accounts(String idAccount, String userName, String passWord, boolean isBanded, Roles role) {
+
+	public Accounts(String idAccount, String username, String email, String password, boolean isBanded,
+			boolean isActive, Roles role) {
 		super();
 		this.idAccount = idAccount;
-		this.username = userName;
-		this.password = passWord;
+		this.username = username;
+		this.email = email;
+		this.password = password;
 		this.isBanded = isBanded;
+		this.isActive = isActive;
 		this.role = role;
 	}
 
@@ -76,7 +83,6 @@ public class Accounts {
 
 	public void setUserName(String userName) {
 		this.username = userName;
-
 	}
 
 	public String getPassWord() {
@@ -114,12 +120,7 @@ public class Accounts {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	@Override
-	public String toString() {
-		return "Accounts [idAccount=" + idAccount + ", userName=" + username + ", passWord=" + password + ", isBanded="
-				+ isBanded + ", role=" + role + "]";
-	}
-
+	
 	public Set<House> getHouses() {
 		return houses;
 	}
@@ -127,6 +128,17 @@ public class Accounts {
 	public void setHouses(Set<House> houses) {
 		this.houses = houses;
 	}
+
+	@Override
+	public String toString() {
+		return "Accounts [idAccount=" + idAccount + ", isActive=" + isActive + ", email=" + email + ", username="
+				+ username + ", password=" + password + ", isBanded=" + isBanded + ", role=" + role + ", houses="
+				+ houses + "]";
+	}
 	
+	
+
+
+
 
 }

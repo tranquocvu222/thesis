@@ -1,6 +1,5 @@
 package ces.riccico.controller;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,21 +17,22 @@ import ces.riccico.models.Users;
 import ces.riccico.service.AccountService;
 import ces.riccico.service.UserService;
 
+
 @CrossOrigin
 @RestController
 public class UserController {
 
 	@Autowired
-	UserService us;
+	UserService userService;
 	
 	@Autowired
-	AccountService as;
+	AccountService accountService;
 	
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public List<Users> getAll() {
 		try {
 			List<Users> listUsers = new ArrayList<Users>();
-			listUsers = us.findAllUsers();
+			listUsers = userService.findAll();
 			return listUsers;
 		} catch (Exception e) {
 			System.out.println("getAll: " + e);
@@ -43,10 +43,7 @@ public class UserController {
 	@RequestMapping(value = "/user/new", method = RequestMethod.POST)
 	public void addUsers(@RequestBody Users model) {
 		try {
-//			List<Accounts> listAccount = as.findAll();
-//			model.setAccount(listAccount.);
-//			System.out.println("addUsers: " + model);
-			us.save(model);
+			userService.save(model);
 		} catch (Exception e) {
 			System.out.println("addUsers: " + e);
 		}

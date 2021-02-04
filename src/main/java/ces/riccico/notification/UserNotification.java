@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 public class UserNotification {
 	
 	public static final String usernameExists = "Username has been existed!";
+	public static final String emailExists = "Email has been existed!";
 	public static final String registerSuccess = "Register Successfully!";
 	public static final String registerFail = "Register Fail!";
 	public static final String usernameNull = "Username is required!";
@@ -18,4 +19,9 @@ public class UserNotification {
 	public static final String notActivated = "Your account isn't activated";
 	public static final String loginFail = "Login Fail!";
 	public static final String emailNotExists = "Email isn't exist";
+	public static final String emailNull = "Email is required!";
+	public static final String confirmSuccess = "Confirm Successfully!";
+	public static final String confirmFail = "Confirm Fail!";
+	
+
 }

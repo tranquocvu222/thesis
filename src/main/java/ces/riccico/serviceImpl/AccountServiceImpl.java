@@ -130,10 +130,6 @@ public class AccountServiceImpl implements AccountService {
 		return (List<Accounts>) accountRepository.findAll();
 	}
 
-	@Override
-	public List<Accounts> findAllById(Iterable<String> ids) {
-		return (List<Accounts>) accountRepository.findAllById(ids);
-	}
 
 	@Override
 	public void deleteById(String id) {
@@ -151,8 +147,11 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public List<Accounts> findByListUserName(String username) {
-		return accountRepository.findByListUserName(username);
+	public Accounts findByEmail(String email) {
+		return accountRepository.findByEmail(email);
 	}
+	
+	
+
 
 }
