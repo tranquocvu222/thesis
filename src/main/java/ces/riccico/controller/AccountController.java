@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ces.riccico.models.Accounts;
 import ces.riccico.models.LoginModel;
@@ -66,33 +65,33 @@ public class AccountController {
 	}
 
 	// Add account
-	@RequestMapping(value = "/account/new", method = RequestMethod.POST)
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String addAccount(@RequestBody Accounts account, Users user) {
 		try {
 
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 			confirmCode = code;
 			Validation vali = new Validation();
-			if (account.getUserName().equals("")) {
+			if (account.getUsername().equals("")) {
 				return UserNotification.usernameNull;
 			} else if (account.getEmail().equals("")) {
 				return UserNotification.emailNull;
-			} else if (account.getPassWord().equals("")) {
+			} else if (account.getPassword().equals("")) {
 				return UserNotification.passwordNull;
-			} else if (!account.getUserName().matches(Validation.USERNAME_PATTERN)) {
+			} else if (!account.getUsername().matches(Validation.USERNAME_PATTERN)) {
 				return UserNotification.invalidUsernameFormat;
 			} else if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
 				return UserNotification.invalidEmailFormat;
-			} else if (!account.getPassWord().matches(Validation.PASSWORD_PATTERN)) {
+			} else if (!account.getPassword().matches(Validation.PASSWORD_PATTERN)) {
 				return UserNotification.invalidPasswordFormat;
 			} else if (accountService.findByEmail(account.getEmail()) != null) {
 				return UserNotification.emailExists;
-			} else if (accountService.findByUserName(account.getUserName()) == null) {
+			} else if (accountService.findByUserName(account.getUsername()) == null) {
 				UUID uuid = UUID.randomUUID();
 				account.setRole(roleService.findAll().get(1));
 				account.setBanded(false);
 				account.setIdAccount(String.valueOf(uuid));
-				account.setPassWord(new BCryptPasswordEncoder().encode(account.getPassWord()));
+				account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
 				account.setActive(false);
 				user.setAccount(account);
 				accountService.save(account);

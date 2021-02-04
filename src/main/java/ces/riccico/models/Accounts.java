@@ -77,19 +77,19 @@ public class Accounts {
 		this.idAccount = idAccount;
 	}
 
-	public String getUserName() {
+	public String getUsername() {
 		return username;
 	}
 
-	public void setUserName(String userName) {
+	public void setUsername(String userName) {
 		this.username = userName;
 	}
 
-	public String getPassWord() {
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassWord(String passWord) {
+	public void setPassword(String passWord) {
 		this.password = passWord;
 	}
 

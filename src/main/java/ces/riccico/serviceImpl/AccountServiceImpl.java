@@ -48,8 +48,8 @@ public class AccountServiceImpl implements AccountService {
 				authorities.add(account.getRole().getRoleName());
 			}
 			accountDetail.setIdUser(account.getIdAccount());
-			accountDetail.setUsername(account.getUserName());
-			accountDetail.setPassword(account.getPassWord());
+			accountDetail.setUsername(account.getUsername());
+			accountDetail.setPassword(account.getPassword());
 			accountDetail.setRole(account.getRole().getRoleName());
 			accountDetail.setEmail(account.getEmail());
 			accountDetail.setAuthorities(authorities);
@@ -71,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
 					if (accountRepository.findByEmail(usernameOrEmail) == null) {
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
 					}
-					usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUserName();
+					usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUsername();
 				}
 				AccountDetail accountDetail = loadUserByUsername(usernameOrEmail);
 				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
