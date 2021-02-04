@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import ces.riccico.service.AccountService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ces.riccico.models.Users;
 import ces.riccico.notification.UserNotification;
+import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.RoleService;
 import ces.riccico.service.UserService;
 import ces.riccico.validation.Validation;
@@ -44,6 +46,9 @@ public class AccountController {
 
 	@Autowired
 	public JavaMailSender sender;
+	
+	@Autowired
+	SecurityAuditorAware securityAuditorAware;
 
 	public static int confirmCode;
 
@@ -114,16 +119,20 @@ public class AccountController {
 	}
  
 //	Confirm code
-	@RequestMapping(value = "/account/activeEmail/{codeInput}", method = RequestMethod.POST)
-	public String activeAccount(@RequestParam int codeInput, @RequestParam String idAccount) {
-		Accounts account = accountService.findById(idAccount).get();
-		if (codeInput == confirmCode) {
-			account.setActive(true);
-			accountService.save(account);
-		} else {
-			return "Mã xác nhận sai";
+	@RequestMapping(value = "/account/activeEmail/{codeInput}/{username}", method = RequestMethod.POST)
+	public String activeAccount(@PathVariable int codeInput,@PathVariable String username) {
+		 
+		Accounts account = accountService.findByUserName(username);
+		try {
+			if (codeInput == confirmCode) {
+				account.setActive(true);
+				accountService.save(account);
+			}
+		} catch (Exception e) {
+			return UserNotification.confirmFail;
 		}
-		return null;
+		
+		return UserNotification.confirmSuccess;
 	}
 
 

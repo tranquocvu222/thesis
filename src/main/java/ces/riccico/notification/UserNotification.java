@@ -20,5 +20,8 @@ public class UserNotification {
 	public static final String loginFail = "Login Fail!";
 	public static final String emailNotExists = "Email isn't exist";
 	public static final String emailNull = "Email is required!";
+	public static final String confirmSuccess = "Confirm Successfully!";
+	public static final String confirmFail = "Confirm Fail!";
+	
 
 }
