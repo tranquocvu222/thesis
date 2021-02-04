@@ -139,7 +139,6 @@ public class AccountController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginModel account) {
 		return accountService.login(account);
-
 	}
 
 //	Log-out
