@@ -48,10 +48,6 @@ public class Users {
 	@Column(name = "address", length = 100)
 	private String address;
 
-//	@OneToOne
-//	@MapsId
-//	@JoinColumn(name = "idUser", nullable = false)
-//	private Accounts account;
 
 	@OneToOne
 	@JoinColumn(name = "idAccount",nullable = false)
