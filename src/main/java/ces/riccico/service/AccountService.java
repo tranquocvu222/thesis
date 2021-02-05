@@ -30,6 +30,8 @@ public interface AccountService  {
 	ResponseEntity<?> login(LoginModel account);
 
 	AccountDetail loadUserByUsername(String username);
+	
+	ResponseEntity<?> changePassword(String oldPassword, String newPassword);
 
 
 

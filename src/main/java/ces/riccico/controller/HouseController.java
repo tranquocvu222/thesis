@@ -27,7 +27,7 @@ public class HouseController {
 	private HouseService houseService;
 	
 	@GetMapping
-	@PreAuthorize("hasAnyAuthority('user')")
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAll(){
 		return houseService.getAll();
 	}

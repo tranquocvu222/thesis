@@ -117,6 +117,36 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
+	public ResponseEntity<?> changePassword(String oldPassword, String newPassword) {
+		try {
+			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Accounts account = accountRepository.findById(idCurrent).get();
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			if (idCurrent == null || idCurrent.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.loginRequired);
+			} else {
+				if (oldPassword == null || oldPassword.isEmpty()) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.passwordNull);
+				} else if (newPassword == null || newPassword.isEmpty()) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.passwordNewNull);
+				} else if (!encoder.matches(oldPassword, account.getPassword())) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.wrongOldPassword);
+				} else if (!newPassword.matches(Validation.PASSWORD_PATTERN)) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.invalidPasswordFormat);
+				} else if (newPassword.equals(oldPassword)) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.isMactchingOldPassword);
+				} else {
+					account.setPassword(encoder.encode(newPassword));
+					accountRepository.saveAndFlush(account);
+					return ResponseEntity.ok(UserNotification.resetPasswordSuccess + " " + newPassword);
+				}
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.resetPasswordFailed);
+		}
+	}
+
+	@Override
 	public Accounts save(Accounts entity) {
 		return accountRepository.save(entity);
 	}
@@ -130,7 +160,6 @@ public class AccountServiceImpl implements AccountService {
 	public List<Accounts> findAll() {
 		return (List<Accounts>) accountRepository.findAll();
 	}
-
 
 	@Override
 	public void deleteById(String id) {
@@ -151,8 +180,5 @@ public class AccountServiceImpl implements AccountService {
 	public Accounts findByEmail(String email) {
 		return accountRepository.findByEmail(email);
 	}
-	
-	
-
 
 }
