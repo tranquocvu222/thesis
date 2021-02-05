@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserNotification {
-	
 	public static final String usernameExists = "Username has been existed!";
 	public static final String emailExists = "Email has been existed!";
 	public static final String registerSuccess = "Register Successfully!";
@@ -22,6 +21,6 @@ public class UserNotification {
 	public static final String emailNull = "Email is required!";
 	public static final String confirmSuccess = "Confirm Successfully!";
 	public static final String confirmFail = "Confirm Fail!";
-	
-
+	public static final String accountNotExist = "Account isn't exist";
+	public static final String accountNotPermission = "You don't have permission";
 }

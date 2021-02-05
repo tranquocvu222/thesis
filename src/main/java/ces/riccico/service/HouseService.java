@@ -14,6 +14,7 @@ public interface HouseService {
 	
 	List<House> getAllNotApproved();
 	
+	List<House> getAllDeleted();
 	ResponseEntity<?> findHouseByUsername(String username);
 	
 	ResponseEntity<?> postNewHouse(House house);

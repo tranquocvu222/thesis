@@ -42,6 +42,9 @@ public class House extends Auditable {
 	@Column(name = "image")
 	private String image;
 
+	@Column(name ="isDeleted")
+	private boolean isDeleted;
+	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_account", nullable = false)
 	@JsonIgnore
@@ -117,6 +120,15 @@ public class House extends Auditable {
 
 	public void setApproved(boolean isApproved) {
 		this.isApproved = isApproved;
+	}
+	
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public Accounts getAccount() {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import ces.riccico.models.Accounts;
 import ces.riccico.models.LoginModel;
 import ces.riccico.models.Token;
+import ces.riccico.notification.AuthNotification;
 import ces.riccico.notification.UserNotification;
 
 import ces.riccico.repository.AccountRepository;
@@ -100,7 +101,7 @@ public class AccountServiceImpl implements AccountService {
 		try {
 			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			if (idCurrent == null || idCurrent.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must login");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.loginRequired);
 			} else {
 				List<Token> listToken = tokenService.getAll();
 				for (Token token : listToken) {
@@ -108,10 +109,10 @@ public class AccountServiceImpl implements AccountService {
 						tokenService.deleteById(token.getId());
 					}
 				}
-				return ResponseEntity.ok("Logout success");
+				return ResponseEntity.ok(AuthNotification.logoutSuccess);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.ok("Logout fail");
+			return ResponseEntity.ok(AuthNotification.logoutFail);
 		}
 	}
 

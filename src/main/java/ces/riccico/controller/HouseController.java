@@ -27,7 +27,7 @@ public class HouseController {
 	private HouseService houseService;
 	
 	@GetMapping
-	@PreAuthorize("hasAnyAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('user')")
 	public List<House> getAll(){
 		return houseService.getAll();
 	}
@@ -41,6 +41,12 @@ public class HouseController {
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAllNotApproved(){
 		return houseService.getAllNotApproved();
+	}
+	
+	@GetMapping("/isdeleted")
+	@PreAuthorize("hasAnyAuthority('admin')")
+	public List<House> getHouseDelete(){
+		return houseService.getAllDeleted();
 	}
 	
 	@GetMapping("/{username}")

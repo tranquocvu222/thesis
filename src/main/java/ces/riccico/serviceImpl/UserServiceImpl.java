@@ -12,7 +12,6 @@ import ces.riccico.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
-
 	@Autowired
 	UserRepository userRepository;
 
@@ -23,10 +22,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<Users> findAll() {
-		return (List<Users>)userRepository.findAll();
+		return (List<Users>) userRepository.findAll();
 	}
-	
-    
-	
-	
+
 }
