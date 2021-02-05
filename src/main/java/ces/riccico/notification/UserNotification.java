@@ -18,7 +18,7 @@ public class UserNotification {
 	public static final String isBanned = "Your account is banned";
 	public static final String notActivated = "Your account isn't activated";
 	public static final String loginFail = "Login Fail!";
-	public static final String emailNotExists = "Email isn't exist";
+	public static final String emailNotExists = "Could not find the Email!";
 	public static final String emailNull = "Email is required!";
 	public static final String confirmSuccess = "Confirm Successfully!";
 	public static final String confirmFail = "Confirm Fail!";
@@ -34,5 +34,6 @@ public class UserNotification {
 	public static final String isBandedSuccess = "Account has banned successfully!";
 	public static final String isBandedFail = "Account is banned fail!";
 	public static final String resetPasswordFail = "Reset password fail!";
-	public static final String resetPasswordSuccess = "Reset password success!";
+	public static final String resetPasswordSuccess = "Reset password successfully!";
+	
 }

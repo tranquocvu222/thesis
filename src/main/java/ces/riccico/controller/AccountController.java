@@ -46,12 +46,12 @@ public class AccountController {
 
 	@Autowired
 	public JavaMailSender sender;
-	
+
 	@Autowired
 	SecurityAuditorAware securityAuditorAware;
 
 	public static int confirmCode;
-	
+
 	private static final boolean IsBanned = true;
 	private static final boolean IsNotBanned = false;
 
@@ -60,29 +60,29 @@ public class AccountController {
 	public List<Accounts> getAll() {
 		try {
 			List<Accounts> listAccount = new ArrayList<Accounts>();
-		for (Accounts account :accountService.findAll()) {
-			if(account.isBanned()==IsNotBanned) {
-				listAccount.add(account);
+			for (Accounts account : accountService.findAll()) {
+				if (account.isBanned() == IsNotBanned) {
+					listAccount.add(account);
+				}
 			}
-		}
-		return listAccount;
+			return listAccount;
 		} catch (Exception e) {
 			System.out.println("getAll: " + e);
 			return null;
 		}
 	}
-	
+
 //	Show list account is bannded
 	@RequestMapping(value = "/account/isbanned", method = RequestMethod.GET)
 	public List<Accounts> getAllIsBanned() {
 		try {
 			List<Accounts> listAccount = new ArrayList<Accounts>();
-		for (Accounts account :accountService.findAll()) {
-			if(account.isBanned()==IsBanned) {
-				listAccount.add(account);
+			for (Accounts account : accountService.findAll()) {
+				if (account.isBanned() == IsBanned) {
+					listAccount.add(account);
+				}
 			}
-		}
-		return listAccount;
+			return listAccount;
 		} catch (Exception e) {
 			System.out.println("getAll: " + e);
 			return null;
@@ -122,13 +122,14 @@ public class AccountController {
 				SimpleMailMessage message = new SimpleMailMessage();
 				message.setTo(account.getEmail());
 				message.setSubject("Verification Code");
-				message.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code +"\nPlease enter code on website to complete register");
+				message.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
+						+ "\nPlease enter code on website to complete register");
 				try {
 					sender.send(message);
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.registerSuccess);
+				return ResponseEntity.ok(UserNotification.registerSuccess);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.usernameExists);
 			}
@@ -138,10 +139,10 @@ public class AccountController {
 		}
 
 	}
- 
+
 //	Confirm code
 	@RequestMapping(value = "/register/activeEmail/{codeInput}/{username}", method = RequestMethod.POST)
-	public ResponseEntity<?> activeAccount(@PathVariable int codeInput,@PathVariable String username) {
+	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String username) {
 		Accounts account = accountService.findByUserName(username);
 		try {
 			if (codeInput == confirmCode) {
@@ -151,31 +152,35 @@ public class AccountController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.confirmFail);
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.confirmSuccess);
+		return ResponseEntity.ok(UserNotification.confirmSuccess);
 	}
-	
+
 //	Banned account
 	@RequestMapping(value = "/banned/{idAccount}", method = RequestMethod.POST)
-	public ResponseEntity<?> isBanded(@PathVariable String idAccount){
+	public ResponseEntity<?> isBanded(@PathVariable String idAccount) {
 		try {
 			Accounts account = accountService.findById(idAccount).get();
-			if (account.isBanned()==IsBanned) {
+			if (account.isBanned() == IsBanned) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.isBanded);
-			}else {
+			} else {
 				account.setBanned(IsBanned);
 				accountService.save(account);
 			}
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.isBandedFail);
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.isBandedSuccess);
+		return ResponseEntity.ok(UserNotification.isBandedSuccess);
 	}
-	
+
 	@RequestMapping(value = "/forgetPassword/{email}", method = RequestMethod.POST)
-	public ResponseEntity<?> forgetPassword(@PathVariable String email){
+	public ResponseEntity<?> forgetPassword(@PathVariable String email) {
 		Accounts accounts = accountService.findByEmail(email);
 		try {
-			if ( ! accounts.getEmail().isEmpty()) {
+			if (email == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNull);
+			} else if (!email.matches(Validation.EMAIL_PATTERN)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.invalidEmailFormat);
+			} else if (!accounts.getEmail().isEmpty() && accounts.isActive()) {
 				SimpleMailMessage message = new SimpleMailMessage();
 				message.setTo(accounts.getEmail());
 				message.setSubject("Reset Password");
@@ -185,13 +190,38 @@ public class AccountController {
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
 			}
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.resetPasswordFail);
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.resetPasswordSuccess);
+		return ResponseEntity.ok(UserNotification.resetPasswordSuccess);
 	}
 
+	@RequestMapping(value = "/resetPassword/{email}/{password}", method = RequestMethod.POST)
+	public ResponseEntity<?> resetPassword(@PathVariable String email, @PathVariable String password) {
+		Accounts account = accountService.findByEmail(email);
+		try {
+			if (email == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNull);
+			} else if (!email.matches(Validation.EMAIL_PATTERN)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.invalidEmailFormat);
+			} else if (password == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.passwordNull);
+			} else if (!password.matches(Validation.PASSWORD_PATTERN)) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.invalidPasswordFormat);
+			} else if (!account.getEmail().isEmpty() && account.isActive()) {
+				account.setPassword(new BCryptPasswordEncoder().encode(password) );
+				accountService.save(account);
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
+		}
+		return ResponseEntity.ok(UserNotification.resetPasswordSuccess);
+	}
 
 //	Login
 	@PostMapping("/login")
@@ -202,7 +232,7 @@ public class AccountController {
 //	Log-out
 	@DeleteMapping("/log-out")
 	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> logout(){
+	public ResponseEntity<?> logout() {
 		return accountService.logout();
 	}
 }
