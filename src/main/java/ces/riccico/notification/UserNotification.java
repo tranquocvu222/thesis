@@ -22,6 +22,17 @@ public class UserNotification {
 	public static final String emailNull = "Email is required!";
 	public static final String confirmSuccess = "Confirm Successfully!";
 	public static final String confirmFail = "Confirm Fail!";
-	
-
+	public static final String firstNameNull = "FirstName is required!";
+	public static final String lastNameNull = "LastName is required!";
+	public static final String birthDayNull = "Birthday is required!";
+	public static final String addressNull = "Address is required!";
+	public static final String cityNull = "City is required!";
+	public static final String countryNameNull = "Country is required!";
+	public static final String updateUserSuccess = "Update Success!";
+	public static final String isBanded = "Account has banded!";
+	public static final String isNotBanded = "Account not yet banded!";
+	public static final String isBandedSuccess = "Account has banned successfully!";
+	public static final String isBandedFail = "Account is banned fail!";
+	public static final String resetPasswordFail = "Reset password fail!";
+	public static final String resetPasswordSuccess = "Reset password success!";
 }

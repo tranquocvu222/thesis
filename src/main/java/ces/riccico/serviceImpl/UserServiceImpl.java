@@ -1,6 +1,7 @@
 package ces.riccico.serviceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,23 @@ public class UserServiceImpl implements UserService {
 	public List<Users> findAll() {
 		return (List<Users>)userRepository.findAll();
 	}
+
+	@Override
+	public Optional<Users> findByIdAccount(String account) {
+		return userRepository.findByIdAccount(account);
+	}
+
+
+
+//	@Override
+//	public Users findByIdAccount(String account) {
+//		return userRepository.findByIdAccount(account);
+//	}
+	
+	
+	
+	
+	
 	
     
 	
