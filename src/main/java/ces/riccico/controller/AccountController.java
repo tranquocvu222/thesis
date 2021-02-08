@@ -172,6 +172,7 @@ public class AccountController {
 		return ResponseEntity.ok(UserNotification.isBandedSuccess);
 	}
 
+//	Forget Password
 	@RequestMapping(value = "/forgetPassword/{email}", method = RequestMethod.POST)
 	public ResponseEntity<?> forgetPassword(@PathVariable String email) {
 		Accounts accounts = accountService.findByEmail(email);
@@ -199,6 +200,7 @@ public class AccountController {
 		return ResponseEntity.ok(UserNotification.resetPasswordSuccess);
 	}
 
+//	Reset Password
 	@RequestMapping(value = "/resetPassword/{email}/{password}", method = RequestMethod.POST)
 	public ResponseEntity<?> resetPassword(@PathVariable String email, @PathVariable String password) {
 		Accounts account = accountService.findByEmail(email);
