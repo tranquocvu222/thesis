@@ -46,7 +46,5 @@ public class TypeFeature {
 	public String toString() {
 		return "TypeFeature [idAccount=" + idAccount + ", featureName=" + featureName + "]";
 	}
-	
-	
-	
+
 }

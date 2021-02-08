@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -40,8 +38,8 @@ public class Accounts {
 	@Column(name = "password", length = 100)
 	private String password;
 
-	@Column( name = "isBanded")
-	private boolean isBanded;
+	@Column( name = "isBanned")
+	private boolean isBanned;
 
 
 	@ManyToOne
@@ -57,14 +55,14 @@ public class Accounts {
 		
 	}
 
-	public Accounts(String idAccount, String username, String email, String password, boolean isBanded,
+	public Accounts(String idAccount, String username, String email, String password, boolean isBanned,
 			boolean isActive, Roles role) {
 		super();
 		this.idAccount = idAccount;
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.isBanded = isBanded;
+		this.isBanned = isBanned;
 		this.isActive = isActive;
 		this.role = role;
 	}
@@ -77,28 +75,28 @@ public class Accounts {
 		this.idAccount = idAccount;
 	}
 
-	public String getUserName() {
+	public String getUsername() {
 		return username;
 	}
 
-	public void setUserName(String userName) {
+	public void setUsername(String userName) {
 		this.username = userName;
 	}
 
-	public String getPassWord() {
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassWord(String passWord) {
+	public void setPassword(String passWord) {
 		this.password = passWord;
 	}
 
-	public boolean isBanded() {
-		return isBanded;
+	public boolean isBanned() {
+		return isBanned;
 	}
 
-	public void setBanded(boolean isBanded) {
-		this.isBanded = isBanded;
+	public void setBanned(boolean isBanned) {
+		this.isBanned = isBanned;
 	}
 
 	public Roles getRole() {
@@ -132,7 +130,7 @@ public class Accounts {
 	@Override
 	public String toString() {
 		return "Accounts [idAccount=" + idAccount + ", isActive=" + isActive + ", email=" + email + ", username="
-				+ username + ", password=" + password + ", isBanded=" + isBanded + ", role=" + role + ", houses="
+				+ username + ", password=" + password + ", isBanned=" + isBanned + ", role=" + role + ", houses="
 				+ houses + "]";
 	}
 	
