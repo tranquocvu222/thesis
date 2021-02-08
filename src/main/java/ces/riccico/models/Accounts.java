@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ces.riccico.models.Accounts;
 import ces.riccico.models.LoginModel;
@@ -72,7 +71,6 @@ public class AccountController {
 
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 			confirmCode = code;
-			Validation vali = new Validation();
 			if (account.getUserName().equals("")) {
 				return UserNotification.usernameNull;
 			} else if (account.getEmail().equals("")) {
