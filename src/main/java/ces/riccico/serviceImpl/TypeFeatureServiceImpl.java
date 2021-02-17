@@ -1,6 +1,7 @@
 package ces.riccico.serviceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,22 @@ public class TypeFeatureServiceImpl implements TypeFeatureService {
 	public List<TypeFeature> findAll() {
 		return typeFeatureRepository.findAll();
 	}
+
+	@Override
+	public Optional<TypeFeature> findById(Integer id) {
+		return typeFeatureRepository.findById(id);
+	}
+
+	@Override
+	public void deleteById(Integer id) {
+		typeFeatureRepository.deleteById(id);
+	}
+
+	
+	
+
+	
+	
 	
 	
 

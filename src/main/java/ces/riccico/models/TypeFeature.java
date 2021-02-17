@@ -1,50 +1,52 @@
+
 package ces.riccico.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name ="typeFeature")
+@Table(name ="typefeatures")
 public class TypeFeature {
 
 	@Id
-	@Column(name = "id", length = 500)
-	private String idAccount;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idFeature")
+	private Integer idFeature;
 	
-	@Column(name = "featureName", length = 200 )
-	private String featureName;
+	@Column(name = "featurename", length = 200 )
+	private String featurename;
 
 	public TypeFeature() {
 		super();
 	}
 
-	public TypeFeature(String idAccount, String featureName) {
+	public TypeFeature(Integer idFeature, String featurename) {
 		super();
-		this.idAccount = idAccount;
-		this.featureName = featureName;
+		this.idFeature = idFeature;
+		this.featurename = featurename;
 	}
 
-	public String getIdAccount() {
-		return idAccount;
+	public Integer getIdFeature() {
+		return idFeature;
 	}
 
-	public void setIdAccount(String idAccount) {
-		this.idAccount = idAccount;
+	public void setIdFeature(Integer idFeature) {
+		this.idFeature = idFeature;
 	}
 
-	public String getFeatureName() {
-		return featureName;
+	public String getFeaturename() {
+		return featurename;
 	}
 
-	public void setFeatureName(String featureName) {
-		this.featureName = featureName;
+	public void setFeaturename(String featurename) {
+		this.featurename = featurename;
 	}
 
-	@Override
-	public String toString() {
-		return "TypeFeature [idAccount=" + idAccount + ", featureName=" + featureName + "]";
-	}
+	
+
 
 }

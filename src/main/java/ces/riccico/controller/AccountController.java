@@ -1,3 +1,4 @@
+
 package ces.riccico.controller;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import ces.riccico.models.LoginModel;
 import ces.riccico.service.AccountService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ces.riccico.models.Users;
+import ces.riccico.notification.AuthNotification;
 import ces.riccico.notification.UserNotification;
 import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.RoleService;
@@ -55,7 +57,7 @@ public class AccountController {
 	private static final boolean IsBanned = true;
 	private static final boolean IsNotBanned = false;
 
-//	Show list account is not bannded
+//	Show list account is not banded
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public List<Accounts> getAll() {
 		try {
@@ -72,7 +74,7 @@ public class AccountController {
 		}
 	}
 
-//	Show list account is bannded
+//	Show list account is banded
 	@RequestMapping(value = "/account/isbanned", method = RequestMethod.GET)
 	public List<Accounts> getAllIsBanned() {
 		try {
@@ -129,13 +131,13 @@ public class AccountController {
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
-				return ResponseEntity.ok(UserNotification.registerSuccess);
+				return ResponseEntity.ok(AuthNotification.success);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.usernameExists);
 			}
 		} catch (Exception e) {
 			System.out.println("addAccount: " + e);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.registerFail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
 
 	}
@@ -150,9 +152,9 @@ public class AccountController {
 				accountService.save(account);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.confirmFail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
-		return ResponseEntity.ok(UserNotification.confirmSuccess);
+		return ResponseEntity.ok(AuthNotification.success);
 	}
 
 //	Banned account
@@ -167,9 +169,9 @@ public class AccountController {
 				accountService.save(account);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.isBandedFail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
-		return ResponseEntity.ok(UserNotification.isBandedSuccess);
+		return ResponseEntity.ok(AuthNotification.success);
 	}
 
 //	Forget Password
@@ -195,9 +197,9 @@ public class AccountController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.resetPasswordFail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
-		return ResponseEntity.ok(UserNotification.resetPasswordSuccess);
+		return ResponseEntity.ok(AuthNotification.success);
 	}
 
 //	Reset Password
@@ -222,7 +224,7 @@ public class AccountController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
 		}
-		return ResponseEntity.ok(UserNotification.resetPasswordSuccess);
+		return ResponseEntity.ok(AuthNotification.success);
 	}
 
 //	Login
@@ -233,7 +235,7 @@ public class AccountController {
 
 //	Log-out
 	@DeleteMapping("/log-out")
-	@PreAuthorize("hasAnyAuthority('user','admin')")
+	@PreAuthorize("hasAnyAuthority('user','customer')")
 	public ResponseEntity<?> logout() {
 		return accountService.logout();
 	}

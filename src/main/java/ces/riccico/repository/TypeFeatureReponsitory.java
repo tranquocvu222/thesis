@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import ces.riccico.models.TypeFeature;
 
 @Repository
-public interface TypeFeatureReponsitory extends JpaRepository<TypeFeature, String> {
+public interface TypeFeatureReponsitory extends JpaRepository<TypeFeature, Integer> {
 
 }

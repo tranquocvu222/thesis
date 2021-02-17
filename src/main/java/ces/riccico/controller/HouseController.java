@@ -61,7 +61,8 @@ public class HouseController {
 	}
 	
 	@DeleteMapping("/{idHouse}")
-	@PreAuthorize("hasAnyAuthority('user','admin')")
+
+
 	public ResponseEntity<?> deleteHouse(@PathVariable String idHouse){
 		return houseService.deleteHouse(idHouse);
 	}

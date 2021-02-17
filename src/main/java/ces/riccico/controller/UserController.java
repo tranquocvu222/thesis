@@ -4,19 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.management.Notification;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import ces.riccico.models.Accounts;
 import ces.riccico.models.Users;
+import ces.riccico.notification.AuthNotification;
 import ces.riccico.notification.UserNotification;
 import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.AccountService;
@@ -48,21 +45,22 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping(value = "/user/new", method = RequestMethod.POST)
-	public void addUsers(@RequestBody Users model) {
-		try {
-			userService.save(model);
-		} catch (Exception e) {
-			System.out.println("addUsers: " + e);
-		}
-	}
+//	@RequestMapping(value = "/user/new", method = RequestMethod.POST)
+//	public void addUsers(@RequestBody Users model) {
+//		try {
+//			userService.save(model);
+//		} catch (Exception e) {
+//			System.out.println("addUsers: " + e);
+//		}
+//	}
 	
+	
+//	Edit Profile
 	@RequestMapping(value = "/editUser", method = RequestMethod.POST)
 	public ResponseEntity<?> editUser(@RequestBody Users model) {
 		String idaccount = securityAuditorAware.getCurrentAuditor().get();
 		try {
 			Optional<Users> user = userService.findByIdAccount(idaccount);
-			System.out.println("==========" +user);
 			if (user != null) {
 				if (model.getFirstname().equals("")) {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.firstNameNull);
@@ -89,7 +87,7 @@ public class UserController {
 		} catch (Exception e) {
 			System.out.println("editAdmin: " + e);
 		}
-		return ResponseEntity.ok(UserNotification.updateUserSuccess);
+		return ResponseEntity.ok(AuthNotification.success);
 	}
 	
 	
