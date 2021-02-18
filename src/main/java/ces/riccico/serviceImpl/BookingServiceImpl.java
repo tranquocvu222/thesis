@@ -68,18 +68,17 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public List<Booking> findByHouseId(String idHouse) {
+	public List<Booking> findByHouseId(int idHouse) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public ResponseEntity<?> receiveBooking(String idHouse, String dateStart, String dateStop) {
+	public ResponseEntity<?> receiveBooking(int idHouse, String dateStart, String dateStop) {
 		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Accounts account = accountRepository.findById(idCurrent).get();
 		House house = houseRepository.findById(idHouse).get();
-		if (idCurrent == null || idCurrent.isEmpty()) {
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.loginRequired);
+		if (idCurrent.equals(house.getAccount().getIdAccount())) {
+			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BookingNotification.accountNotPermission);
 		} else {
 			if (!houseRepository.findById(idHouse).isPresent()) {
 				ResponseEntity.status(HttpStatus.NOT_FOUND).body(HouseNotification.houseNotExist);
@@ -138,19 +137,38 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public ResponseEntity<?> acceptBooking(int idBooking) {
 		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		if(!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
+		if (!bookingRepository.findById(idBooking).isPresent()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BookingNotification.bookingNotExist);
+		}
+		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UserNotification.accountNotPermission);
 		}
-	    Booking booking = bookingRepository.findById(idBooking).get();
-	    booking.setStatus(statusRepository.findByStatusName(APPROVAL));
-	    bookingRepository.saveAndFlush(booking);
+		Booking booking = bookingRepository.findById(idBooking).get();
+		booking.setStatus(statusRepository.findByStatusName(APPROVAL));
+		bookingRepository.saveAndFlush(booking);
 		return ResponseEntity.ok(AuthNotification.success);
 	}
 
 	@Override
 	public ResponseEntity<?> cancelBooking(int idBooking) {
-		// TODO Auto-generated method stub
-		return null;
+		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Booking booking = bookingRepository.findById(idBooking).get();
+		if (!bookingRepository.findById(idBooking).isPresent()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BookingNotification.bookingNotExist);
+		} else {
+			if (!idCurrent.equals(booking.getHouse().getAccount().getIdAccount())
+					|| !idCurrent.equals(booking.getAccount().getIdAccount())) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UserNotification.accountNotPermission);
+			} else {
+				booking.setStatus(statusRepository.findByStatusName(CANCELED));
+				bookingRepository.saveAndFlush(booking);
+				if (idCurrent.equals(booking.getAccount().getIdAccount())) {
+					return ResponseEntity.ok(BookingNotification.byCustomer);
+				} else {
+					return ResponseEntity.ok(BookingNotification.byOwner);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -169,14 +187,24 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> payment(int idBooking) {
 		try {
 			Booking booking = bookingRepository.findById(idBooking).get();
+			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UserNotification.accountNotPermission);
+			}
 			if (!PENDING_PAYMENT.equals(booking.getStatus().getStatusName())) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Status");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BookingNotification.invalidStatus);
 			}
 			booking.setStatus(statusRepository.findByStatusName(PENDING_APPROVAL));
 			bookingRepository.saveAndFlush(booking);
-			return ResponseEntity.ok("payment success");
+			return ResponseEntity.ok(AuthNotification.success);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
+	}
+
+	@Override
+	public ResponseEntity<?> refund(int idBooking) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

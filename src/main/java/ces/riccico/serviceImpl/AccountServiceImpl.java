@@ -34,19 +34,19 @@ import ces.riccico.validation.Validation;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-	
+
 	private static final String ROLE_USER = "user";
 	private static final boolean IsBanned = true;
 	private static final boolean IsNotBanned = false;
-	
+
 	public static int confirmCode;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	private AccountRepository accountRepository;
 	@Autowired
@@ -55,10 +55,10 @@ public class AccountServiceImpl implements AccountService {
 	private JwtUtil jwtUtil;
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
-	
+
 	@Autowired
 	public JavaMailSender sender;
-	
+
 	@Override
 	public AccountDetail loadUserByUsername(String username) {
 		Accounts account = accountRepository.findByUsername(username);
@@ -79,8 +79,10 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return accountDetail;
 	}
+
 	@Override
 	public ResponseEntity<?> register(Accounts account, Users user) {
+		boolean registerStatus = true;
 		try {
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 			confirmCode = code;
@@ -118,13 +120,13 @@ public class AccountServiceImpl implements AccountService {
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
-				return ResponseEntity.ok(AuthNotification.success);
+				return ResponseEntity.ok(registerStatus);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.usernameExists);
 			}
 		} catch (Exception e) {
 			System.out.println("addAccount: " + e);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!registerStatus);
 		}
 	}
 
@@ -237,23 +239,22 @@ public class AccountServiceImpl implements AccountService {
 		}
 	}
 
-	
-
 	@Override
 	public ResponseEntity<?> activeAccount(int codeInput, String username) {
-	    boolean verify = true;
-        Accounts account = accountRepository.findByUsername(username);
-        try {
-            if (codeInput == confirmCode) {
-                account.setActive(true);
-                accountRepository.saveAndFlush(account);
-                return ResponseEntity.ok(verify);
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
+		boolean verify = true;
+		Accounts account = accountRepository.findByUsername(username);
+		try {
+			if (codeInput == confirmCode) {
+				account.setActive(true);
+				accountRepository.saveAndFlush(account);
+				return ResponseEntity.ok(verify);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
 	}
+
 	@Override
 	public ResponseEntity<?> banAccount(String idAccount) {
 		try {
@@ -269,6 +270,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return ResponseEntity.ok(AuthNotification.success);
 	}
+
 	@Override
 	public List<Accounts> findAllIsBanned() {
 		try {
@@ -284,6 +286,7 @@ public class AccountServiceImpl implements AccountService {
 			return null;
 		}
 	}
+
 	@Override
 	public ResponseEntity<?> forgetPassword(String email) {
 		Accounts accounts = accountRepository.findByEmail(email);
@@ -310,6 +313,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return ResponseEntity.ok(AuthNotification.success);
 	}
+
 	@Override
 	public ResponseEntity<?> resetPassword(String email, String password) {
 		Accounts account = accountRepository.findByEmail(email);
@@ -323,7 +327,7 @@ public class AccountServiceImpl implements AccountService {
 			} else if (!password.matches(Validation.PASSWORD_PATTERN)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.invalidPasswordFormat);
 			} else if (!account.getEmail().isEmpty() && account.isActive()) {
-				account.setPassword(new BCryptPasswordEncoder().encode(password) );
+				account.setPassword(new BCryptPasswordEncoder().encode(password));
 				accountRepository.saveAndFlush(account);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);

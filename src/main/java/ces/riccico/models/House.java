@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,10 +21,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "houses")
 public class House extends Auditable {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idHouse")
-	private String id;
+	private Integer id;
 
-	@Column(name = "name", length = 50)
+	@Column(name = "name", length = 500)
 	private String name;
 
 	@Column(name = "country", length = 50)
@@ -39,9 +42,12 @@ public class House extends Auditable {
 
 	@Column(name = "price")
 	private double price;
-	
+
+	@Column(name = "acreage")
+	private double acreage;
+
 	@Column(name = "introduce", length = 1500)
-	private double introduce;
+	private String introduce;
 
 	@Column(name = "isApproved")
 	private boolean isApproved;
@@ -49,25 +55,23 @@ public class House extends Auditable {
 	@Column(name = "image")
 	private String image;
 
-	@Column(name ="isDeleted")
+	@Column(name = "isDeleted")
 	private boolean isDeleted;
-	
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_account", nullable = false)
 	@JsonIgnore
 	private Accounts account;
-	
-	@OneToMany(mappedBy ="house", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "house", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
-	
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -126,13 +130,22 @@ public class House extends Auditable {
 	public void setImage(String image) {
 		this.image = image;
 	}
+	
 
-	public double getIntroduce() {
+	public String getIntroduce() {
 		return introduce;
 	}
 
-	public void setIntroduce(double introduce) {
+	public void setIntroduce(String introduce) {
 		this.introduce = introduce;
+	}
+
+	public double getAcreage() {
+		return acreage;
+	}
+
+	public void setAcreage(double acreage) {
+		this.acreage = acreage;
 	}
 
 	public boolean isApproved() {

@@ -119,9 +119,7 @@ public class HouseServiceImpl implements HouseService {
 			} else if (house.getAddress().equals(null)) {
 				ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.addressIsNull);
 			} else {
-				UUID uuid = UUID.randomUUID();
 				House houseNew = new House();
-				houseNew.setId(uuid.toString());
 				houseNew.setName(house.getName());
 				houseNew.setAccount(account);
 				houseNew.setAddress(house.getAddress());
@@ -132,6 +130,7 @@ public class HouseServiceImpl implements HouseService {
 				houseNew.setImage(house.getImage());
 				houseNew.setLocation(house.getLocation());
 				houseNew.setIntroduce(house.getIntroduce());
+				houseNew.setAcreage(house.getAcreage());
 				houseRepository.saveAndFlush(houseNew);
 				return ResponseEntity.ok(houseNew);
 			}
@@ -140,7 +139,7 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteHouse(String idHouse) {
+	public ResponseEntity<?> deleteHouse(int idHouse) {
 		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		House house = houseRepository.findById(idHouse).get();
 		if (idCurrent == null || idCurrent.isEmpty()) {
@@ -169,7 +168,7 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> updateHouse(String idHouse, House house) {
+	public ResponseEntity<?> updateHouse(int idHouse, House house) {
 		try {
 			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			if (idCurrent == null || idCurrent.isEmpty()) {
@@ -193,7 +192,7 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> approveHouse(String idHouse) {
+	public ResponseEntity<?> approveHouse(int idHouse) {
 		try {
 			House house = houseRepository.findById(idHouse).get();
 			if (house.isApproved()) {
