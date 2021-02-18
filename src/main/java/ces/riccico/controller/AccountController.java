@@ -145,16 +145,18 @@ public class AccountController {
 //	Confirm code
 	@RequestMapping(value = "/register/activeEmail/{codeInput}/{username}", method = RequestMethod.POST)
 	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String username) {
+		boolean verify = true;
 		Accounts account = accountService.findByUserName(username);
 		try {
 			if (codeInput == confirmCode) {
 				account.setActive(true);
 				accountService.save(account);
+				return ResponseEntity.ok(verify);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			System.out.println(e);
 		}
-		return ResponseEntity.ok(AuthNotification.success);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
 	}
 
 //	Banned account
