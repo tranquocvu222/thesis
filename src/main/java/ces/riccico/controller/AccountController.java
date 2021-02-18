@@ -1,3 +1,5 @@
+
+
 package ces.riccico.controller;
 
 import java.util.List;
@@ -30,6 +32,7 @@ public class AccountController {
 	@Autowired
 	UserService userService;
 
+
 //	Confirm code
 	@RequestMapping(value = "/register/activeEmail/{codeInput}/{username}", method = RequestMethod.POST)
 	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String username) {
@@ -48,6 +51,7 @@ public class AccountController {
 	public ResponseEntity<?> logout() {
 		return accountService.logout();
 	}
+
 
 //	Forget Password
 	@RequestMapping(value = "/forgetPassword/{email}", method = RequestMethod.POST)
@@ -90,5 +94,6 @@ public class AccountController {
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<?> register(@RequestBody Accounts account, Users user) {
 		return accountService.register(account, user);
+
 	}
 }

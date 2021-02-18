@@ -1,5 +1,6 @@
 package ces.riccico.notification;
 
+
 public class HouseNotification {
 	public static final String nameIsNull = "Please enter your homestayName";
 	public static final String countryIsNull = "Please choose your country";
@@ -11,4 +12,6 @@ public class HouseNotification {
 	public static final String byAdmin = "Success by admin";
 	public static final String byUser = "Success by user";
 	public static final String isApproved= "House was approved";
+	public static final String FeatureNull = " FeatureName is required!";
+
 }

@@ -1,6 +1,7 @@
 package ces.riccico.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
+
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<Users> findAll() {
 		return userService.findAll();
@@ -27,6 +29,6 @@ public class UserController {
 	@RequestMapping(value = "/editUser", method = RequestMethod.POST)
 	public ResponseEntity<?> editUser(@RequestBody Users model) {
 		return userService.editUser(model);
-	}
 
+}
 }
