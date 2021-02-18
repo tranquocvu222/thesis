@@ -53,6 +53,10 @@ public class Accounts {
 	@JsonIgnore
 	private Set<House> houses = new HashSet<>();
 	
+	@OneToMany(mappedBy ="account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<Booking> bookings = new HashSet<>();
+	
 	public Accounts() {
 		
 	}
@@ -127,6 +131,14 @@ public class Accounts {
 
 	public void setHouses(Set<House> houses) {
 		this.houses = houses;
+	}
+
+	public Set<Booking> getBookings() {
+		return bookings;
+	}
+
+	public void setBookings(Set<Booking> bookings) {
+		this.bookings = bookings;
 	}
 
 	@Override

@@ -1,6 +1,9 @@
 package ces.riccico.service;
 
+
 import java.util.List;
+
+
 
 import org.springframework.http.ResponseEntity;
 
@@ -24,4 +27,6 @@ public interface HouseService {
 	ResponseEntity<?> updateHouse (String idHouse, House house);
 	
 	ResponseEntity<?> approveHouse(String idHouse);
+	
+	ResponseEntity<?> findByHouseName (String houseName, int page, int size);
 }

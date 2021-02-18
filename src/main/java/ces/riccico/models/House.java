@@ -1,5 +1,8 @@
 package ces.riccico.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,6 +39,9 @@ public class House extends Auditable {
 
 	@Column(name = "price")
 	private double price;
+	
+	@Column(name = "introduce", length = 1500)
+	private double introduce;
 
 	@Column(name = "isApproved")
 	private boolean isApproved;
@@ -45,10 +52,16 @@ public class House extends Auditable {
 	@Column(name ="isDeleted")
 	private boolean isDeleted;
 	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_account", nullable = false)
 	@JsonIgnore
 	private Accounts account;
+	
+	@OneToMany(mappedBy ="house", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
+	private Set<Booking> bookings = new HashSet<>();
+	
 
 	public String getId() {
 		return id;
@@ -114,6 +127,14 @@ public class House extends Auditable {
 		this.image = image;
 	}
 
+	public double getIntroduce() {
+		return introduce;
+	}
+
+	public void setIntroduce(double introduce) {
+		this.introduce = introduce;
+	}
+
 	public boolean isApproved() {
 		return isApproved;
 	}
@@ -121,7 +142,6 @@ public class House extends Auditable {
 	public void setApproved(boolean isApproved) {
 		this.isApproved = isApproved;
 	}
-	
 
 	public boolean isDeleted() {
 		return isDeleted;
@@ -137,6 +157,14 @@ public class House extends Auditable {
 
 	public void setAccount(Accounts account) {
 		this.account = account;
+	}
+
+	public Set<Booking> getBookings() {
+		return bookings;
+	}
+
+	public void setBookings(Set<Booking> bookings) {
+		this.bookings = bookings;
 	}
 
 }

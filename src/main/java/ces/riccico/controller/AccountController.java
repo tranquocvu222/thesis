@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -72,8 +73,6 @@ public class AccountController {
 		try {
 
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
-			confirmCode = code;
-			Validation vali = new Validation();
 			if (account.getUsername().equals("")) {
 				return UserNotification.usernameNull;
 			} else if (account.getEmail().equals("")) {
@@ -120,21 +119,21 @@ public class AccountController {
 	}
  
 //	Confirm code
-	@RequestMapping(value = "/account/activeEmail/{codeInput}/{username}", method = RequestMethod.POST)
-	public String activeAccount(@PathVariable int codeInput,@PathVariable String username) {
-		 
-		Accounts account = accountService.findByUserName(username);
-		try {
-			if (codeInput == confirmCode) {
-				account.setActive(true);
-				accountService.save(account);
-			}
-		} catch (Exception e) {
-			return UserNotification.confirmFail;
-		}
-		
-		return UserNotification.confirmSuccess;
-	}
+	@RequestMapping(value = "/register/activeEmail/{codeInput}/{username}", method = RequestMethod.POST)
+    public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String username) {
+        boolean verify = true;
+        Accounts account = accountService.findByUserName(username);
+        try {
+            if (codeInput == confirmCode) {
+                account.setActive(true);
+                accountService.save(account);
+                return ResponseEntity.ok(verify);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
+    }
 
 
 //	Login
@@ -152,6 +151,7 @@ public class AccountController {
 	
 //ChangePassword
 	@PutMapping("/changePassword")
+	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword){
 		return accountService.changePassword(oldPassword, newPassword);
 	}

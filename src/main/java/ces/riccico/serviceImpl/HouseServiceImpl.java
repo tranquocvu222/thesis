@@ -7,6 +7,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ public class HouseServiceImpl implements HouseService {
 	private static final boolean IS_APPROVED = true;
 	private static final boolean NOT_DELETED = false;
 	private static final boolean IS_DELETED = true;
+	private static final boolean IS_ACTIVE = true;
 	private static final String ROLE_ADMIN = "admin";
 
 	@Autowired
@@ -123,13 +127,13 @@ public class HouseServiceImpl implements HouseService {
 				houseNew.setName(house.getName());
 				houseNew.setAccount(account);
 				houseNew.setAddress(house.getAddress());
-				houseNew.setApproved(NOT_APPROVED);
 				houseNew.setDeleted(NOT_DELETED);
 				houseNew.setPrice(house.getPrice());
 				houseNew.setCity(house.getCity());
 				houseNew.setCountry(house.getCountry());
 				houseNew.setImage(house.getImage());
 				houseNew.setLocation(house.getLocation());
+				houseNew.setIntroduce(house.getIntroduce());
 				houseRepository.saveAndFlush(houseNew);
 				return ResponseEntity.ok(houseNew);
 			}
@@ -204,6 +208,21 @@ public class HouseServiceImpl implements HouseService {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.error);
 		}
+	}
+
+	@Override
+	public ResponseEntity<?> findByHouseName(String houseName, int page, int size) {
+		try {
+			Pageable paging = PageRequest.of(page, size);
+			if (houseName == null || houseName.isEmpty()) {
+				return ResponseEntity.ok(houseRepository.findAll(paging).getContent());
+			} else {
+				return ResponseEntity.ok(houseRepository.findByName(houseName, paging).getContent());
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.error);
+		}
+
 	}
 
 }

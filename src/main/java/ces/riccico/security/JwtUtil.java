@@ -23,7 +23,7 @@ public class JwtUtil {
 	private static Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 	private static final String USER = "user";
 	private static final String SECRET = "thisisasecretkeythisisasecretkey";
-	private static final long JWT_TOKEN_VALIDITY = 86400000;
+	private static final long JWT_TOKEN_VALIDITY = 864000000;
 
 	 //generate token for user
 	public String generateToken(AccountDetail user) {

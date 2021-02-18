@@ -14,6 +14,4 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Auditable {
 	@CreatedDate
 	private Date createdAt;
-	@LastModifiedDate
-	private Date updatedAt;
 }

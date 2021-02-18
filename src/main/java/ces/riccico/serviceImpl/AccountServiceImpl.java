@@ -112,7 +112,7 @@ public class AccountServiceImpl implements AccountService {
 				return ResponseEntity.ok(AuthNotification.logoutSuccess);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.ok(AuthNotification.logoutFail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.logoutFail);
 		}
 	}
 
