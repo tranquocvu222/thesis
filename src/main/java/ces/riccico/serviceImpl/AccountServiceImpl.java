@@ -79,7 +79,7 @@ public class AccountServiceImpl implements AccountService {
 				if (accountRepository.findByUsername(usernameOrEmail) == null
 						|| !encoder.matches(account.getPassword(), accountDetail.getPassword())) {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.invalidAccount);
-				} else if (accountRepository.findByUsername(usernameOrEmail).isBanded()) {
+				} else if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UserNotification.isBanned);
 				} else if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UserNotification.notActivated);

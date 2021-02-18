@@ -76,27 +76,27 @@ public class Users {
 	}
 
 
-	public String getFirstName() {
+	public String getFirstname() {
 		return firstname;
 	}
 
-	public void setFirstName(String firstName) {
+	public void setFirstname(String firstName) {
 		this.firstname = firstName;
 	}
 
-	public String getLastName() {
+	public String getLastname() {
 		return lastname;
 	}
 
-	public void setLastName(String lastName) {
+	public void setLastname(String lastName) {
 		this.lastname = lastName;
 	}
 
-	public Date getBirthDay() {
+	public Date getBirthday() {
 		return birthDay;
 	}
 
-	public void setBirthDay(Date birthDay) {
+	public void setBirthday(Date birthDay) {
 		this.birthDay = birthDay;
 	}
 
