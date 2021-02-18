@@ -8,4 +8,5 @@ import ces.riccico.models.TypeFeature;
 @Repository
 public interface TypeFeatureReponsitory extends JpaRepository<TypeFeature, Integer> {
 
+	TypeFeature findByIdFeature(Integer idFeature);
 }

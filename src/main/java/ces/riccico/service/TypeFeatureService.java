@@ -3,17 +3,20 @@ package ces.riccico.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
+
 import ces.riccico.models.TypeFeature;
 
 public interface TypeFeatureService {
 
-	List<TypeFeature> findAll();
 
-	TypeFeature save(TypeFeature entity);
+	ResponseEntity<?> deleteTypeFeature(TypeFeature typeFeature);
 
-	Optional<TypeFeature> findById(Integer id);
+	ResponseEntity<?> updateTypeFeature(TypeFeature typeFeature);
 
-	void deleteById(Integer id);
+	ResponseEntity<?> createTypeFeature(TypeFeature typeFeature);
+
+	List<TypeFeature> getAll();
 
 
 
