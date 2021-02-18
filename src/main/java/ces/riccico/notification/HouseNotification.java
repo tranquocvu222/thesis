@@ -11,6 +11,4 @@ public class HouseNotification {
 	public static final String byAdmin = "Success by admin";
 	public static final String byUser = "Success by user";
 	public static final String isApproved= "House was approved";
-	public static final String approvedSuccess= "Approved success";
-	public static final String error = "Error";
 }

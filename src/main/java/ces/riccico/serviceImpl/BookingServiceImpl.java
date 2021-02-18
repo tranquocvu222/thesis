@@ -132,7 +132,7 @@ public class BookingServiceImpl implements BookingService {
 				return ResponseEntity.ok(booking);
 			}
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 	}
 
 	@Override
@@ -144,7 +144,7 @@ public class BookingServiceImpl implements BookingService {
 	    Booking booking = bookingRepository.findById(idBooking).get();
 	    booking.setStatus(statusRepository.findByStatusName(APPROVAL));
 	    bookingRepository.saveAndFlush(booking);
-		return ResponseEntity.ok("Success");
+		return ResponseEntity.ok(AuthNotification.success);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class BookingServiceImpl implements BookingService {
 			bookingRepository.saveAndFlush(booking);
 			return ResponseEntity.ok("payment success");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fail");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
 	}
 }

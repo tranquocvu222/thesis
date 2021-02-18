@@ -27,11 +27,9 @@ import ces.riccico.security.SecurityAuditorAware;
 @Service
 public class HouseServiceImpl implements HouseService {
 
-	private static final boolean NOT_APPROVED = false;
 	private static final boolean IS_APPROVED = true;
 	private static final boolean NOT_DELETED = false;
 	private static final boolean IS_DELETED = true;
-	private static final boolean IS_ACTIVE = true;
 	private static final String ROLE_ADMIN = "admin";
 
 	@Autowired
@@ -101,7 +99,7 @@ public class HouseServiceImpl implements HouseService {
 			listHouses = accountRepository.findById(idAccount).get().getHouses();
 			return ResponseEntity.ok(listHouses);
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.error);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
 	}
 
@@ -138,7 +136,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(houseNew);
 			}
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.error);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 	}
 
 	@Override
@@ -167,7 +165,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(HouseNotification.byUser);
 			}
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.error);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 	}
 
 	@Override
@@ -190,7 +188,7 @@ public class HouseServiceImpl implements HouseService {
 			houseRepository.saveAndFlush(houseUpdate);
 			return ResponseEntity.ok(houseUpdate);
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.error);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
 	}
 
@@ -203,10 +201,10 @@ public class HouseServiceImpl implements HouseService {
 			} else {
 				house.setApproved(IS_APPROVED);
 				houseRepository.saveAndFlush(house);
-				return ResponseEntity.ok(HouseNotification.approvedSuccess);
+				return ResponseEntity.ok(AuthNotification.success);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.error);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
 	}
 
@@ -220,7 +218,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(houseRepository.findByName(houseName, paging).getContent());
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HouseNotification.error);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
 		}
 
 	}
