@@ -132,7 +132,7 @@ public class HouseServiceImpl implements HouseService {
 				houseNew.setIntroduce(house.getIntroduce());
 				houseNew.setAcreage(house.getAcreage());
 				houseRepository.saveAndFlush(houseNew);
-				return ResponseEntity.ok(houseNew);
+				return ResponseEntity.status(HttpStatus.CREATED).body(houseNew);
 			}
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);

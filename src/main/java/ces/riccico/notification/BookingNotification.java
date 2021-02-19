@@ -5,6 +5,7 @@ public class BookingNotification {
 	public static final String invalidDate= "Invalid date. Date check-in is before the current date. Please choose another date !";
 	public static final String invalidDateOut= "Invalid date. Date check-in is after  date check-out. Please choose another date !";
 	public static final String invalidStatus = "Invalid status!";
+	public static final String invalidDateComplete= "Invalid date. ! Not yet time to complete";
 	public static final String accountNotPermission ="You cannot book your homestay";
 	public static final String bookingNotExist  = "Booking isn't exist";
 	public static final String byOwner  = "Success by owner";
