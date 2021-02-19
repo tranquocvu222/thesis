@@ -13,6 +13,7 @@ import ces.riccico.models.Rating;
 import ces.riccico.notification.AuthNotification;
 import ces.riccico.notification.BookingNotification;
 import ces.riccico.notification.HouseNotification;
+import ces.riccico.notification.RatingNotification;
 import ces.riccico.notification.UserNotification;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
@@ -76,15 +77,19 @@ public class RatingServiceImpl implements RatingService {
 	}
 
 	@Override
-	public ResponseEntity<?> findByBookingAccountId(String accountId) {
+	public ResponseEntity<?> findByBookingAccountId() {
+		try {
 		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		List<Rating> listRating = new ArrayList<Rating>();
-		if(!accountRepository.findById(accountId).isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(UserNotification.accountNotExist);
+		listRating = ratingRepository.findByBookingAccountIdAccount(idCurrent);
+		if(listRating.size() == 0) {
+			return ResponseEntity.ok(RatingNotification.nullRating);
 		}else {
-			
+			return ResponseEntity.ok(listRating);
 		}
-		return null;
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+		}
 	}
 
 }
