@@ -19,18 +19,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Rating extends Auditable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name= "iRating")
+	@Column(name = "idRating")
 	private Integer id;
-	
+
 	@Column(name = "star")
 	private Integer star;
-	
+
 	@Column(name = "content", length = 600)
-	private String content; 
-	
-	@OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private String content;
+
+//	@OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "idBooking", nullable = false)
-	@JsonIgnore
+//	@JsonIgnore
 	private Booking booking;
 
 	public Integer getId() {
@@ -64,7 +65,5 @@ public class Rating extends Auditable {
 	public void setBooking(Booking booking) {
 		this.booking = booking;
 	}
-	
-	
-	
+
 }

@@ -82,6 +82,7 @@ public class AccountController {
 
 //	Show list account is bannded
 	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<Accounts> findAllIsBanned() {
 		return accountService.findAllIsBanned();
 	}
