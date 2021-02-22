@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public ResponseEntity<?> register(Accounts account, Users user) {
-		boolean registerStatus = true;
+		boolean verify = true;
 		try {
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 			confirmCode = code;
@@ -101,32 +101,34 @@ public class AccountServiceImpl implements AccountService {
 			} else if (accountRepository.findByEmail(account.getEmail()) != null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailExists);
 			} else if (accountRepository.findByUsername(account.getUsername()) == null) {
-				UUID uuid = UUID.randomUUID();
-				account.setRole(roleRepository.findByRolename(ROLE_USER));
-				account.setBanned(false);
-				account.setIdAccount(String.valueOf(uuid));
-				account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
-				account.setActive(false);
-				user.setAccount(account);
-				accountRepository.saveAndFlush(account);
-				userRepository.saveAndFlush(user);
-				SimpleMailMessage message = new SimpleMailMessage();
-				message.setTo(account.getEmail());
-				message.setSubject("Verification Code");
-				message.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
-						+ "\nPlease enter code on website to complete register");
 				try {
+					SimpleMailMessage message = new SimpleMailMessage();
+					message.setTo(account.getEmail());
+					message.setSubject("Verification Code");
+					message.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
+
+							+ "\nPlease enter code on website to complete register");
 					sender.send(message);
+					UUID uuid = UUID.randomUUID();
+					account.setRole(roleRepository.findByRolename(ROLE_USER));
+					account.setBanned(false);
+					account.setIdAccount(String.valueOf(uuid));
+					account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
+					account.setActive(false);
+					user.setAccount(account);
+					accountRepository.saveAndFlush(account);
+					userRepository.saveAndFlush(user);
+					return ResponseEntity.ok(verify);
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
-				return ResponseEntity.ok(registerStatus);
+				return ResponseEntity.ok(!verify);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.usernameExists);
 			}
 		} catch (Exception e) {
 			System.out.println("addAccount: " + e);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!registerStatus);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
 		}
 	}
 
