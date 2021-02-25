@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Users;
-import ces.riccico.notification.AuthNotification;
+import ces.riccico.notification.Notification;
 import ces.riccico.notification.UserNotification;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.UserRepository;
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			System.out.println("editAdmin: " + e);
 		}
-		return ResponseEntity.ok(AuthNotification.success);
+		return ResponseEntity.ok(Notification.success);
 	}
 	
 

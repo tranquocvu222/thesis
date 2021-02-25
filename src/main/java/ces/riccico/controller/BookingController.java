@@ -21,7 +21,7 @@ public class BookingController {
 	private BookingService bookingService;
 	
 	@PostMapping
-	public ResponseEntity<?> receiveBooking (@RequestParam String idHouse, @RequestParam String dateStart, @RequestParam String dateStop){
+	public ResponseEntity<?> receiveBooking (@RequestParam Integer idHouse, @RequestParam String dateStart, @RequestParam String dateStop){
 		return bookingService.receiveBooking(idHouse, dateStart, dateStop);
 	}
 	

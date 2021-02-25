@@ -7,7 +7,7 @@ import ces.riccico.models.Booking;
 public interface BookingService {
 	List<Booking> getAlḷ();
 	List<Booking> getByUsername(String username);
-	ResponseEntity<?> receiveBooking(String idHouse, String dateStart, String dateStop);
+	ResponseEntity<?> receiveBooking(Integer idHouse, String dateStart, String dateStop);
 	ResponseEntity<?> acceptBooking(int idBooking);
 	ResponseEntity<?> cancelBooking(int idBooking);
 	ResponseEntity<?> checkInBooking(int idBooking);

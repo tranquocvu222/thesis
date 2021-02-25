@@ -3,6 +3,7 @@
 package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +20,10 @@ import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Accounts;
 import ces.riccico.models.LoginModel;
+
 import ces.riccico.models.Token;
 import ces.riccico.models.Users;
-import ces.riccico.notification.AuthNotification;
+import ces.riccico.notification.Notification;
 import ces.riccico.notification.UserNotification;
 
 import ces.riccico.repository.AccountRepository;
@@ -36,19 +38,19 @@ import ces.riccico.validation.Validation;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-	
+
 	private static final String ROLE_USER = "user";
 	private static final boolean IsBanned = true;
 	private static final boolean IsNotBanned = false;
-	
+
 	public static int confirmCode;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	private AccountRepository accountRepository;
 	@Autowired
@@ -57,10 +59,10 @@ public class AccountServiceImpl implements AccountService {
 	private JwtUtil jwtUtil;
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
-	
+
 	@Autowired
 	public JavaMailSender sender;
-	
+
 	@Override
 	public AccountDetail loadUserByUsername(String username) {
 		Accounts account = accountRepository.findByUsername(username);
@@ -81,8 +83,12 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return accountDetail;
 	}
+
 	@Override
 	public ResponseEntity<?> register(Accounts account, Users user) {
+		boolean verify = true;
+		 HashMap<String, String> map = new HashMap<>();
+		 map.put("404", "Register Success");
 		try {
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 			confirmCode = code;
@@ -101,32 +107,34 @@ public class AccountServiceImpl implements AccountService {
 			} else if (accountRepository.findByEmail(account.getEmail()) != null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailExists);
 			} else if (accountRepository.findByUsername(account.getUsername()) == null) {
-				UUID uuid = UUID.randomUUID();
-				account.setRole(roleRepository.findByRolename(ROLE_USER));
-				account.setBanned(false);
-				account.setIdAccount(String.valueOf(uuid));
-				account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
-				account.setActive(false);
-				user.setAccount(account);
-				accountRepository.saveAndFlush(account);
-				userRepository.saveAndFlush(user);
-				SimpleMailMessage message = new SimpleMailMessage();
-				message.setTo(account.getEmail());
-				message.setSubject("Verification Code");
-				message.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
-						+ "\nPlease enter code on website to complete register");
 				try {
+					SimpleMailMessage message = new SimpleMailMessage();
+					message.setTo(account.getEmail());
+					message.setSubject("Verification Code");
+					message.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
+							+ "\nPlease enter code on website to complete register");
 					sender.send(message);
+					UUID uuid = UUID.randomUUID();
+					account.setRole(roleRepository.findByRolename(ROLE_USER));
+					account.setBanned(false);
+					account.setIdAccount(String.valueOf(uuid));
+					account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
+					account.setActive(false);
+					user.setAccount(account);
+					accountRepository.saveAndFlush(account);
+					userRepository.saveAndFlush(user);
+//					return ResponseEntity.ok(verify);
+					return ResponseEntity.ok(Notification.success);
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
-				return ResponseEntity.ok(AuthNotification.success);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.usernameExists);
 			}
 		} catch (Exception e) {
 			System.out.println("addAccount: " + e);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
 		}
 	}
 
@@ -164,7 +172,7 @@ public class AccountServiceImpl implements AccountService {
 				}
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.fail);
 		}
 	}
 
@@ -173,7 +181,7 @@ public class AccountServiceImpl implements AccountService {
 		try {
 			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			if (idCurrent == null || idCurrent.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.loginRequired);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.loginRequired);
 			} else {
 				List<Token> listToken = tokenService.getAll();
 				for (Token token : listToken) {
@@ -181,10 +189,10 @@ public class AccountServiceImpl implements AccountService {
 						tokenService.deleteById(token.getId());
 					}
 				}
-				return ResponseEntity.ok(AuthNotification.success);
+				return ResponseEntity.ok(Notification.success);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.fail);
 		}
 	}
 
@@ -195,7 +203,7 @@ public class AccountServiceImpl implements AccountService {
 			Accounts account = accountRepository.findById(idCurrent).get();
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 			if (idCurrent == null || idCurrent.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.loginRequired);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.loginRequired);
 			} else {
 				if (oldPassword == null || oldPassword.isEmpty()) {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.passwordNull);
@@ -210,11 +218,11 @@ public class AccountServiceImpl implements AccountService {
 				} else {
 					account.setPassword(encoder.encode(newPassword));
 					accountRepository.saveAndFlush(account);
-					return ResponseEntity.ok(AuthNotification.success + " " + newPassword);
+					return ResponseEntity.ok(Notification.success + " " + newPassword);
 				}
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.fail);
 		}
 	}
 
@@ -239,23 +247,28 @@ public class AccountServiceImpl implements AccountService {
 		}
 	}
 
-	
-
 	@Override
-	public ResponseEntity<?> activeAccount(int codeInput, String username) {
-	    boolean verify = true;
-        Accounts account = accountRepository.findByUsername(username);
-        try {
-            if (codeInput == confirmCode) {
-                account.setActive(true);
-                accountRepository.saveAndFlush(account);
-                return ResponseEntity.ok(verify);
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
+	public ResponseEntity<?> activeAccount(int codeInput, String email) {
+		boolean verify = true;
+		
+		try {
+			Accounts account = accountRepository.findByEmail(email);
+	
+			if (account == null) {
+			return	ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);  
+			}else if (codeInput != confirmCode) {
+				return	ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+			}else {
+				account.setActive(true);
+				accountRepository.saveAndFlush(account);
+				return ResponseEntity.ok(verify);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(!verify);
 	}
+
 	@Override
 	public ResponseEntity<?> banAccount(String idAccount) {
 		try {
@@ -267,10 +280,11 @@ public class AccountServiceImpl implements AccountService {
 				accountRepository.saveAndFlush(account);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.fail);
 		}
-		return ResponseEntity.ok(AuthNotification.success);
+		return ResponseEntity.ok(Notification.success);
 	}
+
 	@Override
 	public List<Accounts> findAllIsBanned() {
 		try {
@@ -286,6 +300,7 @@ public class AccountServiceImpl implements AccountService {
 			return null;
 		}
 	}
+
 	@Override
 	public ResponseEntity<?> forgetPassword(String email) {
 		Accounts accounts = accountRepository.findByEmail(email);
@@ -308,10 +323,11 @@ public class AccountServiceImpl implements AccountService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.fail);
 		}
-		return ResponseEntity.ok(AuthNotification.success);
+		return ResponseEntity.ok(Notification.success);
 	}
+
 	@Override
 	public ResponseEntity<?> resetPassword(String email, String password) {
 		Accounts account = accountRepository.findByEmail(email);
@@ -325,7 +341,7 @@ public class AccountServiceImpl implements AccountService {
 			} else if (!password.matches(Validation.PASSWORD_PATTERN)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.invalidPasswordFormat);
 			} else if (!account.getEmail().isEmpty() && account.isActive()) {
-				account.setPassword(new BCryptPasswordEncoder().encode(password) );
+				account.setPassword(new BCryptPasswordEncoder().encode(password));
 				accountRepository.saveAndFlush(account);
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
@@ -333,7 +349,7 @@ public class AccountServiceImpl implements AccountService {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);
 		}
-		return ResponseEntity.ok(AuthNotification.success);
+		return ResponseEntity.ok(Notification.success);
 	}
 
 }

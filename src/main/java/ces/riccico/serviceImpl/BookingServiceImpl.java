@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import ces.riccico.models.Accounts;
 import ces.riccico.models.Booking;
 import ces.riccico.models.House;
-import ces.riccico.notification.AuthNotification;
+import ces.riccico.notification.Notification;
 import ces.riccico.notification.HouseNotification;
 import ces.riccico.notification.UserNotification;
 import ces.riccico.notification.BookingNotification;
@@ -74,19 +74,19 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> receiveBooking(String idHouse, String dateStart, String dateStop) {
+	public ResponseEntity<?> receiveBooking(Integer idHouse, String dateStart, String dateStop) {
 		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Accounts account = accountRepository.findById(idCurrent).get();
 		House house = houseRepository.findById(idHouse).get();
 		if (idCurrent == null || idCurrent.isEmpty()) {
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.loginRequired);
+			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.loginRequired);
 		} else {
 			if (!houseRepository.findById(idHouse).isPresent()) {
 				ResponseEntity.status(HttpStatus.NOT_FOUND).body(HouseNotification.houseNotExist);
 			} else {
 				List<Booking> listBookings = new ArrayList<Booking>();
 				try {
-					listBookings = bookingRepository.findByHouseId(idHouse);
+					listBookings = bookingRepository.findByHouseId(idHouse.toString());
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -132,7 +132,7 @@ public class BookingServiceImpl implements BookingService {
 				return ResponseEntity.ok(booking);
 			}
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.fail);
 	}
 
 	@Override
@@ -144,7 +144,7 @@ public class BookingServiceImpl implements BookingService {
 	    Booking booking = bookingRepository.findById(idBooking).get();
 	    booking.setStatus(statusRepository.findByStatusName(APPROVAL));
 	    bookingRepository.saveAndFlush(booking);
-		return ResponseEntity.ok(AuthNotification.success);
+		return ResponseEntity.ok(Notification.success);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class BookingServiceImpl implements BookingService {
 			bookingRepository.saveAndFlush(booking);
 			return ResponseEntity.ok("payment success");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthNotification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Notification.fail);
 		}
 	}
 }

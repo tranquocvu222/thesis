@@ -39,7 +39,7 @@ public class Booking extends Auditable {
 	private Accounts account;
 	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_house", nullable = false)
+	@JoinColumn(name = "idHouse", nullable = false)
 	@JsonIgnore
 	private House house;
 	
