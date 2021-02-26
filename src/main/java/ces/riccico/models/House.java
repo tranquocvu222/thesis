@@ -1,4 +1,6 @@
+
 package ces.riccico.models;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -20,10 +24,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "houses")
 public class House extends Auditable {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idHouse")
 	private Integer id;
+
 
 	@Column(name = "name", length = 500)
 	private String name;
@@ -66,6 +72,25 @@ public class House extends Auditable {
 	@OneToMany(mappedBy = "house", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "roomHouse",
+        joinColumns = @JoinColumn(name = "idHouse"),
+        inverseJoinColumns = @JoinColumn(name = "idTyperoom"))
+	private Set<TypeRoom> typeRoom = new HashSet<>();
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "feature",
+        joinColumns = @JoinColumn(name = "idHouse"),
+        inverseJoinColumns = @JoinColumn(name = "idFeature"))
+	private Set<TypeFeature> typeFeature = new HashSet<>();
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "amenitiesHouse",
+        joinColumns = @JoinColumn(name = "idHouse"),
+        inverseJoinColumns = @JoinColumn(name = "idAmenities"))
+	private Set<Amenities> amenities = new HashSet<>();
+	
 
 	public Integer getId() {
 		return id;
@@ -179,5 +204,33 @@ public class House extends Auditable {
 	public void setBookings(Set<Booking> bookings) {
 		this.bookings = bookings;
 	}
+
+	public Set<TypeRoom> getTypeRoom() {
+		return typeRoom;
+	}
+
+	public void setTypeRoom(Set<TypeRoom> typeRoom) {
+		this.typeRoom = typeRoom;
+	}
+
+	public Set<TypeFeature> getTypeFeature() {
+		return typeFeature;
+	}
+
+	public void setTypeFeature(Set<TypeFeature> typeFeature) {
+		this.typeFeature = typeFeature;
+	}
+
+	public Set<Amenities> getAmenities() {
+		return amenities;
+	}
+
+	public void setAmenities(Set<Amenities> amenities) {
+		this.amenities = amenities;
+	}
+
+
+	
+	
 
 }

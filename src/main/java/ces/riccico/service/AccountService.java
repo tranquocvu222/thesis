@@ -26,7 +26,7 @@ public interface AccountService {
 
 	List<Accounts> findAllIsBanned();
 
-	ResponseEntity<?> activeAccount(int codeInput, String username);
+	ResponseEntity<?> activeAccount(int codeInput, String email);
 
 	ResponseEntity<?> banAccount(String idAccount);
 

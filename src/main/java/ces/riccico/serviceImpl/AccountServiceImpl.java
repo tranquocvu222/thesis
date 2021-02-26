@@ -1,5 +1,4 @@
 
-
 package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Accounts;
 import ces.riccico.models.LoginModel;
+
 import ces.riccico.models.Token;
 import ces.riccico.models.Users;
 import ces.riccico.notification.Notification;
@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
 	private static final String ROLE_USER = "user";
 	private static final boolean IsBanned = true;
 	private static final boolean IsNotBanned = false;
-	
+
 	private static final String NEW_PASSWORD = "new_password";
 
 	public static int confirmCode;
@@ -88,6 +88,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public ResponseEntity<?> register(Accounts account, Users user) {
+		boolean verify = true;
+		HashMap<String, String> map = new HashMap<>();
+		map.put("404", "Register Success");
 		try {
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 			confirmCode = code;
@@ -95,7 +98,8 @@ public class AccountServiceImpl implements AccountService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body(Map.of(Notification.message, UserNotification.usernameNull));
 			} else if (account.getEmail().equals("")) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, UserNotification.emailNull));
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(Map.of(Notification.message, UserNotification.emailNull));
 			} else if (account.getPassword().equals("")) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body(Map.of(Notification.message, UserNotification.passwordNull));
@@ -117,7 +121,6 @@ public class AccountServiceImpl implements AccountService {
 					message.setTo(account.getEmail());
 					message.setSubject("Verification Code");
 					message.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
-
 							+ "\nPlease enter code on website to complete register");
 					sender.send(message);
 					UUID uuid = UUID.randomUUID();
@@ -133,13 +136,16 @@ public class AccountServiceImpl implements AccountService {
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, Notification.fail));
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(Map.of(Notification.message, Notification.fail));
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body(Map.of(Notification.message, UserNotification.usernameExists));
 			}
+
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, Notification.fail));
+
 		}
 	}
 
@@ -240,7 +246,8 @@ public class AccountServiceImpl implements AccountService {
 				} else {
 					account.setPassword(encoder.encode(newPassword));
 					accountRepository.saveAndFlush(account);
-					return ResponseEntity.ok(Map.of(Notification.message, Notification.success, NEW_PASSWORD, newPassword));
+					return ResponseEntity
+							.ok(Map.of(Notification.message, Notification.success, NEW_PASSWORD, newPassword));
 				}
 			}
 		} catch (Exception e) {
@@ -269,10 +276,15 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public ResponseEntity<?> activeAccount(int codeInput, String username) {
-		Accounts account = accountRepository.findByUsername(username);
+	public ResponseEntity<?> activeAccount(int codeInput, String email) {
 		try {
-			if (codeInput == confirmCode) {
+			Accounts account = accountRepository.findByEmail(email);
+	
+			if (account == null) {
+			return	ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.emailNotExists);  
+			}else if (codeInput != confirmCode) {
+				return	ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+			}else {
 				account.setActive(true);
 				accountRepository.saveAndFlush(account);
 				return ResponseEntity.ok(Map.of(Notification.message, Notification.success));

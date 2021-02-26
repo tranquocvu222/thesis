@@ -1,6 +1,7 @@
 package ces.riccico.notification;
 
 public class BookingNotification {
+
 	public static final String isBooked= "The house has been booked";
 	public static final String invalidDate= "invalid date checkin";
 	public static final String invalidDateOut= "invalid date checkout";
