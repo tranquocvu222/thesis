@@ -1,10 +1,10 @@
+
 package ces.riccico.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ces.riccico.models.Amenities;
 import ces.riccico.models.House;
+import ces.riccico.models.TypeAmenities;
+import ces.riccico.models.TypeFeature;
+import ces.riccico.models.TypeRoom;
 import ces.riccico.service.HouseService;
 
 @RestController
@@ -57,7 +61,7 @@ public class HouseController {
 	}
 
 	@PostMapping("/create")
-	@PreAuthorize("hasAnyAuthority('user')")
+	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> postNewHouse(@RequestBody House house) {
 		return houseService.postNewHouse(house);
 	}
@@ -85,5 +89,23 @@ public class HouseController {
 			@RequestParam(defaultValue = "3") int size) {
 		return houseService.findByHouseName(houseName, page, size);
 
+	}
+	
+	@PostMapping("/createTyperoom/{idHouse}")
+	@PreAuthorize("hasAnyAuthority('user','admin')")
+	public ResponseEntity<?> createTypeRoom(@PathVariable Integer idHouse, @RequestBody Set<TypeRoom> typeRoom) {
+		return houseService.createTypeRoom(idHouse, typeRoom);
+	}
+	
+	@PostMapping("/createTypeFeature/{idHouse}")
+	@PreAuthorize("hasAnyAuthority('user','admin')")
+	public ResponseEntity<?> createTypeFeature(@PathVariable Integer idHouse, @RequestBody Set<TypeFeature> typeFeature) {
+		return houseService.createTypeFeature(idHouse, typeFeature);
+	}
+	
+	@PostMapping("/createTypeAmenities/{idHouse}")
+	@PreAuthorize("hasAnyAuthority('user','admin')")
+	public ResponseEntity<?> createTypeAmenities(@PathVariable Integer idHouse, @RequestBody Set<Amenities> setAmenities) {
+		return houseService.createAmenities(idHouse, setAmenities);
 	}
 }

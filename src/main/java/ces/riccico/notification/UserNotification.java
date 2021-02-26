@@ -28,6 +28,7 @@ public class UserNotification {
 	public static final String cityNull = "City is required!";
 	public static final String countryNameNull = "Country is required!";
 	public static final String isNotBanned = "Account not yet banned!";
+	public static final String invalidCode = "invalid code";
 }
 
 

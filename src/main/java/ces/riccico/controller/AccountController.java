@@ -1,5 +1,6 @@
 
 
+
 package ces.riccico.controller;
 
 import java.util.List;
@@ -35,9 +36,9 @@ public class AccountController {
 
 
 //	Confirm code
-	@RequestMapping(value = "/register/activeEmail/{codeInput}/{username}", method = RequestMethod.POST)
-	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String username) {
-		return accountService.activeAccount(codeInput, username);
+	@RequestMapping(value = "/register/activeEmail/{codeInput}/{email}", method = RequestMethod.POST)
+	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String email) {
+		return accountService.activeAccount(codeInput, email);
 	}
 
 //	Login
