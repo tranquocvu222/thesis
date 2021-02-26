@@ -22,11 +22,11 @@ public interface HouseService {
 	
 	ResponseEntity<?> postNewHouse(House house);
 	
-	ResponseEntity<?> deleteHouse(String idHouse);
+	ResponseEntity<?> deleteHouse(int idHouse);
 	
-	ResponseEntity<?> updateHouse (String idHouse, House house);
+	ResponseEntity<?> updateHouse (int idHouse, House house);
 	
-	ResponseEntity<?> approveHouse(String idHouse);
+	ResponseEntity<?> approveHouse(int idHouse);
 	
 	ResponseEntity<?> findByHouseName (String houseName, int page, int size);
 }

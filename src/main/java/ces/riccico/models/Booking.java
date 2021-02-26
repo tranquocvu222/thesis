@@ -48,7 +48,6 @@ public class Booking extends Auditable {
 	@JsonIgnore
 	private Status status;
 
-
 	public Integer getId() {
 		return id;
 	}

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +23,13 @@ public class UserController {
 
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<Users> findAll() {
 		return userService.findAll();
 	}
 
 	@RequestMapping(value = "/editUser", method = RequestMethod.POST)
+	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> editUser(@RequestBody Users model) {
 		return userService.editUser(model);
 

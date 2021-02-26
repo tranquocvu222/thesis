@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ces.riccico.models.Accounts;
 import ces.riccico.models.LoginModel;
@@ -86,11 +87,13 @@ public class AccountController {
 
 //	Show list account is bannded
 	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<Accounts> findAllIsBanned() {
 		return accountService.findAllIsBanned();
 	}
 
 	// Register
+	@ResponseBody
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<?> register(@RequestBody Accounts account, Users user) {
 		return accountService.register(account, user);

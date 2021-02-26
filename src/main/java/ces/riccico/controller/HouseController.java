@@ -64,19 +64,19 @@ public class HouseController {
 
 	@PutMapping("/{idHouse}")
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> updateHouse(@PathVariable String idHouse, @RequestBody House house) {
+	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody House house) {
 		return houseService.updateHouse(idHouse, house);
 	}
 
 	@DeleteMapping("/{idHouse}")
 	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> deleteHouse(@PathVariable String idHouse) {
+	public ResponseEntity<?> deleteHouse(@PathVariable int idHouse) {
 		return houseService.deleteHouse(idHouse);
 	}
 
 	@PutMapping("/approve/{idHouse}")
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public ResponseEntity<?> approveHouse(@PathVariable String idHouse) {
+	public ResponseEntity<?> approveHouse(@PathVariable int idHouse) {
 		return houseService.approveHouse(idHouse);
 	}
 

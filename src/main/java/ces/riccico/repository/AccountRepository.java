@@ -14,6 +14,7 @@ public interface AccountRepository extends JpaRepository<Accounts, String>{
 	
 	Accounts findByEmail(String email);
 	
+	
 //	@Query(value="SELECT * FROM accounts a WHERE a.username = ?1", nativeQuery = true)
 //	List<Accounts> findByListUserName (String username);
 

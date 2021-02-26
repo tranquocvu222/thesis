@@ -27,9 +27,9 @@ public class UserNotification {
 	public static final String addressNull = "Address is required!";
 	public static final String cityNull = "City is required!";
 	public static final String countryNameNull = "Country is required!";
-	public static final String isBanded = "Account has banded!";
-	public static final String isNotBanded = "Account not yet banded!";
-
-
-
+	public static final String isNotBanned = "Account not yet banned!";
 }
+
+
+
+
