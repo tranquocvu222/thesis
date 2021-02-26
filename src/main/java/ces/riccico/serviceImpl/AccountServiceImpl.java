@@ -1,5 +1,4 @@
 
-
 package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Accounts;
 import ces.riccico.models.LoginModel;
+import ces.riccico.models.Message;
 import ces.riccico.models.Token;
 import ces.riccico.models.Users;
 import ces.riccico.notification.Notification;
@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
 	private static final String ROLE_USER = "user";
 	private static final boolean IsBanned = true;
 	private static final boolean IsNotBanned = false;
-	
+
 	private static final String NEW_PASSWORD = "new_password";
 
 	public static int confirmCode;
@@ -88,38 +88,41 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public ResponseEntity<?> register(Accounts account, Users user) {
+		Message message = new Message();
 		try {
+
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 			confirmCode = code;
 			if (account.getUsername().equals("")) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(Map.of(Notification.message, UserNotification.usernameNull));
+				message.setMessage(UserNotification.usernameNull);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (account.getEmail().equals("")) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, UserNotification.emailNull));
+				message.setMessage(UserNotification.emailNull);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (account.getPassword().equals("")) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(Map.of(Notification.message, UserNotification.passwordNull));
+				message.setMessage(UserNotification.passwordNull);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!account.getUsername().matches(Validation.USERNAME_PATTERN)) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(Map.of(Notification.message, UserNotification.invalidUsernameFormat));
+				message.setMessage(UserNotification.invalidUsernameFormat);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(Map.of(Notification.message, UserNotification.invalidEmailFormat));
+				message.setMessage(UserNotification.invalidEmailFormat);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!account.getPassword().matches(Validation.PASSWORD_PATTERN)) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(Map.of(Notification.message, UserNotification.invalidPasswordFormat));
+				message.setMessage(UserNotification.invalidPasswordFormat);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (accountRepository.findByEmail(account.getEmail()) != null) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(Map.of(Notification.message, UserNotification.emailExists));
+				message.setMessage(UserNotification.emailExists);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (accountRepository.findByUsername(account.getUsername()) == null) {
 				try {
-					SimpleMailMessage message = new SimpleMailMessage();
-					message.setTo(account.getEmail());
-					message.setSubject("Verification Code");
-					message.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
+					SimpleMailMessage messageEmail = new SimpleMailMessage();
+					messageEmail.setTo(account.getEmail());
+					messageEmail.setSubject("Verification Code");
+					messageEmail.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
 
 							+ "\nPlease enter code on website to complete register");
-					sender.send(message);
+					sender.send(messageEmail);
 					UUID uuid = UUID.randomUUID();
 					account.setRole(roleRepository.findByRolename(ROLE_USER));
 					account.setBanned(false);
@@ -129,17 +132,20 @@ public class AccountServiceImpl implements AccountService {
 					user.setAccount(account);
 					accountRepository.saveAndFlush(account);
 					userRepository.saveAndFlush(user);
-					return ResponseEntity.ok(Map.of(Notification.message, Notification.success));
+					message.setMessage(Notification.success);
+					return ResponseEntity.ok(message);
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, Notification.fail));
+				message.setMessage(Notification.fail);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body(Map.of(Notification.message, UserNotification.usernameExists));
+				message.setMessage(UserNotification.usernameExists);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, Notification.fail));
+			message.setMessage(Notification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
@@ -240,7 +246,8 @@ public class AccountServiceImpl implements AccountService {
 				} else {
 					account.setPassword(encoder.encode(newPassword));
 					accountRepository.saveAndFlush(account);
-					return ResponseEntity.ok(Map.of(Notification.message, Notification.success, NEW_PASSWORD, newPassword));
+					return ResponseEntity
+							.ok(Map.of(Notification.message, Notification.success, NEW_PASSWORD, newPassword));
 				}
 			}
 		} catch (Exception e) {
@@ -288,7 +295,8 @@ public class AccountServiceImpl implements AccountService {
 		try {
 			Accounts account = accountRepository.findById(idAccount).get();
 			if (account.isBanned() == IsBanned) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, UserNotification.isBanned));
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(Map.of(Notification.message, UserNotification.isBanned));
 			} else {
 				account.setBanned(IsBanned);
 				accountRepository.saveAndFlush(account);
@@ -320,7 +328,8 @@ public class AccountServiceImpl implements AccountService {
 		Accounts accounts = accountRepository.findByEmail(email);
 		try {
 			if (email == null) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, UserNotification.emailNull));
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(Map.of(Notification.message, UserNotification.emailNull));
 			} else if (!email.matches(Validation.EMAIL_PATTERN)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body(Map.of(Notification.message, UserNotification.invalidEmailFormat));
@@ -349,7 +358,8 @@ public class AccountServiceImpl implements AccountService {
 		Accounts account = accountRepository.findByEmail(email);
 		try {
 			if (email == null) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, UserNotification.emailNull));
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(Map.of(Notification.message, UserNotification.emailNull));
 			} else if (!email.matches(Validation.EMAIL_PATTERN)) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body(Map.of(Notification.message, UserNotification.invalidEmailFormat));
@@ -368,7 +378,8 @@ public class AccountServiceImpl implements AccountService {
 						.body(Map.of(Notification.message, UserNotification.emailNotExists));
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message, UserNotification.emailNotExists));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(Map.of(Notification.message, UserNotification.emailNotExists));
 		}
 	}
 }
