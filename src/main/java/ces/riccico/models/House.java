@@ -31,35 +31,35 @@ public class House extends Auditable {
 	private Integer id;
 
 
-	@Column(name = "name", length = 500)
-	private String name;
+	@Column(name = "title", length = 1500)
+	private String title;
 
 	@Column(name = "country", length = 50)
 	private String country;
 
-	@Column(name = "city", length = 50)
-	private String city;
+	@Column(name = "province", length = 50)
+	private String province;
 
-	@Column(name = "address", length = 100)
+	@Column(name = "address", length =1500)
 	private String address;
-
-	@Column(name = "location", length = 200)
-	private String location;
 
 	@Column(name = "price")
 	private double price;
 
-	@Column(name = "acreage")
-	private double acreage;
+	@Column(name = "size")
+	private Double size;
 
-	@Column(name = "introduce", length = 1500)
-	private String introduce;
+	@Column(name = "content", length = 15000)
+	private String content;
 
 	@Column(name = "isApproved")
 	private boolean isApproved;
 
 	@Column(name = "image")
 	private String image;
+	
+	@Column(name = "phoneContact")
+	private String phoneContact;
 
 	@Column(name = "isDeleted")
 	private boolean isDeleted;
@@ -73,11 +73,11 @@ public class House extends Auditable {
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "roomHouse",
-        joinColumns = @JoinColumn(name = "idHouse"),
-        inverseJoinColumns = @JoinColumn(name = "idTyperoom"))
-	private Set<TypeRoom> typeRoom = new HashSet<>();
+//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(name = "roomHouse",
+//        joinColumns = @JoinColumn(name = "idHouse"),
+//        inverseJoinColumns = @JoinColumn(name = "idTyperoom"))
+//	private Set<TypeRoom> typeRoom = new HashSet<>();
 	
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "feature",
@@ -91,6 +91,9 @@ public class House extends Auditable {
         inverseJoinColumns = @JoinColumn(name = "idAmenities"))
 	private Set<Amenities> amenities = new HashSet<>();
 	
+	
+	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private Set<Images> images;
 
 	public Integer getId() {
 		return id;
@@ -100,13 +103,6 @@ public class House extends Auditable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getCountry() {
 		return country;
@@ -116,29 +112,11 @@ public class House extends Auditable {
 		this.country = country;
 	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getAddress() {
-		return address;
-	}
 
 	public void setAddress(String address) {
 		this.address = address;
 	}
 
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
 
 	public double getPrice() {
 		return price;
@@ -156,22 +134,6 @@ public class House extends Auditable {
 		this.image = image;
 	}
 	
-
-	public String getIntroduce() {
-		return introduce;
-	}
-
-	public void setIntroduce(String introduce) {
-		this.introduce = introduce;
-	}
-
-	public double getAcreage() {
-		return acreage;
-	}
-
-	public void setAcreage(double acreage) {
-		this.acreage = acreage;
-	}
 
 	public boolean isApproved() {
 		return isApproved;
@@ -205,13 +167,13 @@ public class House extends Auditable {
 		this.bookings = bookings;
 	}
 
-	public Set<TypeRoom> getTypeRoom() {
-		return typeRoom;
-	}
-
-	public void setTypeRoom(Set<TypeRoom> typeRoom) {
-		this.typeRoom = typeRoom;
-	}
+//	public Set<TypeRoom> getTypeRoom() {
+//		return typeRoom;
+//	}
+//
+//	public void setTypeRoom(Set<TypeRoom> typeRoom) {
+//		this.typeRoom = typeRoom;
+//	}
 
 	public Set<TypeFeature> getTypeFeature() {
 		return typeFeature;
@@ -229,7 +191,59 @@ public class House extends Auditable {
 		this.amenities = amenities;
 	}
 
+	public String getProvince() {
+		return province;
+	}
 
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	
+
+	public Double getSize() {
+		return size;
+	}
+
+	public void setSize(Double size) {
+		this.size = size;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getPhoneContact() {
+		return phoneContact;
+	}
+
+	public void setPhoneContact(String phoneContact) {
+		this.phoneContact = phoneContact;
+	}
+
+	public Set<Images> getImages() {
+		return images;
+	}
+
+	public void setImages(Set<Images> images) {
+		this.images = images;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	
 	
 

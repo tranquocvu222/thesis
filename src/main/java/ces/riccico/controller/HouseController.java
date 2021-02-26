@@ -32,13 +32,19 @@ public class HouseController {
 	@Autowired
 	private HouseService houseService;
 
-	@GetMapping
+	@GetMapping("/getAll")
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAll() {
 		return houseService.getAll();
 	}
-
+	
+	@GetMapping("/detail/{idHouse}")
+	public ResponseEntity<?> getHouseDetail(@PathVariable Integer idHouse){
+		return houseService.getHouseDetail(idHouse);
+	}
+	
 	@GetMapping("/isApproved")
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAllApproved() {
 		return houseService.getAllApproved();
 	}
@@ -49,13 +55,13 @@ public class HouseController {
 		return houseService.getAllNotApproved();
 	}
 
-	@GetMapping("/isdeleted")
+	@GetMapping("/isDeleted")
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getHouseDelete() {
 		return houseService.getAllDeleted();
 	}
 
-	@GetMapping("/{username}")
+	@GetMapping("/username/{username}")
 	public ResponseEntity<?> getHouseByUsername(@PathVariable String username) {
 		return houseService.findHouseByUsername(username);
 	}
@@ -85,17 +91,22 @@ public class HouseController {
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<?> findByHouseName(@RequestParam(required = false) String houseName, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "3") int size) {
-		return houseService.findByHouseName(houseName, page, size);
+	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return houseService.findByTitle(title, page, size);
+	}
+	
+	@GetMapping
+	public ResponseEntity<?> findByPageAndSize( @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+		return houseService.findByPageAndSize(page, size);
 
 	}
 	
-	@PostMapping("/createTyperoom/{idHouse}")
-	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> createTypeRoom(@PathVariable Integer idHouse, @RequestBody Set<TypeRoom> typeRoom) {
-		return houseService.createTypeRoom(idHouse, typeRoom);
-	}
+//	@PostMapping("/createTyperoom/{idHouse}")
+//	@PreAuthorize("hasAnyAuthority('user','admin')")
+//	public ResponseEntity<?> createTypeRoom(@PathVariable Integer idHouse, @RequestBody Set<TypeRoom> typeRoom) {
+//		return houseService.createTypeRoom(idHouse, typeRoom);
+//	}
 	
 	@PostMapping("/createTypeFeature/{idHouse}")
 	@PreAuthorize("hasAnyAuthority('user','admin')")

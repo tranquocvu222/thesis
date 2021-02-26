@@ -2,7 +2,6 @@ package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Booking;
+import ces.riccico.models.Message;
 import ces.riccico.models.Rating;
 import ces.riccico.models.RatingAccountModel;
 import ces.riccico.models.RatingHouseModel;
@@ -18,7 +18,6 @@ import ces.riccico.notification.BookingNotification;
 import ces.riccico.notification.HouseNotification;
 import ces.riccico.notification.RatingNotification;
 import ces.riccico.notification.UserNotification;
-import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.repository.RatingRepository;
@@ -44,42 +43,58 @@ public class RatingServiceImpl implements RatingService {
 
 	@Override
 	public ResponseEntity<?> writeRating(int idBooking, Rating rating) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(idBooking).get();
-		if (!bookingRepository.findById(idBooking).isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(Notification.message,BookingNotification.bookingNotExist));
-		} else {
-			if (!COMPLETED.equals(booking.getStatus().getStatusName())) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,BookingNotification.invalidStatus));
+		Message message = new Message();
+		try {
+			if (!bookingRepository.findById(idBooking).isPresent()) {
+				message.setMessage(BookingNotification.bookingNotExist);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
-				if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
-					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(Notification.message,UserNotification.accountNotPermission));
+				if (!COMPLETED.equals(booking.getStatus().getStatusName())) {
+					message.setMessage(BookingNotification.invalidStatus);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
-					if (ratingRepository.findByBookingId(idBooking) != null) {
-						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,RatingNotification.isRated));
+					if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
+						message.setMessage(UserNotification.accountNotPermission);
+						return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+					} else {
+						if (ratingRepository.findByBookingId(idBooking) != null) {
+							message.setMessage(RatingNotification.isRated);
+							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+						}
+						Rating ratingNew = new Rating();
+						ratingNew.setBooking(booking);
+						ratingNew.setStar(rating.getStar());
+						ratingNew.setContent(rating.getContent());
+						ratingRepository.saveAndFlush(ratingNew);
+						message.setMessage(Notification.fail);
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 					}
-					Rating ratingNew = new Rating();
-					ratingNew.setBooking(booking);
-					ratingNew.setStar(rating.getStar());
-					ratingNew.setContent(rating.getContent());
-					ratingRepository.saveAndFlush(ratingNew);
-					return ResponseEntity.ok(Map.of(Notification.message,Notification.success));
 				}
 			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
+		message.setMessage(Notification.fail);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+	
 	}
 
 	@Override
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
+		Message message = new Message();
 		try {
 			List<Rating> listRating = new ArrayList<Rating>();
 			if (!houseRepository.findById(houseId).isPresent()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(Notification.message,HouseNotification.houseNotExist));
+				message.setMessage(HouseNotification.houseNotExist);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				listRating = ratingRepository.findByBookingHouseId(houseId);
 				List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
 				if (listRating.size() == 0) {
-					return ResponseEntity.ok(Map.of(Notification.message,RatingNotification.nullRating));
+					message.setMessage(RatingNotification.nullRating);
+					return ResponseEntity.ok(message);
 				} else {
 					for (Rating rating : listRating) {
 						RatingHouseModel ratingModel = new RatingHouseModel();
@@ -91,30 +106,34 @@ public class RatingServiceImpl implements RatingService {
 				}
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,Notification.fail));
+			message.setMessage(Notification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
 	@Override
 	public ResponseEntity<?> findByRatingAccountId() {
+		Message message = new Message();
 		try {
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			List<Rating> listRating = new ArrayList<Rating>();
 			listRating = ratingRepository.findByBookingAccountIdAccount(idCurrent);
 			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
 			if (listRating.size() == 0) {
-				return ResponseEntity.ok(Map.of(Notification.message,RatingNotification.nullRating));
+				message.setMessage(RatingNotification.nullRating);
+				return ResponseEntity.ok(message);
 			} else {
 				for (Rating rating : listRating) {
 					RatingAccountModel ratingModel = new RatingAccountModel();
 					ratingModel.setRating(rating);
-					ratingModel.setHouseName(rating.getBooking().getHouse().getName());
+					ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
 					listRatingModel.add(ratingModel);
 				}
 				return ResponseEntity.ok(listRatingModel);
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,Notification.fail));
+			message.setMessage(Notification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 

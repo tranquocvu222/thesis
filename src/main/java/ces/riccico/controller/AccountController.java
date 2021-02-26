@@ -82,7 +82,7 @@ public class AccountController {
 
 //	Banned account
 	@RequestMapping(value = "/banned/{idAccount}", method = RequestMethod.POST)
-	public ResponseEntity<?> isBanded(@PathVariable String idAccount) {
+	public ResponseEntity<?> isBanded(@PathVariable int idAccount) {
 		return accountService.banAccount(idAccount);
 	}
 

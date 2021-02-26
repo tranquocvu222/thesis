@@ -35,22 +35,22 @@ public class TypeRoom {
 	private String roomName;
 	
 	
-	@ManyToMany(mappedBy = "typeRoom", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-	@JsonIgnore
-	private Set<House> house = new HashSet<>();
+//	@ManyToMany(mappedBy = "typeRoom", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+//	@JsonIgnore
+//	private Set<House> house = new HashSet<>();
 	
 	@OneToMany(mappedBy ="typeRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<TypeFeature> typeFeature = new HashSet<>();
 
-
-	public Set<House> getHouse() {
-		return house;
-	}
-
-	public void setHouse(Set<House> house) {
-		this.house = house;
-	}
+//
+//	public Set<House> getHouse() {
+//		return house;
+//	}
+//
+//	public void setHouse(Set<House> house) {
+//		this.house = house;
+//	}
 
 	public Integer getIdTyperoom() {
 		return idTyperoom;

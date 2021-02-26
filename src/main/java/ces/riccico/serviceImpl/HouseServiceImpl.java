@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import ces.riccico.models.Accounts;
 import ces.riccico.models.Amenities;
 import ces.riccico.models.House;
+import ces.riccico.models.HouseModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.TypeFeature;
 import ces.riccico.models.TypeRoom;
@@ -36,7 +37,7 @@ public class HouseServiceImpl implements HouseService {
 	private static final boolean NOT_DELETED = false;
 	private static final boolean IS_DELETED = true;
 	private static final String ROLE_ADMIN = "admin";
-	
+
 	@Autowired
 	private HouseRepository houseRepository;
 
@@ -45,15 +46,16 @@ public class HouseServiceImpl implements HouseService {
 
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
-	
+
 	@Autowired
 	TypeRoomRepository typeRoomRepository;
-	
+
 	@Autowired
 	TypeFeatureReponsitory typeFeatureRepository;
-	
+
 	@Autowired
 	AmenitiesRepository amenitiesRepository;
+
 	@Override
 	public List<House> getAll() {
 		List<House> listHouse = new ArrayList<House>();
@@ -98,20 +100,18 @@ public class HouseServiceImpl implements HouseService {
 		return listDeleted;
 	}
 
-	
 	@Override
 	public ResponseEntity<?> findHouseByUsername(String username) {
 		Message message = new Message();
 		try {
-		
-			String idAccount = accountRepository.findByUsername(username).getIdAccount();
+			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
 			if (!accountRepository.findById(idAccount).isPresent()) {
 				message.setMessage(UserNotification.accountNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 			if (accountRepository.findById(idAccount).get().getHouses().size() == 0) {
 				message.setMessage(HouseNotification.houseNotExist);
-				return	ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 			Set<House> listHouses = new HashSet<House>();
 			listHouses = accountRepository.findById(idAccount).get().getHouses();
@@ -123,25 +123,23 @@ public class HouseServiceImpl implements HouseService {
 
 	}
 
-
-
 	@Override
 	public ResponseEntity<?> postNewHouse(House house) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Accounts account = accountRepository.findById(idCurrent).get();
 		Message message = new Message();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account== null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
-				if (house.getName().equals(null)) {
+				if (house.getTitle().equals(null)) {
 					message.setMessage(HouseNotification.nameIsNull);
 					ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (house.getCountry().equals(null)) {
 					message.setMessage(HouseNotification.countryIsNull);
 					ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (house.getCity().equals(null)) {
+				} else if (house.getProvince().equals(null)) {
 					message.setMessage(HouseNotification.cityIsNull);
 					ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (house.getAddress().equals(null)) {
@@ -149,17 +147,18 @@ public class HouseServiceImpl implements HouseService {
 					ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
 					House houseNew = new House();
-					houseNew.setName(house.getName());
+					houseNew.setTitle(house.getTitle());
 					houseNew.setAccount(account);
 					houseNew.setAddress(house.getAddress());
 					houseNew.setDeleted(NOT_DELETED);
+					houseNew.setApproved(false);
 					houseNew.setPrice(house.getPrice());
-					houseNew.setCity(house.getCity());
+					houseNew.setProvince(house.getProvince());
 					houseNew.setCountry(house.getCountry());
 					houseNew.setImage(house.getImage());
-					houseNew.setLocation(house.getLocation());
-					houseNew.setIntroduce(house.getIntroduce());
-					houseNew.setAcreage(house.getAcreage());
+					houseNew.setContent(house.getContent());
+					houseNew.setSize(house.getSize());
+					houseNew.setPhoneContact(house.getPhoneContact());
 					houseRepository.saveAndFlush(houseNew);
 					return ResponseEntity.status(HttpStatus.CREATED).body(houseNew);
 				}
@@ -171,17 +170,15 @@ public class HouseServiceImpl implements HouseService {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
 
-
-
-	
 	@Override
 	public ResponseEntity<?> deleteHouse(int idHouse) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		House house = houseRepository.findById(idHouse).get();
 		Message message = new Message();
-		if (idCurrent == null || idCurrent.isEmpty()) {
-			message.setMessage(Notification.loginRequired);
-			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		Accounts account = accountRepository.findById(idCurrent).get();
+		if (account == null) {
+			message.setMessage(UserNotification.accountNotExist);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(idHouse).isPresent()) {
 			message.setMessage(HouseNotification.houseNotExist);
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -211,17 +208,15 @@ public class HouseServiceImpl implements HouseService {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
 
-
-
-
 	@Override
 	public ResponseEntity<?> updateHouse(int idHouse, House house) {
 		Message message = new Message();
 		try {
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Accounts account = accountRepository.findById(idCurrent).get();
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!houseRepository.findById(idHouse).isPresent()) {
 				message.setMessage(HouseNotification.houseNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -230,11 +225,12 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 			House houseUpdate = houseRepository.findById(idHouse).get();
-			houseUpdate.setName(house.getName());
-			houseUpdate.setAddress(house.getAddress());
-			houseUpdate.setCity(house.getCity());
+			houseUpdate.setTitle(house.getTitle());
+			houseUpdate.setContent(house.getContent());
 			houseUpdate.setImage(house.getImage());
 			houseUpdate.setPrice(house.getPrice());
+			houseUpdate.setSize(house.getSize());
+			houseUpdate.setPhoneContact(house.getPhoneContact());
 			houseRepository.saveAndFlush(houseUpdate);
 			return ResponseEntity.ok(houseUpdate);
 		} catch (Exception e) {
@@ -242,9 +238,6 @@ public class HouseServiceImpl implements HouseService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
-
-
-
 
 	@Override
 	public ResponseEntity<?> approveHouse(int idHouse) {
@@ -265,17 +258,15 @@ public class HouseServiceImpl implements HouseService {
 		}
 	}
 
-
-
 	@Override
-	public ResponseEntity<?> findByHouseName(String houseName, int page, int size) {
+	public ResponseEntity<?> findByTitle(String title, int page, int size) {
 		Message message = new Message();
 		try {
 			Pageable paging = PageRequest.of(page, size);
-			if (houseName == null || houseName.isEmpty()) {
+			if (title == null || title.isEmpty()) {
 				return ResponseEntity.ok(houseRepository.findAll(paging).getContent());
 			} else {
-				return ResponseEntity.ok(houseRepository.findByName(houseName, paging).getContent());
+				return ResponseEntity.ok(houseRepository.findByTitle(title, paging).getContent());
 			}
 		} catch (Exception e) {
 			message.setMessage(Notification.fail);
@@ -283,52 +274,72 @@ public class HouseServiceImpl implements HouseService {
 		}
 
 	}
-
-	
-
-	
-	
-	
 	@Override
-	public ResponseEntity<?> createTypeRoom( Integer idHouse, Set<TypeRoom> setTypeRoom) {
-		House house = houseRepository.findById(idHouse).get();
+	public ResponseEntity<?> findByPageAndSize(int page, int size) {
+		// TODO Auto-generated method stub
+		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
+		List<House> listHouse = new ArrayList<House>();
 		Message message = new Message();
 		try {
-			if (house == null) {
-				message.setMessage(HouseNotification.houseNotExist);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(message);
-			}else {
-			Set<TypeRoom> typeRoom = new HashSet<>();
-			setTypeRoom.forEach(t ->{
-				TypeRoom typeR  = typeRoomRepository.findById(t.getIdTyperoom()).get();
-				typeRoom.add(typeR);});
-				house.setTypeRoom(typeRoom);
-				houseRepository.saveAndFlush(house);
+			Pageable paging = PageRequest.of(page, size);
+			listHouse = houseRepository.findList(paging).getContent();
+			for(House house : listHouse) {
+				HouseModel houseModel = new HouseModel();
+				houseModel.setId(house.getId());
+				houseModel.setImage(house.getImage());
+				houseModel.setPrice(house.getPrice());
+				houseModel.setProvince(house.getProvince());
+				houseModel.setTitle(house.getTitle());
+				houseModel.setSize(house.getSize());
+				listHouseModel.add(houseModel);
 			}
-			message.setMessage(Notification.success);
-			return ResponseEntity.ok(message);
+			return ResponseEntity.ok(listHouseModel);
 		} catch (Exception e) {
-			System.out.println(e);
 			message.setMessage(Notification.fail);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
-	
+
+//	@Override
+//	public ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom) {
+//		House house = houseRepository.findById(idHouse).get();
+//		Message message = new Message();
+//		try {
+//			if (house == null) {
+//				message.setMessage(HouseNotification.houseNotExist);
+//				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//			} else {
+//				Set<TypeRoom> typeRoom = new HashSet<>();
+//				setTypeRoom.forEach(t -> {
+//					TypeRoom typeR = typeRoomRepository.findById(t.getIdTyperoom()).get();
+//					typeRoom.add(typeR);
+//				});
+//				house.setTypeRoom(typeRoom);
+//				houseRepository.saveAndFlush(house);
+//			}
+//			message.setMessage(Notification.success);
+//			return ResponseEntity.ok(message);
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			message.setMessage(Notification.fail);
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+//		}
+//	}
+
 	@Override
-	public ResponseEntity<?> createTypeFeature( Integer idHouse, Set<TypeFeature> setTypeFeature) {
+	public ResponseEntity<?> createTypeFeature(Integer idHouse, Set<TypeFeature> setTypeFeature) {
 		House house = houseRepository.findById(idHouse).get();
 		Message message = new Message();
 		try {
 			if (house == null) {
 				message.setMessage(HouseNotification.houseNotExist);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(message);
-			}else {
-			Set<TypeFeature> typeFeature = new HashSet<>();
-			setTypeFeature.forEach(t ->{
-				TypeFeature typeF  = typeFeatureRepository.findById(t.getIdFeature()).get();
-				typeFeature.add(typeF);});
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			} else {
+				Set<TypeFeature> typeFeature = new HashSet<>();
+				setTypeFeature.forEach(t -> {
+					TypeFeature typeF = typeFeatureRepository.findById(t.getIdFeature()).get();
+					typeFeature.add(typeF);
+				});
 				house.setTypeFeature(typeFeature);
 				houseRepository.saveAndFlush(house);
 			}
@@ -340,22 +351,21 @@ public class HouseServiceImpl implements HouseService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
-	
-	
+
 	@Override
-	public ResponseEntity<?> createAmenities( Integer idHouse, Set<Amenities> setAmenities) {
+	public ResponseEntity<?> createAmenities(Integer idHouse, Set<Amenities> setAmenities) {
 		House house = houseRepository.findById(idHouse).get();
 		Message message = new Message();
 		try {
 			if (house == null) {
 				message.setMessage(HouseNotification.houseNotExist);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(message);
-			}else {
-			Set<Amenities> amenities = new HashSet<>();
-			setAmenities.forEach(t ->{
-				Amenities amen  = amenitiesRepository.findById(t.getIdAmenities()).get();
-				amenities.add(amen);});
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			} else {
+				Set<Amenities> amenities = new HashSet<>();
+				setAmenities.forEach(t -> {
+					Amenities amen = amenitiesRepository.findById(t.getIdAmenities()).get();
+					amenities.add(amen);
+				});
 				house.setAmenities(amenities);
 				houseRepository.saveAndFlush(house);
 			}
@@ -366,5 +376,17 @@ public class HouseServiceImpl implements HouseService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
+
+	@Override
+	public ResponseEntity<?> getHouseDetail(Integer idHouse) {
+		House house = houseRepository.findById(idHouse).get();
+		Message message = new Message();
+		if (house == null) {
+			message.setMessage(HouseNotification.houseNotExist);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+		return ResponseEntity.ok(house);
+	}
+
 
 }

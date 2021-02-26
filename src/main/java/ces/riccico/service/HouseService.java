@@ -28,10 +28,13 @@ public interface HouseService {
 
 	ResponseEntity<?> createTypeFeature(Integer idHouse, Set<TypeFeature> setTypeFeature);
 
-	ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom);
+//	ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom);
 
-	ResponseEntity<?> findByHouseName(String houseName, int page, int size);
-
+	ResponseEntity<?> findByTitle(String title, int page, int size);
+	ResponseEntity<?> findByPageAndSize(int page, int size);
+	
+	ResponseEntity<?> getHouseDetail(Integer idHouse);
+	
 	ResponseEntity<?> approveHouse(int idHouse);
 
 	ResponseEntity<?> updateHouse(int idHouse, House house);

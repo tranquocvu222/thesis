@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 @Repository
-public interface AccountRepository extends JpaRepository<Accounts, String>{
+public interface AccountRepository extends JpaRepository<Accounts, Integer>{
 
 	Accounts findByUsername(String username);
 	

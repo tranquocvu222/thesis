@@ -9,11 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import ces.riccico.models.Accounts;
 import ces.riccico.models.Message;
 import ces.riccico.models.TypeRoom;
 import ces.riccico.notification.Notification;
+import ces.riccico.notification.UserNotification;
 import ces.riccico.notification.FeatureNotification;
-
+import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TypeRoomRepository;
 import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.TypeRoomService;
@@ -26,6 +28,9 @@ public class TypeRoomServiceImpl implements TypeRoomService {
 
 	@Autowired
 	SecurityAuditorAware securityAuditorAware;
+	
+	@Autowired
+	private AccountRepository accountRepository;
 
 //	Show list Rooms
 	@Override
@@ -44,11 +49,12 @@ public class TypeRoomServiceImpl implements TypeRoomService {
 	@Override
 	public ResponseEntity<?> createRoom(TypeRoom room) {
 		Message message = new Message();
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (room.getRoomName() == null) {
 				message.setMessage(FeatureNotification.RoomNull);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -90,13 +96,14 @@ public class TypeRoomServiceImpl implements TypeRoomService {
 //	Delete TypeFeature
 	@Override
 	public ResponseEntity<?> deleteRoom(Integer idTypeRoom) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		Optional<TypeRoom> room = roomRepository.findById(idTypeRoom);
 		Message message = new Message();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (room.isPresent()) {
 				roomRepository.deleteById(idTypeRoom);
 			}

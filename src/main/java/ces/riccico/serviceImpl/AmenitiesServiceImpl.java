@@ -2,13 +2,14 @@ package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import ces.riccico.models.Accounts;
 import ces.riccico.models.Amenities;
 import ces.riccico.models.Message;
 import ces.riccico.models.TypeAmenities;
@@ -16,6 +17,8 @@ import ces.riccico.models.TypeFeature;
 import ces.riccico.models.TypeRoom;
 import ces.riccico.notification.FeatureNotification;
 import ces.riccico.notification.Notification;
+import ces.riccico.notification.UserNotification;
+import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.AmenitiesRepository;
 import ces.riccico.repository.TypeAmenitiesRepository;
 import ces.riccico.security.SecurityAuditorAware;
@@ -26,6 +29,9 @@ public class AmenitiesServiceImpl implements AmenitiesService {
 
 	@Autowired
 	AmenitiesRepository amenitiesRepository;
+	
+	@Autowired
+	AccountRepository accountRepository;
 
 	@Autowired
 	SecurityAuditorAware securityAuditorAware;
@@ -50,12 +56,14 @@ public class AmenitiesServiceImpl implements AmenitiesService {
 	@Override
 	public ResponseEntity<?> createAmenities(Amenities amenities, Integer idTypeAmenities) {
 		Message message = new Message();
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		TypeAmenities typeAmenities = typeAmenitiesRepository.findById(idTypeAmenities).get();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (typeAmenities == null) {
 				message.setMessage(FeatureNotification.amenitiesNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -79,12 +87,13 @@ public class AmenitiesServiceImpl implements AmenitiesService {
 	@Override
 	public ResponseEntity<?> deleteAmenities(Integer idAmenities) {
 		Message message = new Message();
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		Amenities amenities = amenitiesRepository.findById(idAmenities).get();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (amenities == null) {
 				message.setMessage(FeatureNotification.amenitiesNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);

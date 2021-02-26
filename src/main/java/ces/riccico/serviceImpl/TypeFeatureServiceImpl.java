@@ -2,18 +2,21 @@ package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import ces.riccico.models.Accounts;
 import ces.riccico.models.Message;
 import ces.riccico.models.TypeFeature;
 import ces.riccico.models.TypeRoom;
 import ces.riccico.notification.Notification;
+import ces.riccico.notification.UserNotification;
 import ces.riccico.notification.FeatureNotification;
+import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TypeFeatureReponsitory;
 import ces.riccico.repository.TypeRoomRepository;
 import ces.riccico.security.SecurityAuditorAware;
@@ -27,6 +30,9 @@ public class TypeFeatureServiceImpl implements TypeFeatureService {
 
 	@Autowired
 	TypeRoomRepository typeRoomRepository;
+	
+	@Autowired
+	private AccountRepository accountRepository;
 	
 	@Autowired
 	SecurityAuditorAware securityAuditorAware;
@@ -47,13 +53,14 @@ public class TypeFeatureServiceImpl implements TypeFeatureService {
 //	Add TypeFeature
 	@Override
 	public ResponseEntity<?> createTypeFeature(TypeFeature typeFeature, Integer idTyperoom) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		TypeRoom typeRoom = typeRoomRepository.findById(idTyperoom).get();
 		Message message = new Message();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}else if (typeRoom == null) {
 				message.setMessage(FeatureNotification.roomNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -103,13 +110,14 @@ public class TypeFeatureServiceImpl implements TypeFeatureService {
 //	Delete TypeFeature
 	@Override
 	public ResponseEntity<?> deleteTypeFeature(Integer idTypefeature) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		TypeFeature feature = typeFeatureRepository.findById(idTypefeature).get();
 		Message message = new Message();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}else if (feature == null) {
 				message.setMessage(FeatureNotification.featureNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -6,6 +6,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,8 +21,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Accounts {
 
 	@Id
-	@Column(name = "idAccount", length = 500)
-	private String idAccount;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Integer idAccount;
 
 	@Column(name = "isActive")
 	private boolean isActive;
@@ -54,7 +57,7 @@ public class Accounts {
 
 	}
 
-	public Accounts(String idAccount, String username, String email, String password, boolean isBanned,
+	public Accounts(Integer idAccount, String username, String email, String password, boolean isBanned,
 			boolean isActive, Roles role) {
 		super();
 		this.idAccount = idAccount;
@@ -66,11 +69,14 @@ public class Accounts {
 		this.role = role;
 	}
 
-	public String getIdAccount() {
+	
+	
+
+	public Integer getIdAccount() {
 		return idAccount;
 	}
 
-	public void setIdAccount(String idAccount) {
+	public void setIdAccount(Integer idAccount) {
 		this.idAccount = idAccount;
 	}
 
@@ -138,11 +144,11 @@ public class Accounts {
 		this.bookings = bookings;
 	}
 
-	@Override
-	public String toString() {
-		return "Accounts [idAccount=" + idAccount + ", isActive=" + isActive + ", email=" + email + ", username="
-				+ username + ", password=" + password + ", isBanned=" + isBanned + ", role=" + role + ", houses="
-				+ houses + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "Accounts [idAccount=" + idAccount + ", isActive=" + isActive + ", email=" + email + ", username="
+//				+ username + ", password=" + password + ", isBanned=" + isBanned + ", role=" + role + ", houses="
+//				+ houses + "]";
+//	}
 
 }

@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResponseEntity<?> editUser(Users model) {
-		String idaccount = securityAuditorAware.getCurrentAuditor().get();
+		Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
 		Message message = new Message();
 		try {
 			Users user = userRepository.findByIdAccount(idaccount).get();
