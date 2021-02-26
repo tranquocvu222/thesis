@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,8 +148,7 @@ public class BookingServiceImpl implements BookingService {
 		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		if (!bookingRepository.findById(idBooking).isPresent()) {
 			message.setMessage(BookingNotification.bookingNotExist);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(Map.of(Notification.message, BookingNotification.bookingNotExist));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
 			message.setMessage(UserNotification.accountNotPermission);
