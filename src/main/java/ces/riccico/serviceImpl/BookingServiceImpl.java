@@ -111,6 +111,7 @@ public class BookingServiceImpl implements BookingService {
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 								.body(Map.of(Notification.message, BookingNotification.invalidDateOut));
 					}
+
 					for (Booking booking : listBookings) {
 						if ((dateIn.compareTo(booking.getCreateCheckIn()) >= 0
 								&& dateIn.compareTo(booking.getCreateEnd()) < 0
