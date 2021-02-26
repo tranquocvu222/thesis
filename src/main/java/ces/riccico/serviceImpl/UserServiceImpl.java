@@ -1,6 +1,7 @@
 package ces.riccico.serviceImpl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Users;
-import ces.riccico.notification.AuthNotification;
+import ces.riccico.notification.Notification;
 import ces.riccico.notification.UserNotification;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.UserRepository;
@@ -42,17 +43,17 @@ public class UserServiceImpl implements UserService {
 			System.out.println("==========" +user);
 			if (user != null) {
 				if (model.getFirstname().equals("")) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.firstNameNull);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,UserNotification.firstNameNull));
 				}else if (model.getLastname().equals("")) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.lastNameNull);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,UserNotification.lastNameNull));
 				}else if (model.getBirthday() == null) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.birthDayNull);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,UserNotification.birthDayNull));
 				}else if (model.getAddress().equals("")) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.addressNull);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,UserNotification.addressNull));
 				}else if (model.getCity().equals("")) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.cityNull);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,UserNotification.cityNull));
 				}else if (model.getCountry().equals("")) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UserNotification.countryNameNull);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(Notification.message,UserNotification.countryNameNull));
 				}else {
 				user.setFirstname(model.getFirstname());
 				user.setLastname(model.getLastname());
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			System.out.println("editAdmin: " + e);
 		}
-		return ResponseEntity.ok(AuthNotification.success);
+		return ResponseEntity.ok(Map.of(Notification.message,Notification.success));
 	}
 	
 

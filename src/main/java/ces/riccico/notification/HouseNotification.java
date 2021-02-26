@@ -1,14 +1,14 @@
 package ces.riccico.notification;
 
 public class HouseNotification {
-	public static final String nameIsNull = "Please enter your homestayName";
-	public static final String countryIsNull = "Please choose your country";
-	public static final String cityIsNull  = "Please choose your city";
-	public static final String addressIsNull = "Please enter your address";
-	public static final String priceValidFormat  = "Price must > 0đ";
-	public static final String  houseNotExist = "House isn't exist";
-	public static final String houseDeleted = "House was deleted";
-	public static final String byAdmin = "Success by admin";
-	public static final String byUser = "Success by user";
-	public static final String isApproved= "House was approved";
+	public static final String nameIsNull = "name is null";
+	public static final String countryIsNull = "country is null";
+	public static final String cityIsNull  = "city is null";
+	public static final String addressIsNull = "address is null";
+	public static final String priceValidFormat  = "price must > 0đ";
+	public static final String  houseNotExist = "house isn't exist";
+	public static final String houseDeleted = "house was deleted";
+	public static final String byAdmin = "success by admin";
+	public static final String byUser = "success by user";
+	public static final String isApproved= "house was approved";
 }
