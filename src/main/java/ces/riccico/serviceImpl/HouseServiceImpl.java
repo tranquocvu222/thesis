@@ -129,9 +129,9 @@ public class HouseServiceImpl implements HouseService {
 		Accounts account = accountRepository.findById(idCurrent).get();
 		Message message = new Message();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account== null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				if (house.getTitle().equals(null)) {
 					message.setMessage(HouseNotification.nameIsNull);
@@ -151,6 +151,7 @@ public class HouseServiceImpl implements HouseService {
 					houseNew.setAccount(account);
 					houseNew.setAddress(house.getAddress());
 					houseNew.setDeleted(NOT_DELETED);
+					houseNew.setApproved(false);
 					houseNew.setPrice(house.getPrice());
 					houseNew.setProvince(house.getProvince());
 					houseNew.setCountry(house.getCountry());
