@@ -126,7 +126,7 @@ public class RatingServiceImpl implements RatingService {
 				for (Rating rating : listRating) {
 					RatingAccountModel ratingModel = new RatingAccountModel();
 					ratingModel.setRating(rating);
-					ratingModel.setHouseName(rating.getBooking().getHouse().getName());
+					ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
 					listRatingModel.add(ratingModel);
 				}
 				return ResponseEntity.ok(listRatingModel);

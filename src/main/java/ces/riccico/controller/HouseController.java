@@ -37,7 +37,12 @@ public class HouseController {
 	public List<House> getAll() {
 		return houseService.getAll();
 	}
-
+	
+	@GetMapping("/{idHouse}")
+	public ResponseEntity<?> getHouseDetail(@PathVariable int idHouse){
+		return houseService.getHouseDetail(idHouse);
+	}
+	
 	@GetMapping("/isApproved")
 	public List<House> getAllApproved() {
 		return houseService.getAllApproved();
@@ -49,7 +54,7 @@ public class HouseController {
 		return houseService.getAllNotApproved();
 	}
 
-	@GetMapping("/isdeleted")
+	@GetMapping("/isDeleted")
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getHouseDelete() {
 		return houseService.getAllDeleted();
@@ -85,9 +90,9 @@ public class HouseController {
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<?> findByHouseName(@RequestParam(required = false) String houseName, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "3") int size) {
-		return houseService.findByHouseName(houseName, page, size);
+	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return houseService.findByTitle(title, page, size);
 
 	}
 	

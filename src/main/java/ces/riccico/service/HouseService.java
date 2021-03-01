@@ -30,8 +30,10 @@ public interface HouseService {
 
 	ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom);
 
-	ResponseEntity<?> findByHouseName(String houseName, int page, int size);
-
+	ResponseEntity<?> findByTitle(String title, int page, int size);
+	
+	ResponseEntity<?> getHouseDetail(Integer idHouse);
+	
 	ResponseEntity<?> approveHouse(int idHouse);
 
 	ResponseEntity<?> updateHouse(int idHouse, House house);
