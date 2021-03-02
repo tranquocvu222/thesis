@@ -38,8 +38,8 @@ public class HouseController {
 		return houseService.getAll();
 	}
 	
-	@GetMapping("/{idHouse}")
-	public ResponseEntity<?> getHouseDetail(@PathVariable int idHouse){
+	@GetMapping("/detail/{idHouse}")
+	public ResponseEntity<?> getHouseDetail(@PathVariable Integer idHouse){
 		return houseService.getHouseDetail(idHouse);
 	}
 	
@@ -61,7 +61,7 @@ public class HouseController {
 		return houseService.getAllDeleted();
 	}
 
-	@GetMapping("/{username}")
+	@GetMapping("/username/{username}")
 	public ResponseEntity<?> getHouseByUsername(@PathVariable String username) {
 		return houseService.findHouseByUsername(username);
 	}
