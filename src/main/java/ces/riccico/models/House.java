@@ -47,7 +47,7 @@ public class House extends Auditable {
 	private double price;
 
 	@Column(name = "size")
-	private double size;
+	private Double size;
 
 	@Column(name = "content", length = 15000)
 	private String content;
@@ -199,11 +199,13 @@ public class House extends Auditable {
 		this.province = province;
 	}
 
-	public double getSize() {
+	
+
+	public Double getSize() {
 		return size;
 	}
 
-	public void setSize(double size) {
+	public void setSize(Double size) {
 		this.size = size;
 	}
 
