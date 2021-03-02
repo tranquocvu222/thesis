@@ -32,7 +32,7 @@ public class HouseController {
 	@Autowired
 	private HouseService houseService;
 
-	@GetMapping
+	@GetMapping("/getAll")
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAll() {
 		return houseService.getAll();
@@ -44,6 +44,7 @@ public class HouseController {
 	}
 	
 	@GetMapping("/isApproved")
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAllApproved() {
 		return houseService.getAllApproved();
 	}
@@ -93,6 +94,11 @@ public class HouseController {
 	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
 		return houseService.findByTitle(title, page, size);
+	}
+	
+	@GetMapping
+	public ResponseEntity<?> findByPageAndSize( @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+		return houseService.findByPageAndSize(page, size);
 
 	}
 	

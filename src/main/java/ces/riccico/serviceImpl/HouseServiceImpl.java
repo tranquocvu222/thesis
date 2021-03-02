@@ -273,6 +273,18 @@ public class HouseServiceImpl implements HouseService {
 		}
 
 	}
+	@Override
+	public ResponseEntity<?> findByPageAndSize(int page, int size) {
+		// TODO Auto-generated method stub
+		Message message = new Message();
+		try {
+			Pageable paging = PageRequest.of(page, size);
+			return ResponseEntity.ok(houseRepository.findList(paging).getContent());
+		} catch (Exception e) {
+			message.setMessage(Notification.fail);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+	}
 
 	@Override
 	public ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom) {
@@ -361,4 +373,6 @@ public class HouseServiceImpl implements HouseService {
 		}
 		return ResponseEntity.ok(house);
 	}
+
+
 }
