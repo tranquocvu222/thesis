@@ -73,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> receiveBooking(int idHouse, String dateStart, String dateStop) {
 		Message message = new Message();
 		try {
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Accounts account = accountRepository.findById(idCurrent).get();
 			House house = houseRepository.findById(idHouse).get();
 			if (idCurrent.equals(house.getAccount().getIdAccount())) {
@@ -145,7 +145,7 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public ResponseEntity<?> acceptBooking(int idBooking) {
 		Message message = new Message();
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		if (!bookingRepository.findById(idBooking).isPresent()) {
 			message.setMessage(BookingNotification.bookingNotExist);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -164,7 +164,7 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public ResponseEntity<?> cancelBooking(int idBooking) {
 		Message message = new Message();
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(idBooking).get();
 		if (!bookingRepository.findById(idBooking).isPresent()) {
 			message.setMessage(BookingNotification.bookingNotExist);
@@ -228,7 +228,7 @@ public class BookingServiceImpl implements BookingService {
 		Message message = new Message();
 		try {
 			Booking booking = bookingRepository.findById(idBooking).get();
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			if (!bookingRepository.findById(idBooking).isPresent()) {
 				message.setMessage(BookingNotification.bookingNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);

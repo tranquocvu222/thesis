@@ -8,10 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import ces.riccico.models.Accounts;
 import ces.riccico.models.Message;
 import ces.riccico.models.TypeAmenities;
 import ces.riccico.notification.FeatureNotification;
 import ces.riccico.notification.Notification;
+import ces.riccico.notification.UserNotification;
+import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TypeAmenitiesRepository;
 import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.TypeAmenitiesService;
@@ -24,7 +27,9 @@ public class TypeAmenitiesImpl implements TypeAmenitiesService {
 
 	@Autowired
 	SecurityAuditorAware securityAuditorAware;
-
+	
+	@Autowired
+	private AccountRepository accountRepository;
 //	Show list TypeFeature
 	@Override
 	public List<TypeAmenities> getAll() {
@@ -41,12 +46,13 @@ public class TypeAmenitiesImpl implements TypeAmenitiesService {
 //	Add TypeFeature
 	@Override
 	public ResponseEntity<?> createTypeAmenities(TypeAmenities typeAmenities) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		Message message = new Message();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (typeAmenities.getAmenitiesName() == null) {
 				message.setMessage(FeatureNotification.AmenitiesNull);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -68,12 +74,13 @@ public class TypeAmenitiesImpl implements TypeAmenitiesService {
 	@Override
 	public ResponseEntity<?> updateTypeAmenities(TypeAmenities typeAmenities, Integer idTypeamenities) {
 		Message message = new Message();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		try {
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			TypeAmenities amenities = typeAmenitiesRepository.findById(idTypeamenities).get();
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
 			if (amenities == null) {
 				message.setMessage(FeatureNotification.amenitiesNotExist);
@@ -98,13 +105,14 @@ public class TypeAmenitiesImpl implements TypeAmenitiesService {
 //	Delete TypeFeature
 	@Override
 	public ResponseEntity<?> deleteTypeAmenities(Integer idAmenities) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Accounts account = accountRepository.findById(idCurrent).get();
 		TypeAmenities typeAmenities = typeAmenitiesRepository.findById(idAmenities).get();
 		Message message = new Message();
 		try {
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (typeAmenities == null) {
 				message.setMessage(FeatureNotification.amenitiesNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);

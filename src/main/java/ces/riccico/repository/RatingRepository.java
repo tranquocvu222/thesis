@@ -11,5 +11,5 @@ import ces.riccico.models.Rating;
 public interface RatingRepository extends JpaRepository<Rating, Integer>{
 	Rating findByBookingId(int bookingId);
 	List<Rating> findByBookingHouseId(int houseId);
-	List<Rating> findByBookingAccountIdAccount(String accountId);
+	List<Rating> findByBookingAccountIdAccount(int accountId);
 }

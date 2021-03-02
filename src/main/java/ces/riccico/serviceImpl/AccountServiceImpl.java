@@ -121,10 +121,8 @@ public class AccountServiceImpl implements AccountService {
 					messageEmail.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
 							+ "\nPlease enter code on website to complete register");
 					sender.send(messageEmail);
-					UUID uuid = UUID.randomUUID();
 					account.setRole(roleRepository.findByRolename(ROLE_USER));
 					account.setBanned(false);
-					account.setIdAccount(String.valueOf(uuid));
 					account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
 					account.setActive(false);
 					user.setAccount(account);
@@ -204,9 +202,10 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> logout() {
 		Message message = new Message();
 		try {
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
+			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Accounts account = accountRepository.findById(idCurrent).get();
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else {
 				List<Token> listToken = tokenService.getAll();
@@ -228,11 +227,11 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> changePassword(String oldPassword, String newPassword) {
 		Message message = new Message();
 		try {
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Accounts account = accountRepository.findById(idCurrent).get();
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else {
 				if (oldPassword == null || oldPassword.isEmpty()) {
@@ -264,7 +263,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public Optional<Accounts> findById(String id) {
+	public Optional<Accounts> findById(int id) {
 		return accountRepository.findById(id);
 	}
 
@@ -309,7 +308,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public ResponseEntity<?> banAccount(String idAccount) {
+	public ResponseEntity<?> banAccount(int idAccount) {
 		Message message = new Message();
 		try {
 			Accounts account = accountRepository.findById(idAccount).get();

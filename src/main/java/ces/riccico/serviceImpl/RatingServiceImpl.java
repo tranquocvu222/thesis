@@ -43,7 +43,7 @@ public class RatingServiceImpl implements RatingService {
 
 	@Override
 	public ResponseEntity<?> writeRating(int idBooking, Rating rating) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(idBooking).get();
 		Message message = new Message();
 		try {
@@ -115,7 +115,7 @@ public class RatingServiceImpl implements RatingService {
 	public ResponseEntity<?> findByRatingAccountId() {
 		Message message = new Message();
 		try {
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			List<Rating> listRating = new ArrayList<Rating>();
 			listRating = ratingRepository.findByBookingAccountIdAccount(idCurrent);
 			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();

@@ -103,8 +103,7 @@ public class HouseServiceImpl implements HouseService {
 	public ResponseEntity<?> findHouseByUsername(String username) {
 		Message message = new Message();
 		try {
-
-			String idAccount = accountRepository.findByUsername(username).getIdAccount();
+			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
 			if (!accountRepository.findById(idAccount).isPresent()) {
 				message.setMessage(UserNotification.accountNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -125,7 +124,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> postNewHouse(House house) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Accounts account = accountRepository.findById(idCurrent).get();
 		Message message = new Message();
 		try {
@@ -172,12 +171,13 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> deleteHouse(int idHouse) {
-		String idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		House house = houseRepository.findById(idHouse).get();
 		Message message = new Message();
-		if (idCurrent == null || idCurrent.isEmpty()) {
-			message.setMessage(Notification.loginRequired);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		Accounts account = accountRepository.findById(idCurrent).get();
+		if (account == null) {
+			message.setMessage(UserNotification.accountNotExist);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(idHouse).isPresent()) {
 			message.setMessage(HouseNotification.houseNotExist);
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -211,10 +211,11 @@ public class HouseServiceImpl implements HouseService {
 	public ResponseEntity<?> updateHouse(int idHouse, House house) {
 		Message message = new Message();
 		try {
-			String idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			if (idCurrent == null || idCurrent.isEmpty()) {
-				message.setMessage(Notification.loginRequired);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			Accounts account = accountRepository.findById(idCurrent).get();
+			if (account == null) {
+				message.setMessage(UserNotification.accountNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!houseRepository.findById(idHouse).isPresent()) {
 				message.setMessage(HouseNotification.houseNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);

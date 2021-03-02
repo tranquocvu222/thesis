@@ -28,12 +28,12 @@ public interface AccountService {
 
 	ResponseEntity<?> activeAccount(int codeInput, String email);
 
-	ResponseEntity<?> banAccount(String idAccount);
+	ResponseEntity<?> banAccount(int idAccount);
 
 	ResponseEntity<?> forgetPassword(String email);
 
 	ResponseEntity<?> resetPassword(String email, String password);
 
-	Optional<Accounts> findById(String id);
+	Optional<Accounts> findById(int id);
 
 }

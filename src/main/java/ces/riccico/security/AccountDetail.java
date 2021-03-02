@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 public class AccountDetail implements UserDetails {
-	private String idUser;
+	private Integer idUser;
 	private String username;
 	private String password;
 	private String email;
@@ -17,14 +17,13 @@ public class AccountDetail implements UserDetails {
 	 private Collection authorities;
 
 
-	public String getIdUser() {
+	
+	public Integer getIdUser() {
 		return idUser;
 	}
-
-	public void setIdUser(String idUser) {
+	public void setIdUser(Integer idUser) {
 		this.idUser = idUser;
 	}
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
