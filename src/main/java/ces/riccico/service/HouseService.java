@@ -28,7 +28,7 @@ public interface HouseService {
 
 	ResponseEntity<?> createTypeFeature(Integer idHouse, Set<TypeFeature> setTypeFeature);
 
-	ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom);
+//	ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom);
 
 	ResponseEntity<?> findByTitle(String title, int page, int size);
 	ResponseEntity<?> findByPageAndSize(int page, int size);

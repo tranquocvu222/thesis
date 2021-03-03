@@ -102,11 +102,11 @@ public class HouseController {
 
 	}
 	
-	@PostMapping("/createTyperoom/{idHouse}")
-	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> createTypeRoom(@PathVariable Integer idHouse, @RequestBody Set<TypeRoom> typeRoom) {
-		return houseService.createTypeRoom(idHouse, typeRoom);
-	}
+//	@PostMapping("/createTyperoom/{idHouse}")
+//	@PreAuthorize("hasAnyAuthority('user','admin')")
+//	public ResponseEntity<?> createTypeRoom(@PathVariable Integer idHouse, @RequestBody Set<TypeRoom> typeRoom) {
+//		return houseService.createTypeRoom(idHouse, typeRoom);
+//	}
 	
 	@PostMapping("/createTypeFeature/{idHouse}")
 	@PreAuthorize("hasAnyAuthority('user','admin')")

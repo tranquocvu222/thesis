@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import ces.riccico.models.Accounts;
 import ces.riccico.models.Amenities;
 import ces.riccico.models.House;
+import ces.riccico.models.HouseModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.TypeFeature;
 import ces.riccico.models.TypeRoom;
@@ -276,41 +277,54 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public ResponseEntity<?> findByPageAndSize(int page, int size) {
 		// TODO Auto-generated method stub
+		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
+		List<House> listHouse = new ArrayList<House>();
 		Message message = new Message();
 		try {
 			Pageable paging = PageRequest.of(page, size);
-			return ResponseEntity.ok(houseRepository.findList(paging).getContent());
+			listHouse = houseRepository.findList(paging).getContent();
+			for(House house : listHouse) {
+				HouseModel houseModel = new HouseModel();
+				houseModel.setId(house.getId());
+				houseModel.setImage(house.getImage());
+				houseModel.setPrice(house.getPrice());
+				houseModel.setProvince(house.getProvince());
+				houseModel.setTitle(house.getTitle());
+				houseModel.setSize(house.getSize());
+				listHouseModel.add(houseModel);
+			}
+			return ResponseEntity.ok(listHouseModel);
 		} catch (Exception e) {
 			message.setMessage(Notification.fail);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
-	@Override
-	public ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom) {
-		House house = houseRepository.findById(idHouse).get();
-		Message message = new Message();
-		try {
-			if (house == null) {
-				message.setMessage(HouseNotification.houseNotExist);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			} else {
-				Set<TypeRoom> typeRoom = new HashSet<>();
-				setTypeRoom.forEach(t -> {
-					TypeRoom typeR = typeRoomRepository.findById(t.getIdTyperoom()).get();
-					typeRoom.add(typeR);
-				});
-				house.setTypeRoom(typeRoom);
-				houseRepository.saveAndFlush(house);
-			}
-			message.setMessage(Notification.success);
-			return ResponseEntity.ok(message);
-		} catch (Exception e) {
-			System.out.println(e);
-			message.setMessage(Notification.fail);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-	}
+//	@Override
+//	public ResponseEntity<?> createTypeRoom(Integer idHouse, Set<TypeRoom> setTypeRoom) {
+//		House house = houseRepository.findById(idHouse).get();
+//		Message message = new Message();
+//		try {
+//			if (house == null) {
+//				message.setMessage(HouseNotification.houseNotExist);
+//				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//			} else {
+//				Set<TypeRoom> typeRoom = new HashSet<>();
+//				setTypeRoom.forEach(t -> {
+//					TypeRoom typeR = typeRoomRepository.findById(t.getIdTyperoom()).get();
+//					typeRoom.add(typeR);
+//				});
+//				house.setTypeRoom(typeRoom);
+//				houseRepository.saveAndFlush(house);
+//			}
+//			message.setMessage(Notification.success);
+//			return ResponseEntity.ok(message);
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			message.setMessage(Notification.fail);
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+//		}
+//	}
 
 	@Override
 	public ResponseEntity<?> createTypeFeature(Integer idHouse, Set<TypeFeature> setTypeFeature) {

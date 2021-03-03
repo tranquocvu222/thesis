@@ -73,11 +73,11 @@ public class House extends Auditable {
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "roomHouse",
-        joinColumns = @JoinColumn(name = "idHouse"),
-        inverseJoinColumns = @JoinColumn(name = "idTyperoom"))
-	private Set<TypeRoom> typeRoom = new HashSet<>();
+//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(name = "roomHouse",
+//        joinColumns = @JoinColumn(name = "idHouse"),
+//        inverseJoinColumns = @JoinColumn(name = "idTyperoom"))
+//	private Set<TypeRoom> typeRoom = new HashSet<>();
 	
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "feature",
@@ -167,13 +167,13 @@ public class House extends Auditable {
 		this.bookings = bookings;
 	}
 
-	public Set<TypeRoom> getTypeRoom() {
-		return typeRoom;
-	}
-
-	public void setTypeRoom(Set<TypeRoom> typeRoom) {
-		this.typeRoom = typeRoom;
-	}
+//	public Set<TypeRoom> getTypeRoom() {
+//		return typeRoom;
+//	}
+//
+//	public void setTypeRoom(Set<TypeRoom> typeRoom) {
+//		this.typeRoom = typeRoom;
+//	}
 
 	public Set<TypeFeature> getTypeFeature() {
 		return typeFeature;
