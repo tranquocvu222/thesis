@@ -93,7 +93,7 @@ public class House extends Auditable {
 	
 	
 	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	private Set<Images> images;
+	private Set<Images> images = new HashSet<>();
 
 	public Integer getId() {
 		return id;

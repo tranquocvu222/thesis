@@ -38,13 +38,12 @@ public class HouseController {
 		return houseService.getAll();
 	}
 	
-	@GetMapping("/detail/{idHouse}")
-	public ResponseEntity<?> getHouseDetail(@PathVariable Integer idHouse){
+	@GetMapping("/detail")
+	public ResponseEntity<?> getHouseDetail(@RequestParam Integer idHouse){
 		return houseService.getHouseDetail(idHouse);
 	}
 	
 	@GetMapping("/isApproved")
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAllApproved() {
 		return houseService.getAllApproved();
 	}
