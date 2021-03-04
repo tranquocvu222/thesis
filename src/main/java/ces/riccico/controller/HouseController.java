@@ -33,7 +33,6 @@ public class HouseController {
 	private HouseService houseService;
 
 	@GetMapping("/getAll")
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAll() {
 		return houseService.getAll();
 	}
