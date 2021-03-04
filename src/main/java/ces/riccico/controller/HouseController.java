@@ -38,7 +38,7 @@ public class HouseController {
 		return houseService.getAll();
 	}
 	
-	@GetMapping("/detail/{idHouse}")
+	@GetMapping("/detail")
 	public ResponseEntity<?> getHouseDetail(@RequestParam Integer idHouse){
 		return houseService.getHouseDetail(idHouse);
 	}
