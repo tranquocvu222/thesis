@@ -192,6 +192,86 @@ public class House extends Auditable {
 	public void setProvince(String province) {
 		this.province = province;
 	}
+
+	public Double getSize() {
+		return size;
+	}
+
+	public void setSize(Double size) {
+		this.size = size;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getPhoneContact() {
+		return phoneContact;
+	}
+
+	public void setPhoneContact(String phoneContact) {
+		this.phoneContact = phoneContact;
+	}
+
+	public boolean isWifi() {
+		return wifi;
+	}
+
+	public void setWifi(boolean wifi) {
+		this.wifi = wifi;
+	}
+
+	public boolean isTivi() {
+		return tivi;
+	}
+
+	public void setTivi(boolean tivi) {
+		this.tivi = tivi;
+	}
+
+	public boolean isFridge() {
+		return fridge;
+	}
+
+	public void setFridge(boolean fridge) {
+		this.fridge = fridge;
+	}
+
+	public boolean isSwimPool() {
+		return swimPool;
+	}
+
+	public void setSwimPool(boolean swimPool) {
+		this.swimPool = swimPool;
+	}
+
+	public boolean isAir_conditioner() {
+		return air_conditioner;
+	}
+
+	public void setAir_conditioner(boolean air_conditioner) {
+		this.air_conditioner = air_conditioner;
+	}
+
+	public byte getBedroom() {
+		return bedroom;
+	}
+
+	public void setBedroom(byte bedroom) {
+		this.bedroom = bedroom;
+	}
+
+	public byte getMaxGuest() {
+		return maxGuest;
+	}
+
+	public void setMaxGuest(byte maxGuest) {
+		this.maxGuest = maxGuest;
+	}
 	
 	
 	
