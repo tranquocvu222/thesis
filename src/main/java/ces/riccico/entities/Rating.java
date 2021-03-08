@@ -1,4 +1,4 @@
-package ces.riccico.models;
+package ces.riccico.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +13,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import ces.riccico.models.Auditable;
 
 @Entity
 @Table(name = "ratings")

@@ -3,17 +3,19 @@ package ces.riccico.serviceImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.models.Booking;
+import ces.riccico.notification.Notification;
+import ces.riccico.entities.Booking;
 import ces.riccico.models.Message;
-import ces.riccico.models.Rating;
+import ces.riccico.entities.Rating;
 import ces.riccico.models.RatingAccountModel;
 import ces.riccico.models.RatingHouseModel;
-import ces.riccico.notification.Notification;
+import ces.riccico.models.Status;
 import ces.riccico.notification.BookingNotification;
 import ces.riccico.notification.HouseNotification;
 import ces.riccico.notification.RatingNotification;
@@ -27,7 +29,6 @@ import ces.riccico.service.RatingService;
 @Service
 public class RatingServiceImpl implements RatingService {
 
-	private static final String COMPLETED = "completed";
 
 	@Autowired
 	private BookingRepository bookingRepository;
@@ -41,6 +42,9 @@ public class RatingServiceImpl implements RatingService {
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
 
+	@Autowired
+	private ModelMapper mapper;
+	
 	@Override
 	public ResponseEntity<?> writeRating(int idBooking, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
@@ -51,7 +55,7 @@ public class RatingServiceImpl implements RatingService {
 				message.setMessage(BookingNotification.bookingNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
-				if (!COMPLETED.equals(booking.getStatus().getStatusName())) {
+				if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
 					message.setMessage(BookingNotification.invalidStatus);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
@@ -63,10 +67,8 @@ public class RatingServiceImpl implements RatingService {
 							message.setMessage(RatingNotification.isRated);
 							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 						}
-						Rating ratingNew = new Rating();
+						Rating ratingNew = mapper.map(rating, Rating.class);
 						ratingNew.setBooking(booking);
-						ratingNew.setStar(rating.getStar());
-						ratingNew.setContent(rating.getContent());
 						ratingRepository.saveAndFlush(ratingNew);
 						message.setMessage(Notification.fail);
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);

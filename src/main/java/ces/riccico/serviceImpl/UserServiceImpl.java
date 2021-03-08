@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Message;
-import ces.riccico.models.Users;
+import ces.riccico.entities.Users;
 import ces.riccico.notification.Notification;
 import ces.riccico.notification.UserNotification;
 import ces.riccico.repository.AccountRepository;

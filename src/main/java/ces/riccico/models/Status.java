@@ -1,43 +1,18 @@
 package ces.riccico.models;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@Entity
-@Table(name ="status")
-public class Status {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idStatus")
-	private Integer id;
+public enum Status {
+	PENDING_APPROVAL("pending_approval"),
+	APPROVAL("approval"),
+	CANCELED ("canceled"),
+	PENDING_PAYMENT("pending payment"),
+	REFUNDED("refunded"),
+	COMPLETED("completed");
 	
 	private String statusName;
-
-	@OneToMany(mappedBy ="status", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JsonIgnore
-	private Set<Booking> bookings = new HashSet<>();
-	
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
+	 
+	Status(String statusName) {
+        this.statusName = statusName;
+    }
 	public String getStatusName() {
 		return statusName;
 	}
@@ -46,13 +21,5 @@ public class Status {
 		this.statusName = statusName;
 	}
 
-	public Set<Booking> getBookings() {
-		return bookings;
-	}
-
-	public void setBookings(Set<Booking> bookings) {
-		this.bookings = bookings;
-	}
-	
 	
 }

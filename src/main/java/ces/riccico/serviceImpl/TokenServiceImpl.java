@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.models.Token;
+import ces.riccico.entities.Token;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.service.TokenService;
 

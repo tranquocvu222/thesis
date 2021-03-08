@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,17 +16,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.models.Accounts;
+import ces.riccico.entities.Accounts;
 import ces.riccico.models.LoginModel;
 import ces.riccico.models.Message;
-
-import ces.riccico.models.Token;
-import ces.riccico.models.Users;
+import ces.riccico.models.Role;
+import ces.riccico.entities.Token;
+import ces.riccico.entities.Users;
 import ces.riccico.notification.Notification;
 import ces.riccico.notification.UserNotification;
 
 import ces.riccico.repository.AccountRepository;
-import ces.riccico.repository.RoleRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.AccountDetail;
 import ces.riccico.service.AccountService;
@@ -37,20 +36,14 @@ import ces.riccico.validation.Validation;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-
-	private static final String ROLE_USER = "user";
 	private static final boolean IsBanned = true;
 	private static final boolean IsNotBanned = false;
 
-	private static final String NEW_PASSWORD = "new_password";
 
 	public static int confirmCode;
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private RoleRepository roleRepository;
 
 	@Autowired
 	private AccountRepository accountRepository;
@@ -63,23 +56,22 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	public JavaMailSender sender;
+	
+	@Autowired
+	private ModelMapper mapper;
 
 	@Override
 	public AccountDetail loadUserByUsername(String username) {
 		Accounts account = accountRepository.findByUsername(username);
-		AccountDetail accountDetail = new AccountDetail();
+		AccountDetail accountDetail =  mapper.map(account, AccountDetail.class);
 		if (account == null) {
 			return null;
 		} else {
 			Set<String> authorities = new HashSet<>();
 			if (account.getRole() != null) {
-				authorities.add(account.getRole().getRoleName());
+				authorities.add(account.getRole());
 			}
 			accountDetail.setIdUser(account.getIdAccount());
-			accountDetail.setUsername(account.getUsername());
-			accountDetail.setPassword(account.getPassword());
-			accountDetail.setRole(account.getRole().getRoleName());
-			accountDetail.setEmail(account.getEmail());
 			accountDetail.setAuthorities(authorities);
 		}
 		return accountDetail;
@@ -89,7 +81,6 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> register(Accounts account, Users user) {
 		Message message = new Message();
 		try {
-
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 			confirmCode = code;
 			if (account.getUsername().equals("")) {
@@ -121,12 +112,13 @@ public class AccountServiceImpl implements AccountService {
 					messageEmail.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
 							+ "\nPlease enter code on website to complete register");
 					sender.send(messageEmail);
-					account.setRole(roleRepository.findByRolename(ROLE_USER));
-					account.setBanned(false);
-					account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
-					account.setActive(false);
-					user.setAccount(account);
-					accountRepository.saveAndFlush(account);
+					Accounts accountNew = mapper.map(account, Accounts.class);
+					accountNew.setRole(Role.USER.getRole());
+					accountNew.setBanned(false);
+					accountNew.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
+					accountNew.setActive(false);
+					user.setAccount(accountNew);
+					accountRepository.saveAndFlush(accountNew);
 					userRepository.saveAndFlush(user);
 					message.setMessage(Notification.success);
 					return ResponseEntity.ok(message);

@@ -18,11 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ces.riccico.models.Amenities;
-import ces.riccico.models.House;
-import ces.riccico.models.TypeAmenities;
-import ces.riccico.models.TypeFeature;
-import ces.riccico.models.TypeRoom;
+import ces.riccico.entities.House;
 import ces.riccico.service.HouseService;
 
 @RestController
@@ -101,21 +97,4 @@ public class HouseController {
 
 	}
 	
-//	@PostMapping("/createTyperoom/{idHouse}")
-//	@PreAuthorize("hasAnyAuthority('user','admin')")
-//	public ResponseEntity<?> createTypeRoom(@PathVariable Integer idHouse, @RequestBody Set<TypeRoom> typeRoom) {
-//		return houseService.createTypeRoom(idHouse, typeRoom);
-//	}
-	
-	@PostMapping("/createTypeFeature/{idHouse}")
-	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> createTypeFeature(@PathVariable Integer idHouse, @RequestBody Set<TypeFeature> typeFeature) {
-		return houseService.createTypeFeature(idHouse, typeFeature);
-	}
-	
-	@PostMapping("/createTypeAmenities/{idHouse}")
-	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> createTypeAmenities(@PathVariable Integer idHouse, @RequestBody Set<Amenities> setAmenities) {
-		return houseService.createAmenities(idHouse, setAmenities);
-	}
 }

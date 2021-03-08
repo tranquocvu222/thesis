@@ -1,4 +1,4 @@
-package ces.riccico.config;
+package ces.riccico.security;
 
 import java.util.Properties;
 
