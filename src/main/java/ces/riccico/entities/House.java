@@ -70,6 +70,9 @@ public class House extends Auditable {
 	@Column(name = "swim_pool")
 	private boolean swimPool;
 
+	@Column(name = " air_conditioner")
+	private boolean air_conditioner;
+
 	@Column(name = "bedroom")
 	private byte bedroom;
 
@@ -100,34 +103,6 @@ public class House extends Auditable {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
 	}
 
 	public boolean isApproved() {
@@ -162,38 +137,6 @@ public class House extends Auditable {
 		this.bookings = bookings;
 	}
 
-	public String getProvince() {
-		return province;
-	}
-
-	public void setProvince(String province) {
-		this.province = province;
-	}
-
-	public Double getSize() {
-		return size;
-	}
-
-	public void setSize(Double size) {
-		this.size = size;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public String getPhoneContact() {
-		return phoneContact;
-	}
-
-	public void setPhoneContact(String phoneContact) {
-		this.phoneContact = phoneContact;
-	}
-
 	public Set<Images> getImages() {
 		return images;
 	}
@@ -202,8 +145,12 @@ public class House extends Auditable {
 		this.images = images;
 	}
 
-	public String getAddress() {
-		return address;
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public String getTitle() {
@@ -214,54 +161,39 @@ public class House extends Auditable {
 		this.title = title;
 	}
 
-	public boolean isWifi() {
-		return wifi;
+	public String getCountry() {
+		return country;
 	}
 
-	public void setWifi(boolean wifi) {
-		this.wifi = wifi;
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
-	public boolean isTivi() {
-		return tivi;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setTivi(boolean tivi) {
-		this.tivi = tivi;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
-	public boolean isFridge() {
-		return fridge;
+	public String getContent() {
+		return content;
 	}
 
-	public void setFridge(boolean fridge) {
-		this.fridge = fridge;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
-	public boolean isSwimPool() {
-		return swimPool;
+	public String getProvince() {
+		return province;
 	}
 
-	public void setSwimPool(boolean swimPool) {
-		this.swimPool = swimPool;
+	public void setProvince(String province) {
+		this.province = province;
 	}
-
 	
-
-	public byte getBedroom() {
-		return bedroom;
-	}
-
-	public void setBedroom(byte bedroom) {
-		this.bedroom = bedroom;
-	}
-
-	public byte getMaxGuest() {
-		return maxGuest;
-	}
-
-	public void setMaxGuest(byte maxGuest) {
-		this.maxGuest = maxGuest;
-	}
+	
+	
 
 }
