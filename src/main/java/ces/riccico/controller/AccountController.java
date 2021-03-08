@@ -1,6 +1,3 @@
-
-
-
 package ces.riccico.controller;
 
 import java.util.List;
@@ -18,22 +15,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import ces.riccico.models.Accounts;
+
+import ces.riccico.entities.Accounts;
+import ces.riccico.models.Role;
+import ces.riccico.entities.Users;
 import ces.riccico.models.LoginModel;
 import ces.riccico.service.AccountService;
-import ces.riccico.models.Users;
 import ces.riccico.service.UserService;
 
 @CrossOrigin
 @RestController
 public class AccountController {
-
 	@Autowired
 	AccountService accountService;
 
 	@Autowired
 	UserService userService;
-
 
 //	Confirm code
 	@RequestMapping(value = "/register/activeEmail/{codeInput}/{email}", method = RequestMethod.POST)
@@ -53,7 +50,6 @@ public class AccountController {
 	public ResponseEntity<?> logout() {
 		return accountService.logout();
 	}
-
 
 //	Forget Password
 	@RequestMapping(value = "/forgetPassword/{email}", method = RequestMethod.POST)
@@ -76,12 +72,14 @@ public class AccountController {
 
 //	Show list account is not bannded
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<Accounts> findAll() {
 		return accountService.findAll();
 	}
 
 //	Banned account
 	@RequestMapping(value = "/banned/{idAccount}", method = RequestMethod.POST)
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> isBanded(@PathVariable int idAccount) {
 		return accountService.banAccount(idAccount);
 	}

@@ -13,30 +13,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.models.Accounts;
-import ces.riccico.models.Booking;
-import ces.riccico.models.House;
-import ces.riccico.models.Message;
 import ces.riccico.notification.Notification;
 import ces.riccico.notification.HouseNotification;
 import ces.riccico.notification.UserNotification;
+import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Booking;
+import ces.riccico.entities.House;
+import ces.riccico.models.Message;
+import ces.riccico.models.Status;
 import ces.riccico.notification.BookingNotification;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
-import ces.riccico.repository.StatusRepository;
 import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.BookingService;
 
 @Service
 public class BookingServiceImpl implements BookingService {
-	private static final String PENDING_APPROVAL = "pending approval";
-	private static final String APPROVAL = "approval";
-	private static final String CANCELED = "canceled";
-	private static final String PENDING_PAYMENT = "pending payment";
-	private static final String REFUNDED = "refunded";
-	private static final String COMPLETED = "completed";
-
 	@Autowired
 	private HouseRepository houseRepository;
 
@@ -45,9 +38,6 @@ public class BookingServiceImpl implements BookingService {
 
 	@Autowired
 	private BookingRepository bookingRepository;
-
-	@Autowired
-	private StatusRepository statusRepository;
 
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
@@ -116,7 +106,7 @@ public class BookingServiceImpl implements BookingService {
 								&& dateIn.compareTo(booking.getCreateEnd()) < 0
 								|| dateOut.compareTo(booking.getCreateCheckIn()) > 0
 										&& dateOut.compareTo(booking.getCreateEnd()) <= 0)
-								&& !CANCELED.equals(booking.getStatus())) {
+								&& !Status.CANCELED.getStatusName().equals(booking.getStatus())) {
 							message.setMessage(BookingNotification.isBooked);
 							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 						}
@@ -127,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
 					Booking booking = new Booking();
 					booking.setAccount(account);
 					booking.setHouse(house);
-					booking.setStatus(statusRepository.findByStatusName(PENDING_PAYMENT));
+					booking.setStatus(Status.PENDING_PAYMENT.getStatusName());
 					booking.setCreateCheckIn(dateIn);
 					booking.setCreateEnd(dateOut);
 					booking.setBill(bill);
@@ -155,7 +145,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 		Booking booking = bookingRepository.findById(idBooking).get();
-		booking.setStatus(statusRepository.findByStatusName(APPROVAL));
+		booking.setStatus(Status.APPROVAL.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 		message.setMessage(Notification.success);
 		return ResponseEntity.ok(message);
@@ -175,7 +165,7 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(UserNotification.accountNotPermission);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			} else {
-				booking.setStatus(statusRepository.findByStatusName(CANCELED));
+				booking.setStatus(Status.CANCELED.getStatusName());
 				bookingRepository.saveAndFlush(booking);
 				if (idCurrent.equals(booking.getAccount().getIdAccount())) {
 					message.setMessage(BookingNotification.byCustomer);
@@ -205,7 +195,7 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(BookingNotification.bookingNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
-			if (!APPROVAL.equals(booking.getStatus().getStatusName())) {
+			if (!Status.APPROVAL.getStatusName().equals(booking.getStatus())) {
 				message.setMessage(BookingNotification.invalidStatus);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
@@ -213,7 +203,7 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(BookingNotification.invalidDateComplete);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			booking.setStatus(statusRepository.findByStatusName(COMPLETED));
+			booking.setStatus(Status.COMPLETED.getStatusName());
 			bookingRepository.saveAndFlush(booking);
 			message.setMessage(Notification.success);
 			return ResponseEntity.ok(message);
@@ -237,11 +227,11 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(UserNotification.accountNotPermission);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
-			if (!PENDING_PAYMENT.equals(booking.getStatus().getStatusName())) {
+			if (!Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())) {
 				message.setMessage(BookingNotification.invalidStatus);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			booking.setStatus(statusRepository.findByStatusName(PENDING_APPROVAL));
+			booking.setStatus(Status.PENDING_APPROVAL.getStatusName());
 			bookingRepository.saveAndFlush(booking);
 			message.setMessage(Notification.success);
 			return ResponseEntity.ok(message);

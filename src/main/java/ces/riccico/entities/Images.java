@@ -1,4 +1,4 @@
-package ces.riccico.models;
+package ces.riccico.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +17,7 @@ public class Images {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idImage")
+	@JsonIgnore
 	private Integer id;
 	
 	@Column(name = "image", length = 300)
@@ -50,7 +51,5 @@ public class Images {
 	public void setHouse(House house) {
 		this.house = house;
 	}
-	
-	
 	
 }

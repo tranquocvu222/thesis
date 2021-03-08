@@ -1,4 +1,4 @@
-package ces.riccico.models;
+package ces.riccico.entities;
 
 import java.util.Date;
 

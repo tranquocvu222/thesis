@@ -2,8 +2,10 @@
 
 package ces.riccico.repository;
 
-import ces.riccico.models.Accounts;
 import org.springframework.stereotype.Repository;
+
+import ces.riccico.entities.Accounts;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

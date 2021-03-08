@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import ces.riccico.models.Users;
+import ces.riccico.entities.Users;
 
 @Service
 public interface UserService {

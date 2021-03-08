@@ -1,6 +1,5 @@
 
-package ces.riccico.models;
-
+package ces.riccico.entities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,15 +20,16 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import ces.riccico.models.Auditable;
+
 @Entity
 @Table(name = "houses")
 public class House extends Auditable {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idHouse")
 	private Integer id;
-
 
 	@Column(name = "title", length = 1500)
 	private String title;
@@ -40,7 +40,7 @@ public class House extends Auditable {
 	@Column(name = "province", length = 50)
 	private String province;
 
-	@Column(name = "address", length =1500)
+	@Column(name = "address", length = 1500)
 	private String address;
 
 	@Column(name = "price")
@@ -52,14 +52,32 @@ public class House extends Auditable {
 	@Column(name = "content", length = 15000)
 	private String content;
 
-	@Column(name = "isApproved")
-	private boolean isApproved;
-
 	@Column(name = "image")
 	private String image;
-	
+
 	@Column(name = "phoneContact")
 	private String phoneContact;
+
+	@Column(name = "wifi")
+	private boolean wifi;
+
+	@Column(name = "tivi")
+	private boolean tivi;
+
+	@Column(name = "fridge")
+	private boolean fridge;
+
+	@Column(name = "swim_pool")
+	private boolean swimPool;
+
+	@Column(name = "bedroom")
+	private byte bedroom;
+
+	@Column(name = "max_guest")
+	private byte maxGuest;
+
+	@Column(name = "isApproved")
+	private boolean isApproved;
 
 	@Column(name = "isDeleted")
 	private boolean isDeleted;
@@ -72,26 +90,7 @@ public class House extends Auditable {
 	@OneToMany(mappedBy = "house", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
-	
-//	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinTable(name = "roomHouse",
-//        joinColumns = @JoinColumn(name = "idHouse"),
-//        inverseJoinColumns = @JoinColumn(name = "idTyperoom"))
-//	private Set<TypeRoom> typeRoom = new HashSet<>();
-	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "feature",
-        joinColumns = @JoinColumn(name = "idHouse"),
-        inverseJoinColumns = @JoinColumn(name = "idFeature"))
-	private Set<TypeFeature> typeFeature = new HashSet<>();
-	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "amenitiesHouse",
-        joinColumns = @JoinColumn(name = "idHouse"),
-        inverseJoinColumns = @JoinColumn(name = "idAmenities"))
-	private Set<Amenities> amenities = new HashSet<>();
-	
-	
+
 	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private Set<Images> images = new HashSet<>();
 
@@ -103,7 +102,6 @@ public class House extends Auditable {
 		this.id = id;
 	}
 
-
 	public String getCountry() {
 		return country;
 	}
@@ -112,11 +110,9 @@ public class House extends Auditable {
 		this.country = country;
 	}
 
-
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
 
 	public double getPrice() {
 		return price;
@@ -133,7 +129,6 @@ public class House extends Auditable {
 	public void setImage(String image) {
 		this.image = image;
 	}
-	
 
 	public boolean isApproved() {
 		return isApproved;
@@ -167,30 +162,6 @@ public class House extends Auditable {
 		this.bookings = bookings;
 	}
 
-//	public Set<TypeRoom> getTypeRoom() {
-//		return typeRoom;
-//	}
-//
-//	public void setTypeRoom(Set<TypeRoom> typeRoom) {
-//		this.typeRoom = typeRoom;
-//	}
-
-	public Set<TypeFeature> getTypeFeature() {
-		return typeFeature;
-	}
-
-	public void setTypeFeature(Set<TypeFeature> typeFeature) {
-		this.typeFeature = typeFeature;
-	}
-
-	public Set<Amenities> getAmenities() {
-		return amenities;
-	}
-
-	public void setAmenities(Set<Amenities> amenities) {
-		this.amenities = amenities;
-	}
-
 	public String getProvince() {
 		return province;
 	}
@@ -198,8 +169,6 @@ public class House extends Auditable {
 	public void setProvince(String province) {
 		this.province = province;
 	}
-
-	
 
 	public Double getSize() {
 		return size;
@@ -244,7 +213,55 @@ public class House extends Auditable {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	public boolean isWifi() {
+		return wifi;
+	}
+
+	public void setWifi(boolean wifi) {
+		this.wifi = wifi;
+	}
+
+	public boolean isTivi() {
+		return tivi;
+	}
+
+	public void setTivi(boolean tivi) {
+		this.tivi = tivi;
+	}
+
+	public boolean isFridge() {
+		return fridge;
+	}
+
+	public void setFridge(boolean fridge) {
+		this.fridge = fridge;
+	}
+
+	public boolean isSwimPool() {
+		return swimPool;
+	}
+
+	public void setSwimPool(boolean swimPool) {
+		this.swimPool = swimPool;
+	}
+
 	
-	
+
+	public byte getBedroom() {
+		return bedroom;
+	}
+
+	public void setBedroom(byte bedroom) {
+		this.bedroom = bedroom;
+	}
+
+	public byte getMaxGuest() {
+		return maxGuest;
+	}
+
+	public void setMaxGuest(byte maxGuest) {
+		this.maxGuest = maxGuest;
+	}
 
 }

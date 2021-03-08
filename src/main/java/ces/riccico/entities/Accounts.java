@@ -1,4 +1,4 @@
-package ces.riccico.models;
+package ces.riccico.entities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,14 +37,12 @@ public class Accounts {
 	@Column(name = "password", length = 100)
 	private String password;
 
+	@Column(name = "role")
+	private String role;
+	
 	@Column(name = "isBanned")
 	private boolean isBanned;
-
-	@ManyToOne
-	@JoinColumn(name = "idRole")
-	@JsonIgnore
-	private Roles role;
-
+	
 	@OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<House> houses = new HashSet<>();
@@ -52,25 +50,6 @@ public class Accounts {
 	@OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
-
-	public Accounts() {
-
-	}
-
-	public Accounts(Integer idAccount, String username, String email, String password, boolean isBanned,
-			boolean isActive, Roles role) {
-		super();
-		this.idAccount = idAccount;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.isBanned = isBanned;
-		this.isActive = isActive;
-		this.role = role;
-	}
-
-	
-	
 
 	public Integer getIdAccount() {
 		return idAccount;
@@ -104,13 +83,7 @@ public class Accounts {
 		this.isBanned = isBanned;
 	}
 
-	public Roles getRole() {
-		return role;
-	}
 
-	public void setRole(Roles role) {
-		this.role = role;
-	}
 
 	public boolean isActive() {
 		return isActive;
@@ -144,11 +117,12 @@ public class Accounts {
 		this.bookings = bookings;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "Accounts [idAccount=" + idAccount + ", isActive=" + isActive + ", email=" + email + ", username="
-//				+ username + ", password=" + password + ", isBanned=" + isBanned + ", role=" + role + ", houses="
-//				+ houses + "]";
-//	}
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 }

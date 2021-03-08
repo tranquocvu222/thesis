@@ -1,5 +1,7 @@
 package ces.riccico.models;
 
+import ces.riccico.entities.Rating;
+
 public class RatingAccountModel {
 	private Rating rating;
 	

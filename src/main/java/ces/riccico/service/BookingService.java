@@ -3,7 +3,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import ces.riccico.models.Booking;
+import ces.riccico.entities.Booking;
 public interface BookingService {
 	List<Booking> getAlḷ();
 	List<Booking> getByUsername(String username);

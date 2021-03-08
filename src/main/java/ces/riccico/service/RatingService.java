@@ -2,7 +2,7 @@ package ces.riccico.service;
 
 import org.springframework.http.ResponseEntity;
 
-import ces.riccico.models.Rating;
+import ces.riccico.entities.Rating;
 
 public interface RatingService {
 	ResponseEntity<?> writeRating(int idBooking, Rating rating);

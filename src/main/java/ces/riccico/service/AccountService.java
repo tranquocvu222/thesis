@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
-import ces.riccico.models.Accounts;
+
+import ces.riccico.entities.Accounts;
 import ces.riccico.models.LoginModel;
-import ces.riccico.models.Users;
+import ces.riccico.entities.Users;
 import ces.riccico.security.AccountDetail;
 
 public interface AccountService {
