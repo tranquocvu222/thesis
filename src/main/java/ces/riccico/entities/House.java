@@ -96,7 +96,9 @@ public class House extends Auditable {
 
 	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private Set<Images> images = new HashSet<>();
-
+	
+//	private Set<String> image_url = new HashSet<>();
+	
 	public Integer getId() {
 		return id;
 	}
@@ -272,8 +274,14 @@ public class House extends Auditable {
 	public void setMaxGuest(byte maxGuest) {
 		this.maxGuest = maxGuest;
 	}
-	
-	
-	
+
+//	public Set<String> getImage_url() {
+//		return image_url;
+//	}
+//
+//	public void setImage_url(Set<String> image_url) {
+//		this.image_url = image_url;
+//	}
+//	
 
 }

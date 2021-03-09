@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import ces.riccico.notification.Notification;
 import ces.riccico.entities.Accounts;
 import ces.riccico.entities.House;
+import ces.riccico.entities.Images;
 import ces.riccico.models.HouseModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.PaginationModel;
@@ -281,12 +282,17 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> getHouseDetail(Integer idHouse) {
-		House house = houseRepository.findById(idHouse).get();
 		Message message = new Message();
+		House house = houseRepository.findById(idHouse).get();
 		if (house == null) {
 			message.setMessage(HouseNotification.houseNotExist);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
+//		Set<String> image_url = new HashSet<>();
+//		for(Images image : house.getImages()) {
+//			String url  = image.getImage();
+//			image_url.add(url);
+//		}
 		return ResponseEntity.ok(house);
 	}
 
