@@ -148,8 +148,7 @@ public class HouseServiceImpl implements HouseService {
 				}
 			}
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
 		}
 		message.setMessage(Notification.fail);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
