@@ -128,16 +128,16 @@ public class HouseServiceImpl implements HouseService {
 			} else {
 				if (house.getTitle().equals(null)) {
 					message.setMessage(HouseNotification.nameIsNull);
-					ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (house.getCountry().equals(null)) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+				} else if (house.getCountry() == null || house.getCountry().isEmpty()) {
 					message.setMessage(HouseNotification.countryIsNull);
-					ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (house.getProvince().equals(null)) {
 					message.setMessage(HouseNotification.cityIsNull);
-					ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (house.getAddress().equals(null)) {
 					message.setMessage(HouseNotification.addressIsNull);
-					ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
 					House houseNew = mapper.map(house, House.class);
 					houseNew.setAccount(account);
@@ -148,11 +148,9 @@ public class HouseServiceImpl implements HouseService {
 				}
 			}
 		} catch (Exception e) {
-			message.setMessage(UserNotification.accountNotExist);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			message.setMessage(e.toString());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		message.setMessage(Notification.fail);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
 
 	@Override

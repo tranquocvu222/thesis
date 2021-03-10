@@ -29,7 +29,7 @@ public class SwaggerConfig {
 	                "Some custom description of API.",
 	                "API TOS",
 	                "Terms of service",
-	                new Contact("John Doe", "http://localhost:8080", "thailanxuaroi@gmail.com"),
+	                new Contact("John Doe", "https://thesis-homestay.herokuapp.com/", "thailanxuaroi@gmail.com"),
 	                "License of API",
 	                "API license URL",
 	                Collections.emptyList());
