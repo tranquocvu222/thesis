@@ -14,5 +14,6 @@ public interface UserService {
 	
 	List<Users> findAll();
 	ResponseEntity<?> editUser( Users model) ;
+	ResponseEntity<?> findById();
 
 }

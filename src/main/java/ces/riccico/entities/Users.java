@@ -24,6 +24,7 @@ public class Users {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idUser")
+	@JsonIgnore
 	private Integer id;
 
 	@Column(name = "firstname", length = 100)
