@@ -80,4 +80,20 @@ public class UserServiceImpl implements UserService {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
 
+	@Override
+	public ResponseEntity<?> findById() {
+		Message message = new Message();
+		try {
+			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
+			Users user = userRepository.findByIdAccount(idaccount).get();
+			message.setMessage(Notification.success);
+			System.out.println("======"+user);
+			return ResponseEntity.ok(user);
+		} catch (Exception e) {
+			message.setMessage(e.getLocalizedMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+	}
+
 }

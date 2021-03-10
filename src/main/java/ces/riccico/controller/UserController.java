@@ -22,7 +22,6 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
-
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<Users> findAll() {
@@ -34,5 +33,11 @@ public class UserController {
 	public ResponseEntity<?> editUser(@RequestBody Users model) {
 		return userService.editUser(model);
 
-}
+	}
+	
+	@RequestMapping(value = "/userDetail", method = RequestMethod.GET)
+	@PreAuthorize("hasAnyAuthority('admin','user')")
+	public ResponseEntity<?> userDetail() {
+		return userService.findById();
+	}
 }
