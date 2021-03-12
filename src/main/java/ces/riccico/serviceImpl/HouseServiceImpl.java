@@ -108,7 +108,7 @@ public class HouseServiceImpl implements HouseService {
 			listHouses = accountRepository.findById(idAccount).get().getHouses();
 			return ResponseEntity.ok(listHouses);
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
@@ -148,7 +148,7 @@ public class HouseServiceImpl implements HouseService {
 				}
 			}
 		} catch (Exception e) {
-			message.setMessage(e.toString());
+			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -212,7 +212,7 @@ public class HouseServiceImpl implements HouseService {
 			houseRepository.saveAndFlush(houseUpdate);
 			return ResponseEntity.ok(houseUpdate);
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(e.toString());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -232,7 +232,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(message);
 			}
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -248,7 +248,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(houseRepository.findByTitle(title, paging).getContent());
 			}
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
@@ -273,7 +273,7 @@ public class HouseServiceImpl implements HouseService {
 			paginationModel.setPageMax(pageMax);
 			return ResponseEntity.ok(paginationModel);
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}

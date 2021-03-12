@@ -39,6 +39,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		//get Jwt from request. 
 		//get the authentication header.
+		try {
 		final String authorizationHeader = request.getHeader(AUTHORIZATION);
 		AccountDetail account = null;
 		Token token = null;
@@ -58,6 +59,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			//Authenticate the account
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+		}
+		}catch(Exception e){
+			 logger.error("failed on set user authentication", e);
 		}
 
 		filterChain.doFilter(request, response);
