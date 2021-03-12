@@ -208,11 +208,27 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 			House houseUpdate = houseRepository.findById(idHouse).get();
-			houseUpdate = mapper.map(house, House.class);
+			houseUpdate.setAddress(house.getAddress());
+			houseUpdate.setTitle(house.getTitle());
+			houseUpdate.setCountry(house.getCountry());
+			houseUpdate.setProvince(house.getProvince());
+			houseUpdate.setContent(house.getContent());
+			houseUpdate.setPhoneContact(house.getPhoneContact());
+			houseUpdate.setImage(house.getImage());
+			houseUpdate.setSize(house.getSize());
+			houseUpdate.setPrice(house.getPrice());
+			houseUpdate.setTivi(house.isWifi());
+			houseUpdate.setWifi(house.isWifi());
+			houseUpdate.setFridge(house.isFridge());
+			houseUpdate.setSwimPool(house.isSwimPool());
+			houseUpdate.setAir_conditioner(house.isAir_conditioner());
+			houseUpdate.setBedroom(house.getBedroom());
+			houseUpdate.setMaxGuest(house.getMaxGuest());
 			houseRepository.saveAndFlush(houseUpdate);
 			return ResponseEntity.ok(houseUpdate);
 		} catch (Exception e) {
 			message.setMessage(e.toString());
+			System.out.print(e);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
