@@ -159,8 +159,8 @@ public class HouseServiceImpl implements HouseService {
 		House house = houseRepository.findById(idHouse).get();
 		Message message = new Message();
 		Accounts account = accountRepository.findById(idCurrent).get();
-		if (account == null) {
-			message.setMessage(UserNotification.accountNotExist);
+		if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
+			message.setMessage(UserNotification.accountNotPermission);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(idHouse).isPresent()) {
 			message.setMessage(HouseNotification.houseNotExist);
@@ -197,8 +197,8 @@ public class HouseServiceImpl implements HouseService {
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Accounts account = accountRepository.findById(idCurrent).get();
-			if (account == null) {
-				message.setMessage(UserNotification.accountNotExist);
+			if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
+				message.setMessage(UserNotification.accountNotPermission);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!houseRepository.findById(idHouse).isPresent()) {
 				message.setMessage(HouseNotification.houseNotExist);
