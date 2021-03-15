@@ -106,7 +106,13 @@ public class HouseServiceImpl implements HouseService {
 			}
 			Set<House> listHouses = new HashSet<House>();
 			listHouses = accountRepository.findById(idAccount).get().getHouses();
-			return ResponseEntity.ok(listHouses);
+			Set<House> listHousesApprove = new HashSet<House>();
+			for(House house : listHouses) {
+				if(house.isDeleted() == false && house.isApproved() == true) {
+					listHousesApprove.add(house);
+				}
+			}
+			return ResponseEntity.ok(listHousesApprove);
 		} catch (Exception e) {
 			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
