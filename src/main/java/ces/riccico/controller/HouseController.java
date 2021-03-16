@@ -1,5 +1,4 @@
 
-
 package ces.riccico.controller;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public class HouseController {
 	}
 
 	@GetMapping("/isDeleted")
-	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getHouseDelete() {
 		return houseService.getAllDeleted();
@@ -66,7 +65,7 @@ public class HouseController {
 	}
 
 	@PostMapping("/create")
-	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> postNewHouse(@RequestBody House house) {
 		return houseService.postNewHouse(house);
@@ -102,17 +101,20 @@ public class HouseController {
 		return houseService.findByPageAndSize(page, size);
 	}
 
-//	@GetMapping("/search")
-//	public ResponseEntity<?> searchByFilter(@RequestParam(required = false) String country,
-//			@RequestParam(required = false) String province, @RequestParam(required = false) Double size,
-//			@RequestParam(required = false) Double priceBelow, @RequestParam(required = false) Double priceAbove,
-//			@RequestParam(required = false) byte bedroom, @RequestParam(required = false) byte maxGuest,
-//			@RequestParam(required = false) boolean tivi, @RequestParam(required = false) boolean wifi,
-//			@RequestParam(required = false) boolean air_conditioner, @RequestParam(required = false) boolean fridge,
-//			@RequestParam(required = false) boolean swimPool, @RequestParam(defaultValue = "0") int page,
-//			@RequestParam(defaultValue = "20") int sizePage) {
-//		return houseService.searchByFilter(country, province, size, priceBelow, priceAbove, bedroom, maxGuest, tivi,
-//				wifi, air_conditioner, fridge, swimPool, page, sizePage);
-//	}
+	
+	@GetMapping("/filter")
+	public ResponseEntity<?> findFilter(@RequestParam(defaultValue = "") String country,
+			@RequestParam(defaultValue = "") String province, @RequestParam(defaultValue = "0") Double sizeBelow,
+			@RequestParam(defaultValue = "50000") Double sizeAbove, @RequestParam(defaultValue = "0") Double priceBelow,
+			@RequestParam(defaultValue = "50000000") Double priceAbove,
+			@RequestParam(defaultValue = "true") boolean tivi, @RequestParam(defaultValue = "true") boolean wifi,
+			@RequestParam(defaultValue = "true") boolean air_conditioner,
+			@RequestParam(defaultValue = "false") boolean fridge,
+			@RequestParam(defaultValue = "false") boolean swim_pool, @RequestParam(defaultValue = "0") byte guestAbove,
+			@RequestParam(defaultValue = "100") byte guestBelow, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return houseService.findFilter(country, province, sizeBelow, sizeAbove, priceBelow, priceAbove, tivi, wifi,
+				air_conditioner, fridge, swim_pool,  guestAbove, guestBelow, page, size);
+	}
 
 }
