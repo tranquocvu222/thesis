@@ -1,4 +1,5 @@
 
+
 package ces.riccico.controller;
 
 import java.util.List;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.entities.House;
 import ces.riccico.service.HouseService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping("/houses")
@@ -51,6 +54,7 @@ public class HouseController {
 	}
 
 	@GetMapping("/isDeleted")
+	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getHouseDelete() {
 		return houseService.getAllDeleted();
@@ -62,6 +66,7 @@ public class HouseController {
 	}
 
 	@PostMapping("/create")
+	@ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> postNewHouse(@RequestBody House house) {
 		return houseService.postNewHouse(house);

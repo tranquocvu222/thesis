@@ -1,7 +1,6 @@
 package ces.riccico.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
-
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<Users> findAll() {
@@ -34,5 +32,12 @@ public class UserController {
 	public ResponseEntity<?> editUser(@RequestBody Users model) {
 		return userService.editUser(model);
 
-}
+	}
+	
+	@RequestMapping(value = "/userDetail", method = RequestMethod.GET)
+	@PreAuthorize("hasAnyAuthority('user','admin')")
+	public ResponseEntity<?> userDetail() {
+		return userService.findById();
+
+	}
 }

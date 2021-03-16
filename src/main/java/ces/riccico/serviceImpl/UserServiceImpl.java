@@ -1,8 +1,7 @@
+
 package ces.riccico.serviceImpl;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,6 +68,7 @@ public class UserServiceImpl implements UserService {
 					user.setCity(model.getCity());
 					user.setCountry(model.getCountry());
 					userRepository.saveAndFlush(user);
+					System.out.println("==========" + user);
 				}
 				message.setMessage(Notification.success);
 				return ResponseEntity.ok(message);
@@ -78,6 +78,23 @@ public class UserServiceImpl implements UserService {
 		}
 		message.setMessage(Notification.fail);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+	}
+	
+	
+	@Override
+	public ResponseEntity<?> findById() {
+		Message message = new Message();
+		try {
+			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
+			Users user =userRepository.findById(idaccount).get();
+			message.setMessage(Notification.success);
+			return ResponseEntity.ok(user);
+		} catch (Exception e) {
+			message.setMessage(e.getLocalizedMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+		
+	
 	}
 
 }
