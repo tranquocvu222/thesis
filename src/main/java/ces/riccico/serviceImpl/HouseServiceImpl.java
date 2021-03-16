@@ -107,8 +107,8 @@ public class HouseServiceImpl implements HouseService {
 			Set<House> listHouses = new HashSet<House>();
 			listHouses = accountRepository.findById(idAccount).get().getHouses();
 			Set<House> listHousesApprove = new HashSet<House>();
-			for(House house : listHouses) {
-				if(house.isDeleted() == false && house.isApproved() == true) {
+			for (House house : listHouses) {
+				if (house.isDeleted() == false && house.isApproved() == true) {
 					listHousesApprove.add(house);
 				}
 			}
@@ -148,7 +148,7 @@ public class HouseServiceImpl implements HouseService {
 					House houseNew = mapper.map(house, House.class);
 					houseNew.setAccount(account);
 					houseNew.setDeleted(NOT_DELETED);
-					houseNew.setApproved(false);
+					houseNew.setApproved(IS_APPROVED);
 					houseRepository.saveAndFlush(houseNew);
 					return ResponseEntity.status(HttpStatus.CREATED).body(houseNew);
 				}
@@ -315,5 +315,32 @@ public class HouseServiceImpl implements HouseService {
 //		}
 		return ResponseEntity.ok(house);
 	}
+
+//	@Override
+//	public ResponseEntity<?> searchByFilter(String country, String province, Double size, Double priceBelow,
+//			Double priceAbove, byte bedroom, byte maxGuest, boolean tivi, boolean wifi, boolean air_conditioner,
+//			boolean fridge, boolean swimPool, int page, int sizePage) {
+//		Message message = new Message();
+//		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
+//		PaginationModel paginationModel = new PaginationModel();
+//		List<House> listHouse = new ArrayList<House>();
+//		try {
+//			Pageable paging = PageRequest.of(page, sizePage);
+//			listHouse = houseRepository.findByFilter(country, province, size, priceBelow, priceAbove, bedroom, maxGuest,
+//					tivi, wifi, air_conditioner, fridge, swimPool, paging).getContent();
+//			int pageMax = houseRepository.findByFilter(country, province, size, priceBelow, priceAbove, bedroom,
+//					maxGuest, tivi, wifi, air_conditioner, fridge, swimPool, paging).getTotalPages();
+//			for (House house : listHouse) {
+//				HouseModel houseModel = mapper.map(house, HouseModel.class);
+//				listHouseModel.add(houseModel);
+//			}
+//			paginationModel.setListHouse(listHouseModel);
+//			paginationModel.setPageMax(pageMax);
+//			return ResponseEntity.ok(paginationModel);
+//		} catch (Exception e) {
+//			message.setMessage(e.getLocalizedMessage());
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+//		}
+//	}
 
 }
