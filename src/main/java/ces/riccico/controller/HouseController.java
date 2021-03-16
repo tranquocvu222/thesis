@@ -33,12 +33,12 @@ public class HouseController {
 	public List<House> getAll() {
 		return houseService.getAll();
 	}
-	
+
 	@GetMapping("/detail")
-	public ResponseEntity<?> getHouseDetail(@RequestParam Integer idHouse){
+	public ResponseEntity<?> getHouseDetail(@RequestParam Integer idHouse) {
 		return houseService.getHouseDetail(idHouse);
 	}
-	
+
 	@GetMapping("/isApproved")
 	public List<House> getAllApproved() {
 		return houseService.getAllApproved();
@@ -85,16 +85,29 @@ public class HouseController {
 		return houseService.approveHouse(idHouse);
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
+	@GetMapping("/searchTitle")
+	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
 		return houseService.findByTitle(title, page, size);
 	}
-	
-	@GetMapping
-	public ResponseEntity<?> findByPageAndSize( @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
-		return houseService.findByPageAndSize(page, size);
 
+	@GetMapping
+	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return houseService.findByPageAndSize(page, size);
 	}
-	
+
+//	@GetMapping("/search")
+//	public ResponseEntity<?> searchByFilter(@RequestParam(required = false) String country,
+//			@RequestParam(required = false) String province, @RequestParam(required = false) Double size,
+//			@RequestParam(required = false) Double priceBelow, @RequestParam(required = false) Double priceAbove,
+//			@RequestParam(required = false) byte bedroom, @RequestParam(required = false) byte maxGuest,
+//			@RequestParam(required = false) boolean tivi, @RequestParam(required = false) boolean wifi,
+//			@RequestParam(required = false) boolean air_conditioner, @RequestParam(required = false) boolean fridge,
+//			@RequestParam(required = false) boolean swimPool, @RequestParam(defaultValue = "0") int page,
+//			@RequestParam(defaultValue = "20") int sizePage) {
+//		return houseService.searchByFilter(country, province, size, priceBelow, priceAbove, bedroom, maxGuest, tivi,
+//				wifi, air_conditioner, fridge, swimPool, page, sizePage);
+//	}
+
 }
