@@ -19,10 +19,6 @@ public interface HouseService {
 
 	ResponseEntity<?> findByPageAndSize(int page, int size);
 
-//	ResponseEntity<?> searchByFilter(String country, String province, Double size, Double priceBelow, Double priceAbove,
-//			byte bedroom, byte maxGuest, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge,
-//			boolean swimPool, int page, int sizePage);
-
 	ResponseEntity<?> getHouseDetail(Integer idHouse);
 
 	ResponseEntity<?> approveHouse(int idHouse);
@@ -34,5 +30,10 @@ public interface HouseService {
 	ResponseEntity<?> postNewHouse(House house);
 
 	ResponseEntity<?> findHouseByUsername(String username);
+
+/// boolean wifi, boolean air_conditioner,
+	ResponseEntity<?> findFilter(String country, String province, Double sizeBelow, Double sizeAbove, Double priceBelow,
+			Double priceAbove, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge, boolean swim_pool,
+			byte guestAbove, byte guestBelow, int page, int size);
 
 }

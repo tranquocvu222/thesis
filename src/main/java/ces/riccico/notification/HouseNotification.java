@@ -14,6 +14,7 @@ public class HouseNotification {
 	public static final String byUser = "Success by user";
 	public static final String isApproved= "House was approved";
 	public static final String idNull= "House was approved";
+	public static final String houseNotFound = "Can't find the house";
 
 
 }

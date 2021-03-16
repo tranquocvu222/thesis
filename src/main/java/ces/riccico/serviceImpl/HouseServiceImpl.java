@@ -316,31 +316,39 @@ public class HouseServiceImpl implements HouseService {
 		return ResponseEntity.ok(house);
 	}
 
-//	@Override
-//	public ResponseEntity<?> searchByFilter(String country, String province, Double size, Double priceBelow,
-//			Double priceAbove, byte bedroom, byte maxGuest, boolean tivi, boolean wifi, boolean air_conditioner,
-//			boolean fridge, boolean swimPool, int page, int sizePage) {
-//		Message message = new Message();
-//		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
-//		PaginationModel paginationModel = new PaginationModel();
-//		List<House> listHouse = new ArrayList<House>();
-//		try {
-//			Pageable paging = PageRequest.of(page, sizePage);
-//			listHouse = houseRepository.findByFilter(country, province, size, priceBelow, priceAbove, bedroom, maxGuest,
-//					tivi, wifi, air_conditioner, fridge, swimPool, paging).getContent();
-//			int pageMax = houseRepository.findByFilter(country, province, size, priceBelow, priceAbove, bedroom,
-//					maxGuest, tivi, wifi, air_conditioner, fridge, swimPool, paging).getTotalPages();
-//			for (House house : listHouse) {
-//				HouseModel houseModel = mapper.map(house, HouseModel.class);
-//				listHouseModel.add(houseModel);
-//			}
-//			paginationModel.setListHouse(listHouseModel);
-//			paginationModel.setPageMax(pageMax);
-//			return ResponseEntity.ok(paginationModel);
-//		} catch (Exception e) {
-//			message.setMessage(e.getLocalizedMessage());
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-//		}
-//	}
+	// boolean wifi, boolean air_conditioner,
+	// wifi, air_conditioner,
+	@Override
+	public ResponseEntity<?> findFilter(String country, String province, Double sizeBelow, Double sizeAbove,
+			Double priceBelow, Double priceAbove, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge,
+			boolean swim_pool, byte guestAbove, byte guestBelow, int page, int size) {
+		Message message = new Message();
+		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
+		PaginationModel paginationModel = new PaginationModel();
+		List<House> listHouse = new ArrayList<House>();
+		try {
+			Pageable paging = PageRequest.of(page, size);
+			listHouse = houseRepository.findFilter(country, province, sizeBelow, sizeAbove, priceBelow, priceAbove,
+					tivi, wifi, air_conditioner, fridge, swim_pool, guestAbove, guestBelow, paging).getContent();
+			if (listHouse.size() == 0) {
+				message.setMessage(HouseNotification.houseNotFound);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			} else {
+				int pageMax = houseRepository.findFilter(country, province, sizeBelow, sizeAbove, priceBelow,
+						priceAbove, tivi, wifi, air_conditioner, fridge, swim_pool, guestAbove, guestBelow, paging).getTotalPages();
+
+				for (House house : listHouse) {
+					HouseModel houseModel = mapper.map(house, HouseModel.class);
+					listHouseModel.add(houseModel);
+				}
+				paginationModel.setListHouse(listHouseModel);
+				paginationModel.setPageMax(pageMax);
+				return ResponseEntity.ok(paginationModel);
+			}
+		} catch (Exception e) {
+			message.setMessage(e.getLocalizedMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+	}
 
 }
