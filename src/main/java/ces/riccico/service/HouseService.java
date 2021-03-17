@@ -31,7 +31,6 @@ public interface HouseService {
 
 	ResponseEntity<?> findHouseByUsername(String username);
 
-/// boolean wifi, boolean air_conditioner,
 	ResponseEntity<?> findFilter(String country, String province, Double sizeBelow, Double sizeAbove, Double priceBelow,
 			Double priceAbove, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge, boolean swim_pool,
 			byte guestAbove, byte guestBelow, int page, int size);

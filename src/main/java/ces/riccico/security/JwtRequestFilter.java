@@ -21,7 +21,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ces.riccico.entities.Token;
-import ces.riccico.service.TokenService;
+import ces.riccico.repository.TokenRepository;
+
+
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -31,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	private JwtUtil jwtUtil;
 
 	@Autowired
-	private TokenService verificationTokenService;
+	private TokenRepository verificationTokenService;
 
 	
 	@Override

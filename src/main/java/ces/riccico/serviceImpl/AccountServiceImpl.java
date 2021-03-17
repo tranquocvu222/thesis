@@ -16,6 +16,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.nimbusds.jwt.JWTClaimsSet;
+
 import ces.riccico.entities.Accounts;
 import ces.riccico.models.LoginModel;
 import ces.riccico.models.Message;
@@ -23,22 +25,22 @@ import ces.riccico.models.Role;
 import ces.riccico.entities.Token;
 import ces.riccico.entities.Users;
 import ces.riccico.notification.Notification;
+import ces.riccico.notification.TokenNotification;
 import ces.riccico.notification.UserNotification;
 
 import ces.riccico.repository.AccountRepository;
+import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.AccountDetail;
 import ces.riccico.service.AccountService;
 import ces.riccico.security.JwtUtil;
 import ces.riccico.security.SecurityAuditorAware;
-import ces.riccico.service.TokenService;
 import ces.riccico.validation.Validation;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 	private static final boolean IsBanned = true;
 	private static final boolean IsNotBanned = false;
-
 
 	public static int confirmCode;
 
@@ -48,7 +50,7 @@ public class AccountServiceImpl implements AccountService {
 	@Autowired
 	private AccountRepository accountRepository;
 	@Autowired
-	private TokenService tokenService;
+	private TokenRepository tokenRepository;
 	@Autowired
 	private JwtUtil jwtUtil;
 	@Autowired
@@ -56,14 +58,14 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	public JavaMailSender sender;
-	
+
 	@Autowired
 	private ModelMapper mapper;
 
 	@Override
 	public AccountDetail loadUserByUsername(String username) {
 		Accounts account = accountRepository.findByUsername(username);
-		AccountDetail accountDetail =  mapper.map(account, AccountDetail.class);
+		AccountDetail accountDetail = mapper.map(account, AccountDetail.class);
 		if (account == null) {
 			return null;
 		} else {
@@ -179,7 +181,7 @@ public class AccountServiceImpl implements AccountService {
 						Token token = new Token();
 						token.setToken(jwtUtil.generateToken(accountDetail));
 						token.setTokenExpDate(jwtUtil.generateExpirationDate());
-						tokenService.save(token);
+						tokenRepository.saveAndFlush(token);
 						return ResponseEntity.ok(token.getToken());
 					}
 				}
@@ -193,24 +195,29 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> logout() {
 		Message message = new Message();
+		String tokenCurrent;
 		try {
+			tokenCurrent = jwtUtil.getJwtTokenHeader();
+			JWTClaimsSet claims = jwtUtil.getClaimsFromToken(tokenCurrent);
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Accounts account = accountRepository.findById(idCurrent).get();
-			if (account == null) {
-				message.setMessage(UserNotification.accountNotExist);
+			if (tokenRepository.findByToken(tokenCurrent) == null) {
+				message.setMessage(TokenNotification.tokenNotExist);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+			} else if (!jwtUtil.isTokenExpired(claims)) {
+				message.setMessage(TokenNotification.isTokenExpired);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+			} else if (!jwtUtil.validateToken(tokenCurrent, account)) {
+				message.setMessage(TokenNotification.inValidToken);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else {
-				List<Token> listToken = tokenService.getAll();
-				for (Token token : listToken) {
-					if (idCurrent.equals(jwtUtil.getUserFromToken(token.getToken()).getIdUser())) {
-						tokenService.deleteById(token.getId());
-					}
-				}
+				Token token = tokenRepository.findByToken(tokenCurrent);
+				tokenRepository.delete(token);
 				message.setMessage(Notification.success);
 				return ResponseEntity.ok(message);
 			}
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -400,4 +407,5 @@ public class AccountServiceImpl implements AccountService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
+
 }
