@@ -93,8 +93,5 @@ public class UserServiceImpl implements UserService {
 			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
-	
 	}
-
 }
