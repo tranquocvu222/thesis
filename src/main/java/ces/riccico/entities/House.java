@@ -56,20 +56,8 @@ public class House extends Auditable {
 	@Column(name = "phoneContact")
 	private String phoneContact;
 
-	@Column(name = "wifi")
-	private boolean wifi;
-
-	@Column(name = "tivi")
-	private boolean tivi;
-
-	@Column(name = "fridge")
-	private boolean fridge;
-
-	@Column(name = "swim_pool")
-	private boolean swimPool;
-
-	@Column(name = " air_conditioner")
-	private boolean air_conditioner;
+	@Column(name  = "amenities")
+	private  String amenities;
 
 	@Column(name = "bedroom")
 	private byte bedroom;
@@ -217,46 +205,6 @@ public class House extends Auditable {
 		this.phoneContact = phoneContact;
 	}
 
-	public boolean isWifi() {
-		return wifi;
-	}
-
-	public void setWifi(boolean wifi) {
-		this.wifi = wifi;
-	}
-
-	public boolean isTivi() {
-		return tivi;
-	}
-
-	public void setTivi(boolean tivi) {
-		this.tivi = tivi;
-	}
-
-	public boolean isFridge() {
-		return fridge;
-	}
-
-	public void setFridge(boolean fridge) {
-		this.fridge = fridge;
-	}
-
-	public boolean isSwimPool() {
-		return swimPool;
-	}
-
-	public void setSwimPool(boolean swimPool) {
-		this.swimPool = swimPool;
-	}
-
-	public boolean isAir_conditioner() {
-		return air_conditioner;
-	}
-
-	public void setAir_conditioner(boolean air_conditioner) {
-		this.air_conditioner = air_conditioner;
-	}
-
 	public byte getBedroom() {
 		return bedroom;
 	}
@@ -273,6 +221,14 @@ public class House extends Auditable {
 		this.maxGuest = maxGuest;
 	}
 
+	public String getAmenities() {
+		return amenities;
+	}
+
+	public void setAmenities(String amenities) {
+		this.amenities = amenities;
+	}
+
 //	public Set<String> getImage_url() {
 //		return image_url;
 //	}
@@ -281,5 +237,6 @@ public class House extends Auditable {
 //		this.image_url = image_url;
 //	}
 //	
+	
 
 }

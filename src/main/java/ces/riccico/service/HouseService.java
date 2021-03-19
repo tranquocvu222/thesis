@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 import ces.riccico.entities.House;
+import ces.riccico.models.HouseDetailModel;
 
 public interface HouseService {
 
@@ -23,11 +24,11 @@ public interface HouseService {
 
 	ResponseEntity<?> approveHouse(int idHouse);
 
-	ResponseEntity<?> updateHouse(int idHouse, House house);
+	ResponseEntity<?> updateHouse(int idHouse, HouseDetailModel houseDetail);
 
 	ResponseEntity<?> deleteHouse(int idHouse);
 
-	ResponseEntity<?> postNewHouse(House house);
+	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
 
 	ResponseEntity<?> findHouseByUsername(String username);
 

@@ -17,6 +17,8 @@ import ces.riccico.notification.Notification;
 import ces.riccico.entities.Accounts;
 import ces.riccico.entities.House;
 import ces.riccico.entities.Images;
+import ces.riccico.models.Amenities;
+import ces.riccico.models.HouseDetailModel;
 import ces.riccico.models.HouseModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.PaginationModel;
@@ -121,7 +123,7 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> postNewHouse(House house) {
+	public ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail) {
 		Integer idCurrent = null;
 		Accounts account;
 		Message message = new Message();
@@ -132,25 +134,32 @@ public class HouseServiceImpl implements HouseService {
 				message.setMessage(UserNotification.accountNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
-				if (house.getTitle().equals(null)) {
+				if (houseDetail.getTitle().equals(null)) {
 					message.setMessage(HouseNotification.nameIsNull);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (house.getCountry() == null || house.getCountry().isEmpty()) {
+				} else if (houseDetail.getCountry() == null || houseDetail.getCountry().isEmpty()) {
 					message.setMessage(HouseNotification.countryIsNull);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (house.getProvince().equals(null)) {
+				} else if (houseDetail.getProvince().equals(null)) {
 					message.setMessage(HouseNotification.cityIsNull);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (house.getAddress().equals(null)) {
+				} else if (houseDetail.getAddress().equals(null)) {
 					message.setMessage(HouseNotification.addressIsNull);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
-					House houseNew = mapper.map(house, House.class);
-					houseNew.setAccount(account);
-					houseNew.setDeleted(NOT_DELETED);
-					houseNew.setApproved(IS_APPROVED);
-					houseRepository.saveAndFlush(houseNew);
-					return ResponseEntity.status(HttpStatus.CREATED).body(houseNew);
+					House house = mapper.map(houseDetail, House.class);
+					byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
+					byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
+					byte ac = ((houseDetail.isAir_conditioner() == true)) ? Amenities.AC.getValue() : 0;
+					byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
+					byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
+					String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
+					house.setAmenities(amenities);
+					house.setAccount(account);
+					house.setDeleted(NOT_DELETED);
+					house.setApproved(IS_APPROVED);
+					houseRepository.saveAndFlush(house);
+					return ResponseEntity.status(HttpStatus.CREATED).body(house);
 				}
 			}
 		} catch (Exception e) {
@@ -198,7 +207,7 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> updateHouse(int idHouse, House house) {
+	public ResponseEntity<?> updateHouse(int idHouse, HouseDetailModel houseDetail) {
 		Message message = new Message();
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
@@ -213,25 +222,27 @@ public class HouseServiceImpl implements HouseService {
 				message.setMessage(UserNotification.accountNotPermission);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
-			House houseUpdate = houseRepository.findById(idHouse).get();
-			houseUpdate.setAddress(house.getAddress());
-			houseUpdate.setTitle(house.getTitle());
-			houseUpdate.setCountry(house.getCountry());
-			houseUpdate.setProvince(house.getProvince());
-			houseUpdate.setContent(house.getContent());
-			houseUpdate.setPhoneContact(house.getPhoneContact());
-			houseUpdate.setImage(house.getImage());
-			houseUpdate.setSize(house.getSize());
-			houseUpdate.setPrice(house.getPrice());
-			houseUpdate.setTivi(house.isWifi());
-			houseUpdate.setWifi(house.isWifi());
-			houseUpdate.setFridge(house.isFridge());
-			houseUpdate.setSwimPool(house.isSwimPool());
-			houseUpdate.setAir_conditioner(house.isAir_conditioner());
-			houseUpdate.setBedroom(house.getBedroom());
-			houseUpdate.setMaxGuest(house.getMaxGuest());
-			houseRepository.saveAndFlush(houseUpdate);
-			return ResponseEntity.ok(houseUpdate);
+			House house = houseRepository.findById(idHouse).get();
+			house.setAddress(houseDetail.getAddress());
+			house.setTitle(houseDetail.getTitle());
+			house.setCountry(houseDetail.getCountry());
+			house.setProvince(houseDetail.getProvince());
+			house.setContent(houseDetail.getContent());
+			house.setPhoneContact(houseDetail.getPhoneContact());
+			house.setImage(houseDetail.getImage());
+			house.setSize(houseDetail.getSize());
+			house.setPrice(houseDetail.getPrice());
+			byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
+			byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
+			byte ac = ((houseDetail.isAir_conditioner() == true)) ? Amenities.AC.getValue() : 0;
+			byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
+			byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
+			String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
+			house.setAmenities(amenities);
+			house.setBedroom(houseDetail.getBedroom());
+			house.setMaxGuest(houseDetail.getMaxGuest());
+			houseRepository.saveAndFlush(house);
+			return ResponseEntity.ok(house);
 		} catch (Exception e) {
 			message.setMessage(e.toString());
 			System.out.print(e);
@@ -304,20 +315,27 @@ public class HouseServiceImpl implements HouseService {
 	public ResponseEntity<?> getHouseDetail(Integer idHouse) {
 		Message message = new Message();
 		House house = houseRepository.findById(idHouse).get();
+		HouseDetailModel houseDetail;
 		if (house == null) {
 			message.setMessage(HouseNotification.houseNotExist);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		} else {
+			houseDetail = mapper.map(house, HouseDetailModel.class);
+			int amenities = Integer.parseInt(house.getAmenities(), 2);
+			boolean wifi = ((amenities & Amenities.WIFI.getValue()) != 0) ? true : false;
+			boolean tivi = ((amenities & Amenities.TIVI.getValue()) != 0) ? true : false;
+			boolean air_conditioner = ((amenities & Amenities.AC.getValue()) != 0) ? true : false;
+			boolean fridge = ((amenities & Amenities.FRIDGE.getValue()) != 0) ? true : false;
+			boolean swimPool = ((amenities & Amenities.SWIM_POOL.getValue()) != 0) ? true : false;
+			houseDetail.setWifi(wifi);
+			houseDetail.setTivi(tivi);
+			houseDetail.setAir_conditioner(air_conditioner);
+			houseDetail.setFridge(fridge);
+			houseDetail.setSwimPool(swimPool);
 		}
-//		Set<String> image_url = new HashSet<>();
-//		for(Images image : house.getImages()) {
-//			String url  = image.getImage();
-//			image_url.add(url);
-//		}
-		return ResponseEntity.ok(house);
+		return ResponseEntity.ok(houseDetail);
 	}
 
-	// boolean wifi, boolean air_conditioner,
-	// wifi, air_conditioner,
 	@Override
 	public ResponseEntity<?> findFilter(String country, String province, Double sizeBelow, Double sizeAbove,
 			Double priceBelow, Double priceAbove, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge,
@@ -326,16 +344,23 @@ public class HouseServiceImpl implements HouseService {
 		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
+		String amenities = null;
 		try {
+			byte wifi_binary = (wifi == true) ? Amenities.WIFI.getValue() : 0;
+			byte tivi_binary = (tivi == true) ? Amenities.TIVI.getValue() : 0;
+			byte ac_binary = (air_conditioner == true) ? Amenities.AC.getValue() : 0;
+			byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
+			byte swim_pool_binary = (swim_pool == true) ? Amenities.SWIM_POOL.getValue() : 0;
+			amenities = Integer.toBinaryString(wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 			Pageable paging = PageRequest.of(page, size);
 			listHouse = houseRepository.findFilter(country, province, sizeBelow, sizeAbove, priceBelow, priceAbove,
-					tivi, wifi, air_conditioner, fridge, swim_pool, guestAbove, guestBelow, paging).getContent();
+					amenities, guestAbove, guestBelow, paging).getContent();
 			if (listHouse.size() == 0) {
 				message.setMessage(HouseNotification.houseNotFound);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				int pageMax = houseRepository.findFilter(country, province, sizeBelow, sizeAbove, priceBelow,
-						priceAbove, tivi, wifi, air_conditioner, fridge, swim_pool, guestAbove, guestBelow, paging).getTotalPages();
+						priceAbove, amenities, guestAbove, guestBelow, paging).getTotalPages();
 
 				for (House house : listHouse) {
 					HouseModel houseModel = mapper.map(house, HouseModel.class);
@@ -344,9 +369,10 @@ public class HouseServiceImpl implements HouseService {
 				paginationModel.setListHouse(listHouseModel);
 				paginationModel.setPageMax(pageMax);
 				return ResponseEntity.ok(paginationModel);
+
 			}
 		} catch (Exception e) {
-			message.setMessage(e.getLocalizedMessage());
+			message.setMessage(e.toString());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
