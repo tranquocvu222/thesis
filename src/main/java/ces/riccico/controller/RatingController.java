@@ -22,20 +22,25 @@ public class RatingController {
 	@Autowired
 	private RatingService ratingService;
 	
-	@PostMapping("/write/{idBooking}")
-	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> writeRating(@PathVariable int idBooking, @RequestBody Rating rating){
-		return ratingService.writeRating(idBooking, rating);
-	}
-	
-	@GetMapping("/houses/{houseId}")
-	public ResponseEntity<?> findRatingByHouseId(@PathVariable int houseId){
-		return ratingService.findRatingByHouseId(houseId);
-	}
 	
 	@GetMapping("/account")
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> findByRatingAccountId(){
 		return ratingService.findByRatingAccountId();
 	}
+	
+	
+	@GetMapping("/houses/{houseId}")
+	public ResponseEntity<?> findRatingByHouseId(@PathVariable int houseId){
+		return ratingService.findRatingByHouseId(houseId);
+	}
+	
+	
+	@PostMapping("/write/{idBooking}")
+	@PreAuthorize("hasAnyAuthority('user')")
+	public ResponseEntity<?> writeRating(@PathVariable int idBooking, @RequestBody Rating rating){
+		return ratingService.writeRating(idBooking, rating);
+	}
+	
+
 }

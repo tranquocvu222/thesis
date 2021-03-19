@@ -127,7 +127,7 @@ public class BookingServiceImpl implements BookingService {
 				}
 			}
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(Notification.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -141,13 +141,13 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
-			message.setMessage(UserNotification.accountNotPermission);
+			message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 		Booking booking = bookingRepository.findById(idBooking).get();
 		booking.setStatus(Status.APPROVAL.getStatusName());
 		bookingRepository.saveAndFlush(booking);
-		message.setMessage(Notification.success);
+		message.setMessage(Notification.SUCCESS);
 		return ResponseEntity.ok(message);
 	}
 
@@ -162,7 +162,7 @@ public class BookingServiceImpl implements BookingService {
 		} else {
 			if (!idCurrent.equals(booking.getHouse().getAccount().getIdAccount())
 					|| !idCurrent.equals(booking.getAccount().getIdAccount())) {
-				message.setMessage(UserNotification.accountNotPermission);
+				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			} else {
 				booking.setStatus(Status.CANCELED.getStatusName());
@@ -205,10 +205,10 @@ public class BookingServiceImpl implements BookingService {
 			}
 			booking.setStatus(Status.COMPLETED.getStatusName());
 			bookingRepository.saveAndFlush(booking);
-			message.setMessage(Notification.success);
+			message.setMessage(Notification.SUCCESS);
 			return ResponseEntity.ok(message);
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(Notification.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -224,7 +224,7 @@ public class BookingServiceImpl implements BookingService {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 			if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
-				message.setMessage(UserNotification.accountNotPermission);
+				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 			if (!Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())) {
@@ -233,10 +233,10 @@ public class BookingServiceImpl implements BookingService {
 			}
 			booking.setStatus(Status.PENDING_APPROVAL.getStatusName());
 			bookingRepository.saveAndFlush(booking);
-			message.setMessage(Notification.success);
+			message.setMessage(Notification.SUCCESS);
 			return ResponseEntity.ok(message);
 		} catch (Exception e) {
-			message.setMessage(Notification.fail);
+			message.setMessage(Notification.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}

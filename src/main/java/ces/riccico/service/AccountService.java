@@ -1,3 +1,4 @@
+
 package ces.riccico.service;
 
 import java.util.List;
@@ -12,8 +13,19 @@ import ces.riccico.security.AccountDetail;
 
 public interface AccountService {
 	
+	ResponseEntity<?> activeAccount(int codeInput, String email);
 
-	ResponseEntity<?> register(Accounts account, Users user);
+	ResponseEntity<?> banAccount(int idAccount);
+	
+	ResponseEntity<?> changePassword(String oldPassword, String newPassword);
+	
+	List<Accounts> findAll();
+
+	List<Accounts> findAllIsBanned();
+	
+	Optional<Accounts> findById(int id);
+
+	ResponseEntity<?> forgetPassword(String email);
 
 	ResponseEntity<?> login(LoginModel account);
 
@@ -21,21 +33,10 @@ public interface AccountService {
 
 	AccountDetail loadUserByUsername(String username);
 
-	ResponseEntity<?> changePassword(String oldPassword, String newPassword);
-
-	List<Accounts> findAll();
-
-	List<Accounts> findAllIsBanned();
-
-	ResponseEntity<?> activeAccount(int codeInput, String email);
-
-	ResponseEntity<?> banAccount(int idAccount);
-
-	ResponseEntity<?> forgetPassword(String email);
+	ResponseEntity<?> register(Accounts account, Users user);
 
 	ResponseEntity<?> resetPassword(String email, String password);
 
-	Optional<Accounts> findById(int id);
 	
 
 

@@ -99,7 +99,7 @@ public class HouseServiceImpl implements HouseService {
 		try {
 			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
 			if (!accountRepository.findById(idAccount).isPresent()) {
-				message.setMessage(UserNotification.accountNotExist);
+				message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 			if (accountRepository.findById(idAccount).get().getHouses().size() == 0) {
@@ -131,7 +131,7 @@ public class HouseServiceImpl implements HouseService {
 			idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			account = accountRepository.findById(idCurrent).get();
 			if (account == null) {
-				message.setMessage(UserNotification.accountNotExist);
+				message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				if (houseDetail.getTitle().equals(null)) {
@@ -175,7 +175,7 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 		Accounts account = accountRepository.findById(idCurrent).get();
 		if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
-			message.setMessage(UserNotification.accountNotPermission);
+			message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(idHouse).isPresent()) {
 			message.setMessage(HouseNotification.houseNotExist);
@@ -192,7 +192,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(message);
 			} else {
 				if (!idCurrent.equals(houseRepository.findById(idHouse).get().getAccount().getIdAccount())) {
-					message.setMessage(UserNotification.accountNotPermission);
+					message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 				}
 //				houseRepository.deleteById(idHouse);
@@ -202,7 +202,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(message);
 			}
 		}
-		message.setMessage(Notification.fail);
+		message.setMessage(Notification.FAIL);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
 
@@ -213,13 +213,13 @@ public class HouseServiceImpl implements HouseService {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Accounts account = accountRepository.findById(idCurrent).get();
 			if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
-				message.setMessage(UserNotification.accountNotPermission);
+				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!houseRepository.findById(idHouse).isPresent()) {
 				message.setMessage(HouseNotification.houseNotExist);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else if (!houseRepository.findById(idHouse).get().getAccount().getIdAccount().equals(idCurrent)) {
-				message.setMessage(UserNotification.accountNotPermission);
+				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 			House house = houseRepository.findById(idHouse).get();
@@ -260,7 +260,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				house.setApproved(IS_APPROVED);
-				message.setMessage(Notification.success);
+				message.setMessage(Notification.SUCCESS);
 				houseRepository.saveAndFlush(house);
 				return ResponseEntity.ok(message);
 			}
