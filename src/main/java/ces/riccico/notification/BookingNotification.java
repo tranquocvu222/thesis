@@ -2,14 +2,22 @@ package ces.riccico.notification;
 
 public class BookingNotification {
 
-	public static final String isBooked= "The house has been booked";
-	public static final String invalidDate= "invalid date checkin";
-	public static final String invalidDateOut= "invalid date checkout";
-	public static final String invalidStatus = "invalid status";
-	public static final String invalidDateComplete= "Not yet time to complete";
-	public static final String accountNotPermission ="you can't book your homestay";
-	public static final String bookingNotExist  = "booking isn't exist";
-	public static final String byOwner  = "success by owner";
-	public static final String byCustomer  = "success by customer";
+	public static final String ACCOUNT_WITHOUT_PERMISSION ="you can't book your homestay";
+	
+	public static final String BOOKING_NOT_EXITST  = "booking isn't exist";
+	
+	public static final String BY_CUSTOMER  = "success by customer";
+	
+	public static final String BY_HOST  = "success by host";
+	
+	public static final String INVALID_CHECKIN= "invalid date checkin";
+	
+	public static final String INVALID_CHECKOUT= "invalid date checkout";
+	
+	public static final String INVALID_DATE_COMPLETE= "Not yet time to complete";
+	
+	public static final String INVALID_STATUS = "invalid status";
+	
+	public static final String HOUSE_BOOKED= "The house has been booked";
 	
 }

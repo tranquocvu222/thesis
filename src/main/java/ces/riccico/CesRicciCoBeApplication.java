@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 
 public class CesRicciCoBeApplication {
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CesRicciCoBeApplication.class, args);
 	}

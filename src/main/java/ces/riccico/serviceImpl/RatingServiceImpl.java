@@ -52,11 +52,11 @@ public class RatingServiceImpl implements RatingService {
 		Message message = new Message();
 		try {
 			if (!bookingRepository.findById(idBooking).isPresent()) {
-				message.setMessage(BookingNotification.bookingNotExist);
+				message.setMessage(BookingNotification.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
-					message.setMessage(BookingNotification.invalidStatus);
+					message.setMessage(BookingNotification.INVALID_STATUS);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
 					if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
@@ -89,7 +89,7 @@ public class RatingServiceImpl implements RatingService {
 		try {
 			List<Rating> listRating = new ArrayList<Rating>();
 			if (!houseRepository.findById(houseId).isPresent()) {
-				message.setMessage(HouseNotification.houseNotExist);
+				message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				listRating = ratingRepository.findByBookingHouseId(houseId);

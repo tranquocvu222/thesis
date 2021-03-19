@@ -83,8 +83,6 @@ public class Accounts {
 		this.isBanned = isBanned;
 	}
 
-
-
 	public boolean isActive() {
 		return isActive;
 	}

@@ -8,32 +8,32 @@ import ces.riccico.models.HouseDetailModel;
 
 public interface HouseService {
 
-	List<House> getAllDeleted();
-
-	List<House> getAllNotApproved();
-
-	List<House> getAllApproved();
-
-	List<House> getAll();
-
-	ResponseEntity<?> findByTitle(String title, int page, int size);
-
-	ResponseEntity<?> findByPageAndSize(int page, int size);
-
-	ResponseEntity<?> getHouseDetail(Integer idHouse);
-
 	ResponseEntity<?> approveHouse(int idHouse);
-
-	ResponseEntity<?> updateHouse(int idHouse, HouseDetailModel houseDetail);
 
 	ResponseEntity<?> deleteHouse(int idHouse);
 
-	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
+	ResponseEntity<?> findByPageAndSize(int page, int size);
+
+	ResponseEntity<?> findByTitle(String title, int page, int size);
 
 	ResponseEntity<?> findHouseByUsername(String username);
 
-	ResponseEntity<?> findFilter(String country, String province, Double sizeBelow, Double sizeAbove, Double priceBelow,
-			Double priceAbove, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge, boolean swim_pool,
-			byte guestAbove, byte guestBelow, int page, int size);
+	List<House> getAll();
+	
+	List<House> getAllApproved();
+
+	List<House> getAllDeleted();
+
+	List<House> getAllUnApproved();
+
+	ResponseEntity<?> getHouseDetail(Integer idHouse);
+
+	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
+
+	ResponseEntity<?> searchFilter(String country, String province, Double sizeBelow, Double sizeAbove,
+			Double priceBelow, Double priceAbove, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge,
+			boolean swim_pool, byte guestAbove, byte guestBelow, int page, int size);
+
+	ResponseEntity<?> updateHouse(int idHouse, HouseDetailModel houseDetail);
 
 }

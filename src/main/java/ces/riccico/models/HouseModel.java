@@ -1,17 +1,18 @@
 package ces.riccico.models;
 
 public class HouseModel {
+
 	private Integer id;
-	
-	private String title;
-	
-	private String province;
-	
-	private Double size;
-	
+
 	private String image;
-	
+
 	private double price;
+
+	private String province;
+
+	private Double size;
+
+	private String title;
 
 	public Integer getId() {
 		return id;
@@ -21,12 +22,20 @@ public class HouseModel {
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getImage() {
+		return image;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public String getProvince() {
@@ -45,19 +54,12 @@ public class HouseModel {
 		this.size = size;
 	}
 
-	public String getImage() {
-		return image;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setImage(String image) {
-		this.image = image;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
 }

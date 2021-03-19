@@ -20,6 +20,7 @@ import ces.riccico.models.Auditable;
 @Entity
 @Table(name ="booking")
 public class Booking extends Auditable {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idBooking")

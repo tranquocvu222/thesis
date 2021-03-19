@@ -56,19 +56,6 @@ public class Users {
 
 	}
 
-	public Users(Integer id, String firstName, String lastName, Date birthDay, String city, String country,
-			String address, Accounts account) {
-		super();
-		this.id = id;
-		this.firstname = firstName;
-		this.lastname = lastName;
-		this.birthDay = birthDay;
-		this.city = city;
-		this.country = country;
-		this.address = address;
-		this.account = account;
-	}
-
 	public Integer getIdUser() {
 		return id;
 	}

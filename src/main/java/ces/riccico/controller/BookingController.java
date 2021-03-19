@@ -21,32 +21,38 @@ public class BookingController {
 	@Autowired
 	private BookingService bookingService;
 	
-	@PostMapping
-	public ResponseEntity<?> receiveBooking (@RequestParam int idHouse, @RequestParam String dateStart, @RequestParam String dateStop){
-		return bookingService.receiveBooking(idHouse, dateStart, dateStop);
-	}
-	
-	@PutMapping("/payment/{idBooking}")
-	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> payment(@PathVariable int idBooking){
-		return bookingService.payment(idBooking);
-	}
-	
+	// this is the feature of accepting guests' booking
 	@PutMapping("/acceptBooking/{idBooking}")
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> acceptBooking(@PathVariable int idBooking){
 		return bookingService.acceptBooking(idBooking);
 	}
 	
+	// this is the cancellation feature
 	@PutMapping("/cancelBooking/{idBooking}")
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> cancelBooking(@PathVariable int idBooking){
 		return bookingService.cancelBooking(idBooking);
 	}
 	
+	// this is the feature to confirm the booking has been completed
 	@PutMapping("/completeBooking/{idBooking}")
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> completeBooking(@PathVariable int idBooking){
 		return bookingService.completeBooking̣̣̣(idBooking);
 	}
+	
+	// this is the booking payment feature
+	@PutMapping("/payment/{idBooking}")
+	@PreAuthorize("hasAnyAuthority('user')")
+	public ResponseEntity<?> payment(@PathVariable int idBooking){
+		return bookingService.payment(idBooking);
+	}
+	
+	// this is home booking feature
+	@PostMapping
+	public ResponseEntity<?> receiveBooking (@RequestParam int idHouse, @RequestParam String dateStart, @RequestParam String dateStop){
+		return bookingService.receiveBooking(idHouse, dateStart, dateStop);
+	}
+	
 }
