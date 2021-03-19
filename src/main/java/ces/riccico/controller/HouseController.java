@@ -1,4 +1,3 @@
-
 package ces.riccico.controller;
 
 import java.util.List;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.entities.House;
+import ces.riccico.models.HouseDetailModel;
 import ces.riccico.service.HouseService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -67,14 +67,14 @@ public class HouseController {
 	@PostMapping("/create")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> postNewHouse(@RequestBody House house) {
-		return houseService.postNewHouse(house);
+	public ResponseEntity<?> postNewHouse(@RequestBody HouseDetailModel houseDetail) {
+		return houseService.postNewHouse(houseDetail);
 	}
 
 	@PutMapping("/{idHouse}")
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody House house) {
-		return houseService.updateHouse(idHouse, house);
+	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody HouseDetailModel houseDetail) {
+		return houseService.updateHouse(idHouse, houseDetail);
 	}
 
 	@DeleteMapping("/{idHouse}")
