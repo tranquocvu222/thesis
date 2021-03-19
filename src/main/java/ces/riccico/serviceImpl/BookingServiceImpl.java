@@ -42,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
-	
+
 	
 	@Override
 	public ResponseEntity<?> acceptBooking(int idBooking) {
@@ -55,17 +55,18 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
-			message.setMessage(UserNotification.accountNotPermission);
+			message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
 		Booking booking = bookingRepository.findById(idBooking).get();
 		booking.setStatus(Status.APPROVAL.getStatusName());
 		bookingRepository.saveAndFlush(booking);
-		message.setMessage(Notification.success);
+		message.setMessage(Notification.SUCCESS);
 		return ResponseEntity.ok(message);
 	}
 
+	
 	@Override
 	public ResponseEntity<?> cancelBooking(int idBooking) {
 		Message message = new Message();
@@ -78,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
 		} else {
 			if (!idCurrent.equals(booking.getHouse().getAccount().getIdAccount())
 					|| !idCurrent.equals(booking.getAccount().getIdAccount())) {
-				message.setMessage(UserNotification.accountNotPermission);
+				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			} else {
 				booking.setStatus(Status.CANCELED.getStatusName());
@@ -94,6 +95,7 @@ public class BookingServiceImpl implements BookingService {
 		}
 	}
 
+	
 	@Override
 	public ResponseEntity<?> completeBooking̣̣̣(int idBooking) {
 		Message message = new Message();
@@ -126,30 +128,36 @@ public class BookingServiceImpl implements BookingService {
 
 			booking.setStatus(Status.COMPLETED.getStatusName());
 			bookingRepository.saveAndFlush(booking);
-			message.setMessage(Notification.success);
+			message.setMessage(Notification.SUCCESS);
 			return ResponseEntity.ok(message);
-			
+
 		} catch (Exception e) {
+
 			message.setMessage(e.getLocalizedMessage());
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
+	
 	@Override
 	public List<Booking> findByHouseId(int idHouse) {
 		return bookingRepository.findByHouseId(idHouse);
 	}
 
+	
 	@Override
 	public List<Booking> getAlḷ() {
 		return null;
 	}
 
+	
 	@Override
 	public List<Booking> getByUsername(String username) {
 		return null;
 	}
 
+	
 	@Override
 	public ResponseEntity<?> payment(int idBooking) {
 		Message message = new Message();
@@ -164,7 +172,7 @@ public class BookingServiceImpl implements BookingService {
 			}
 
 			if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
-				message.setMessage(UserNotification.accountNotPermission);
+				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 
@@ -175,16 +183,17 @@ public class BookingServiceImpl implements BookingService {
 
 			booking.setStatus(Status.PENDING_APPROVAL.getStatusName());
 			bookingRepository.saveAndFlush(booking);
-			message.setMessage(Notification.success);
+			message.setMessage(Notification.SUCCESS);
 			return ResponseEntity.ok(message);
-			
+
 		} catch (Exception e) {
+
 			message.setMessage(e.getLocalizedMessage());
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
-	
 	
 	@Override
 	public ResponseEntity<?> receiveBooking(int idHouse, String dateStart, String dateStop) {
@@ -260,7 +269,7 @@ public class BookingServiceImpl implements BookingService {
 					houseRepository.saveAndFlush(house);
 					bookingRepository.saveAndFlush(booking);
 					return ResponseEntity.ok(booking);
-					
+
 				}
 			}
 		} catch (Exception e) {
@@ -268,6 +277,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
+
 	
 	@Override
 	public ResponseEntity<?> refund(int idBooking) {

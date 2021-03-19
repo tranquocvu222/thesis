@@ -73,9 +73,4 @@ public class SwaggerConfig {
 	                .build();
 	    }
 
-//	    @Bean
-//	    public EmailAnnotationPlugin emailPlugin() {
-//	        return new EmailAnnotationPlugin();
-//	    }
-
 }

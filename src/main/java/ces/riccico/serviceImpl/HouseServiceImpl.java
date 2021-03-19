@@ -62,7 +62,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				house.setApproved(IS_APPROVED);
-				message.setMessage(Notification.success);
+				message.setMessage(Notification.SUCCESS);
 				houseRepository.saveAndFlush(house);
 				return ResponseEntity.ok(message);
 			}
@@ -79,7 +79,7 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 		
 		if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
-			message.setMessage(UserNotification.accountNotPermission);
+			message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(idHouse).isPresent()) {
 			message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
@@ -95,7 +95,7 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(message);
 			} else {
 				if (!idCurrent.equals(houseRepository.findById(idHouse).get().getAccount().getIdAccount())) {
-					message.setMessage(UserNotification.accountNotPermission);
+					message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 				}
 				
@@ -106,7 +106,7 @@ public class HouseServiceImpl implements HouseService {
 			}
 		}
 		
-		message.setMessage(Notification.fail);
+		message.setMessage(Notification.FAIL);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
 
@@ -164,7 +164,7 @@ public class HouseServiceImpl implements HouseService {
 			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
 			
 			if (!accountRepository.findById(idAccount).isPresent()) {
-				message.setMessage(UserNotification.accountNotExist);
+				message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 			
@@ -281,7 +281,7 @@ public class HouseServiceImpl implements HouseService {
 			account = accountRepository.findById(idCurrent).get();
 			
 			if (account == null) {
-				message.setMessage(UserNotification.accountNotExist);
+				message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				if (houseDetail.getTitle().equals(null)) {
@@ -324,6 +324,7 @@ public class HouseServiceImpl implements HouseService {
 			boolean swim_pool, byte guestAbove, byte guestBelow, int page, int size) {
 		
 		Message message = new Message();
+
 		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
@@ -362,6 +363,7 @@ public class HouseServiceImpl implements HouseService {
 			message.setMessage(e.toString());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
 	}
 
 	@Override
@@ -372,13 +374,13 @@ public class HouseServiceImpl implements HouseService {
 			Accounts account = accountRepository.findById(idCurrent).get();
 			
 			if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
-				message.setMessage(UserNotification.accountNotPermission);
+				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!houseRepository.findById(idHouse).isPresent()) {
 				message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else if (!houseRepository.findById(idHouse).get().getAccount().getIdAccount().equals(idCurrent)) {
-				message.setMessage(UserNotification.accountNotPermission);
+				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 			
@@ -410,5 +412,14 @@ public class HouseServiceImpl implements HouseService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
+
+
+
+
+
+
+
+
+
 
 }

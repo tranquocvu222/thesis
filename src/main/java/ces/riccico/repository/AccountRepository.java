@@ -11,11 +11,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Accounts, Integer>{
-
-	Accounts findByUsername(String username);
 	
 	Accounts findByEmail(String email);
-	
+
+	Accounts findByUsername(String username);
 	
 //	@Query(value="SELECT * FROM accounts a WHERE a.username = ?1", nativeQuery = true)
 //	List<Accounts> findByListUserName (String username);
