@@ -21,44 +21,43 @@ import ces.riccico.service.UserService;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	UserRepository userRepository;
+	AccountRepository accountRepository;
 
 	@Autowired
-	AccountRepository accountRepository;
+	UserRepository userRepository;
 
 	@Autowired
 	SecurityAuditorAware securityAuditorAware;
 
-	@Override
-	public List<Users> findAll() {
-		return userRepository.findAll();
-	}
-
+//	Update profile of user
 	@Override
 	public ResponseEntity<?> editUser(Users model) {
+
 		Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
+
 		Message message = new Message();
 		try {
+
 			Users user = userRepository.findByIdAccount(idaccount).get();
-			System.out.println("==========" + user);
+
 			if (user != null) {
 				if (model.getFirstname().equals("")) {
-					message.setMessage(UserNotification.firstNameNull);
+					message.setMessage(UserNotification.FIRST_NAME_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getLastname().equals("")) {
-					message.setMessage(UserNotification.lastNameNull);
+					message.setMessage(UserNotification.LAST_NAME_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getBirthday() == null) {
-					message.setMessage(UserNotification.birthDayNull);
+					message.setMessage(UserNotification.BIRTHDAY_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getAddress().equals("")) {
-					message.setMessage(UserNotification.addressNull);
+					message.setMessage(UserNotification.ADDRESS_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getCity().equals("")) {
-					message.setMessage(UserNotification.cityNull);
+					message.setMessage(UserNotification.CITY_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getCountry().equals("")) {
-					message.setMessage(UserNotification.countryNameNull);
+					message.setMessage(UserNotification.COUNTRY_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
 					user.setFirstname(model.getFirstname());
@@ -70,27 +69,45 @@ public class UserServiceImpl implements UserService {
 					userRepository.saveAndFlush(user);
 					System.out.println("==========" + user);
 				}
-				message.setMessage(Notification.success);
+
+				message.setMessage(Notification.SUCCESS);
 				return ResponseEntity.ok(message);
 			}
+
 		} catch (Exception e) {
+
 			System.out.println("editAdmin: " + e);
 		}
-		message.setMessage(Notification.fail);
+
+		message.setMessage(Notification.FAIL);
+
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
-	
-	
+
+//	Show list user
+	@Override
+	public List<Users> findAll() {
+		return userRepository.findAll();
+	}
+
+//	Find user by id_account was login
 	@Override
 	public ResponseEntity<?> findById() {
+		
 		Message message = new Message();
+		
 		try {
+			
 			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
-			Users user =userRepository.findById(idaccount).get();
-			message.setMessage(Notification.success);
+			Users user = userRepository.findById(idaccount).get();
+			message.setMessage(Notification.SUCCESS);
+			
 			return ResponseEntity.ok(user);
+			
 		} catch (Exception e) {
+			
 			message.setMessage(e.getLocalizedMessage());
+			
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 		

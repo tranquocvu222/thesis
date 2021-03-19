@@ -14,9 +14,11 @@ public class SecurityAuditorAware implements AuditorAware<Integer> {
 	@Override
 	public Optional<Integer> getCurrentAuditor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
 		if (authentication == null || !authentication.isAuthenticated()) {
 			return null;
 		}
+		
 		if (authentication.getPrincipal() == "anonymousUser") {
 			return Optional.of(0);
 		}

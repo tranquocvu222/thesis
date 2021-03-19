@@ -3,7 +3,9 @@ package ces.riccico.models;
 import java.util.List;
 
 public class PaginationModel {
+	
 	private int pageMax;
+	
 	private List<HouseModel> listHouse;
 
 	public int getPageMax() {

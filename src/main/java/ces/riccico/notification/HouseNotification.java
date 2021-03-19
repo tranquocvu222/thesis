@@ -1,20 +1,27 @@
 package ces.riccico.notification;
 
-
 public class HouseNotification {
+	
+	public static final String ADDRESS_IS_NULL = "Please enter your address";
+	
+	public static final String BY_ADMIN = "Success by admin";
+	
+	public static final String BY_USER = "Success by user";
+	
+	public static final String CITY_IS_NULL = "Please choose your city";
 
-	public static final String nameIsNull = "Please enter your homestayName";
-	public static final String countryIsNull = "Please choose your country";
-	public static final String cityIsNull  = "Please choose your city";
-	public static final String addressIsNull = "Please enter your address";
-	public static final String priceValidFormat  = "Price must > 0đ";
-	public static final String  houseNotExist = "House isn't exist";
-	public static final String houseDeleted = "House was deleted";
-	public static final String byAdmin = "Success by admin";
-	public static final String byUser = "Success by user";
-	public static final String isApproved= "House was approved";
-	public static final String idNull= "House was approved";
-	public static final String houseNotFound = "Can't find the house";
-
+	public static final String COUNTRY_IS_NULL = "Please choose your country";
+	
+	public static final String HOUSE_APPROVED = "House was approved";
+	
+	public static final String HOUSE_DELETED = "House was deleted";
+	
+	public static final String HOUSE_NOT_EXIST = "House isn't exist";
+	
+	public static final String HOUSE_NOT_FOUND = "Can't find the house";
+	
+	public static final String NAME_IS_NULL = "Please enter your homestayName";
+	
+	public static final String PRICE_INVALID_FORMAT = "Price must > 0đ";
 
 }

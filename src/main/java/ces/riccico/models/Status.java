@@ -1,18 +1,26 @@
 package ces.riccico.models;
 
 public enum Status {
-	PENDING_APPROVAL("pending_approval"),
+
 	APPROVAL("approval"),
-	CANCELED ("canceled"),
-	PENDING_PAYMENT("pending payment"),
-	REFUNDED("refunded"),
-	COMPLETED("completed");
+
+	CANCELED("canceled"),
 	
+	COMPLETED("completed"),
+
+	PENDING_APPROVAL("pendingApproval"),
+
+	PENDING_PAYMENT("pending payment"),
+
+	REFUNDED("refunded");
+
+
 	private String statusName;
-	 
+
 	Status(String statusName) {
-        this.statusName = statusName;
-    }
+		this.statusName = statusName;
+	}
+
 	public String getStatusName() {
 		return statusName;
 	}
@@ -21,5 +29,4 @@ public enum Status {
 		this.statusName = statusName;
 	}
 
-	
 }

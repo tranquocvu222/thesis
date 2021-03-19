@@ -1,10 +1,31 @@
 package ces.riccico.models;
 
 public class Message {
-	private String message;
-	private String statusCode;
-	private String error;
+
 	private Object data;
+
+	private String error;
+
+	private String message;
+
+	private String statusCode;
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
 	public String getMessage() {
 		return message;
 	}
@@ -21,20 +42,4 @@ public class Message {
 		this.statusCode = statusCode;
 	}
 
-	public String getError() {
-		return error;
-	}
-
-	public void setError(String error) {
-		this.error = error;
-	}
-
-	public Object getData() {
-		return data;
-	}
-
-	public void setData(Object data) {
-		this.data = data;
-	}
-	
 }

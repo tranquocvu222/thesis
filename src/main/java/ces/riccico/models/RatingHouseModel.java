@@ -3,6 +3,7 @@ package ces.riccico.models;
 import ces.riccico.entities.Rating;
 
 public class RatingHouseModel {
+	
 	private Rating rating;
 	
 	private String username;

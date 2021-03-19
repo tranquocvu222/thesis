@@ -9,15 +9,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 public class AccountDetail implements UserDetails {
-	private Integer idUser;
-	private String username;
-	private String password;
-	private String email;
-	private String role;
-	 private Collection authorities;
-
-
 	
+	private Integer idUser;
+	
+	private String email;
+	
+	private String password;
+	
+	private String username;
+	
+	private String role;
+	
+	private Collection authorities;
+
 	public Integer getIdUser() {
 		return idUser;
 	}

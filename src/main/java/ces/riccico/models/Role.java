@@ -1,7 +1,9 @@
 package ces.riccico.models;
 
 public enum Role {
+	
 	ADMIN("admin"),
+	
 	USER("user");
 	
 	private String role;

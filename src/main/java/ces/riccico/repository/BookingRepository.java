@@ -10,5 +10,6 @@ import ces.riccico.entities.Booking;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
+	
 	List<Booking> findByHouseId(int houseId);
 }

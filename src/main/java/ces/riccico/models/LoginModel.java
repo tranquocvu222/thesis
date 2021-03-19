@@ -2,6 +2,7 @@
 package ces.riccico.models;
 
 public class LoginModel {
+	
 	private String usernameOrEmail;
 	
 	private String password;
