@@ -48,8 +48,8 @@ public class Users {
 
 
 	@OneToOne
-	@JoinColumn(name = "idAccount",nullable = false)
 	@JsonIgnore
+	@JoinColumn(name = "idAccount",nullable = false)
 	private Accounts account;
 
 	public Users() {
