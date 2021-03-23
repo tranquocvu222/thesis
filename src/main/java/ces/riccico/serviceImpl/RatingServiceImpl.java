@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import ces.riccico.common.BookingConstants;
 import ces.riccico.common.HouseConstants;
-import ces.riccico.common.CommonConstants;
 import ces.riccico.common.RatingConstants;
 import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Booking;

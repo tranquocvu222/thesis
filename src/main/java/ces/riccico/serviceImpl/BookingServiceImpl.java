@@ -27,7 +27,6 @@ import ces.riccico.models.Status;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
-import ces.riccico.security.JwtUtil;
 import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.BookingService;
 
