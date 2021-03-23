@@ -1,9 +1,9 @@
-package ces.riccico.notification;
+package ces.riccico.common;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserNotification {
+public class UserConstants {
 	
 	public static final String ACCOUNT_NOT_BANNED = "Account not yet banned!";
 	

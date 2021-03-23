@@ -1,7 +1,7 @@
-package ces.riccico.notification;
+package ces.riccico.common;
 
 
-public class Notification {
+public class CommonConstants {
 
 	public static final String LOGIN_REQUIRED = "you must login";
 	
