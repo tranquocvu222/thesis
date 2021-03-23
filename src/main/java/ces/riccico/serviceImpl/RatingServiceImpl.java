@@ -133,7 +133,8 @@ public class RatingServiceImpl implements RatingService {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
-					message.setMessage(BookingNotification.INVALID_STATUS);
+					message.setMessage(BookingNotification.INVALID_STATUS
+							);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
 					if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
