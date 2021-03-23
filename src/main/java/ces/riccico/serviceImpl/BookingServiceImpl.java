@@ -95,6 +95,7 @@ public class BookingServiceImpl implements BookingService {
 		} else {
 			message.setMessage(BookingConstants.BY_HOST);
 			return ResponseEntity.ok(message);
+
 		}
 	}
 
@@ -246,7 +247,6 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(BookingConstants.INVALID_CHECKOUT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-
 			for (Booking booking : listBookings) {
 				if ((dateIn.compareTo(booking.getCreateCheckIn()) >= 0 && dateIn.compareTo(booking.getCreateEnd()) < 0
 						|| dateOut.compareTo(booking.getCreateCheckIn()) > 0
