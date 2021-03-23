@@ -35,9 +35,11 @@ public class HouseServiceImpl implements HouseService {
 
 	private static final boolean IS_APPROVED = true;
 	
+	private static final boolean IS_DELETED = true;
+	
 	private static final boolean NOT_DELETED = false;
 	
-	private static final boolean IS_DELETED = true;
+
 
 	@Autowired
 	private AccountRepository accountRepository;
