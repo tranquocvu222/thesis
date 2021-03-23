@@ -111,17 +111,17 @@ public class HouseController {
 	// this is the filter search feature
 	@GetMapping("/filter")
 	public ResponseEntity<?> searchFilter(@RequestParam(defaultValue = "") String country,
-			@RequestParam(defaultValue = "") String province, @RequestParam(defaultValue = "0") Double sizeBelow,
-			@RequestParam(defaultValue = "50000") Double sizeAbove, @RequestParam(defaultValue = "0") Double priceBelow,
-			@RequestParam(defaultValue = "50000000") Double priceAbove,
+			@RequestParam(defaultValue = "") String province, @RequestParam(defaultValue = "0") Double lowestSize,
+			@RequestParam(defaultValue = "50000") Double highestSize, @RequestParam(defaultValue = "0") Double lowestPrice,
+			@RequestParam(defaultValue = "50000000") Double highestPrice,
 			@RequestParam(defaultValue = "true") boolean tivi, @RequestParam(defaultValue = "true") boolean wifi,
 			@RequestParam(defaultValue = "true") boolean air_conditioner,
 			@RequestParam(defaultValue = "false") boolean fridge,
-			@RequestParam(defaultValue = "false") boolean swim_pool, @RequestParam(defaultValue = "0") byte guestAbove,
-			@RequestParam(defaultValue = "100") byte guestBelow, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "false") boolean swim_pool, @RequestParam(defaultValue = "0") byte lowestGuest,
+			@RequestParam(defaultValue = "100") byte highestGuest, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
-		return houseService.searchFilter(country, province, sizeBelow, sizeAbove, priceBelow, priceAbove, tivi, wifi,
-				air_conditioner, fridge, swim_pool,  guestAbove, guestBelow, page, size);
+		return houseService.searchFilter(country, province, lowestSize, highestSize, lowestPrice, highestPrice, tivi, wifi,
+				air_conditioner, fridge, swim_pool,  lowestGuest, highestGuest, page, size);
 	}
 
 	// this is the house update feature

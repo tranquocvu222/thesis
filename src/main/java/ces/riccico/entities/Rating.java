@@ -31,10 +31,9 @@ public class Rating extends Auditable {
 	@Column(name = "content", length = 600)
 	private String content;
 
-//	@OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "idBooking", nullable = false)
-//	@JsonIgnore
 	private Booking booking;
 
 	public Integer getId() {

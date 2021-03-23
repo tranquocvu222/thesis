@@ -1,6 +1,6 @@
-package ces.riccico.notification;
+package ces.riccico.common;
 
-public class RatingNotification {
+public class RatingConstants {
 	
 	public static final String NULL_RATING  = "no reviews yet";
 	
