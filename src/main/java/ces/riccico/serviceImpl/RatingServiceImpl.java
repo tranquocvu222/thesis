@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import ces.riccico.common.BookingConstants;
 import ces.riccico.common.HouseConstants;
-import ces.riccico.common.CommonConstants;
 import ces.riccico.common.RatingConstants;
 import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Booking;
@@ -29,6 +30,7 @@ import ces.riccico.service.RatingService;
 @Service
 public class RatingServiceImpl implements RatingService {
 
+	private static Logger logger = LoggerFactory.getLogger(RatingServiceImpl.class);
 
 	@Autowired
 	private BookingRepository bookingRepository;
@@ -44,126 +46,118 @@ public class RatingServiceImpl implements RatingService {
 
 	@Autowired
 	private ModelMapper mapper;
-	
+
 //	Find rating by id_house
 	@Override
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
-		
+
 		Message message = new Message();
-		
+
 		try {
-			
 			List<Rating> listRating = new ArrayList<Rating>();
-			
+
 			if (!houseRepository.findById(houseId).isPresent()) {
 				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			} else {
-				listRating = ratingRepository.findByBookingHouseId(houseId);
-				List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
-				if (listRating.size() == 0) {
-					message.setMessage(RatingConstants.NULL_RATING);
-					return ResponseEntity.ok(message);
-				} else {
-					for (Rating rating : listRating) {
-						RatingHouseModel ratingModel = new RatingHouseModel();
-						ratingModel.setRating(rating);
-						ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
-						listRatingModel.add(ratingModel);
-					}
-					return ResponseEntity.ok(listRatingModel);
-				}
+
 			}
-			
+
+			listRating = ratingRepository.findByBookingHouseId(houseId);
+			List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
+
+			if (listRating.size() == 0) {
+				message.setMessage(RatingConstants.NULL_RATING);
+				return ResponseEntity.ok(message);
+			}
+
+			for (Rating rating : listRating) {
+				RatingHouseModel ratingModel = new RatingHouseModel();
+				ratingModel.setRating(rating);
+				ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
+				listRatingModel.add(ratingModel);
+			}
+
+			return ResponseEntity.ok(listRatingModel);
+
 		} catch (Exception e) {
-			
-			message.setMessage(CommonConstants.FAIL);
-			
+
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
-	
 //	Find rating by id_account
 	@Override
 	public ResponseEntity<?> findByRatingAccountId() {
-		
+
 		Message message = new Message();
-		
+
 		try {
-			
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			List<Rating> listRating = new ArrayList<Rating>();
 			listRating = ratingRepository.findByBookingAccountIdAccount(idCurrent);
 			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
-			
+
 			if (listRating.size() == 0) {
 				message.setMessage(RatingConstants.NULL_RATING);
 				return ResponseEntity.ok(message);
-			} else {
-				for (Rating rating : listRating) {
-					RatingAccountModel ratingModel = new RatingAccountModel();
-					ratingModel.setRating(rating);
-					ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
-					listRatingModel.add(ratingModel);
-				}
-				return ResponseEntity.ok(listRatingModel);
 			}
-			
-		} catch (Exception e) {
-			
-			message.setMessage(CommonConstants.FAIL);
-			
+
+			for (Rating rating : listRating) {
+				RatingAccountModel ratingModel = new RatingAccountModel();
+				ratingModel.setRating(rating);
+				ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
+				listRatingModel.add(ratingModel);
+			}
+			return ResponseEntity.ok(listRatingModel);
+
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
-	
 //	Write rating house 	
 	@Override
 	public ResponseEntity<?> writeRating(int idBooking, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(idBooking).get();
 		Message message = new Message();
-		
+
 		try {
+			if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
+				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+			}
 			
 			if (!bookingRepository.findById(idBooking).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			} else {
-				if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
-					message.setMessage(BookingConstants.INVALID_STATUS);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else {
-					if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
-						message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-						return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-					} else {
-						if (ratingRepository.findByBookingId(idBooking) != null) {
-							message.setMessage(RatingConstants.IS_RATED);
-							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-						}
-						Rating ratingNew = mapper.map(rating, Rating.class);
-						ratingNew.setBooking(booking);
-						ratingRepository.saveAndFlush(ratingNew);
-						message.setMessage(CommonConstants.FAIL);
-						
-						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-					}
-				}
 			}
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		
-		message.setMessage(CommonConstants.FAIL);
-		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-	
-	}
 
-	
+			if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
+				message.setMessage(BookingConstants.INVALID_STATUS);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			}
+
+			if (ratingRepository.findByBookingId(idBooking) != null) {
+				message.setMessage(RatingConstants.IS_RATED);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			}
+
+			Rating ratingNew = mapper.map(rating, Rating.class);
+			ratingNew.setBooking(booking);
+			ratingRepository.saveAndFlush(ratingNew);
+			return ResponseEntity.ok(ratingNew);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+	}
 
 }

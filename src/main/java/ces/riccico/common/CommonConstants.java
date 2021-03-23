@@ -10,5 +10,6 @@ public class CommonConstants {
 	public static final String FAIL = "fail";
 	
 	public static final String MESSAGE = "message";
+	
 
 }
