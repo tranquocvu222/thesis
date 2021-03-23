@@ -218,7 +218,6 @@ public class AccountServiceImpl implements AccountService {
 		List<Accounts> listAccount = new ArrayList<Accounts>();
 
 		try {
-
 			for (Accounts account : accountRepository.findAll()) {
 				if (account.isBanned() == IS_NOT_BANNED) {
 					listAccount.add(account);
@@ -238,7 +237,6 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> forgetPassword(String email) {
 
 		Message message = new Message();
-
 		Accounts accounts = accountRepository.findByEmail(email);
 
 		try {
@@ -284,7 +282,6 @@ public class AccountServiceImpl implements AccountService {
 	public AccountDetail loadUserByUsername(String username) {
 
 		Accounts account = accountRepository.findByUsername(username);
-
 		AccountDetail accountDetail = mapper.map(account, AccountDetail.class);
 
 		if (account == null) {
@@ -358,9 +355,7 @@ public class AccountServiceImpl implements AccountService {
 			}
 
 		} catch (Exception e) {
-
 			message.setMessage(CommonConstants.FAIL);
-
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -370,11 +365,9 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> logout() {
 
 		Message message = new Message();
-
 		String tokenCurrent;
 
 		try {
-
 			tokenCurrent = jwtUtil.getJwtTokenHeader();
 			JWTClaimsSet claims = jwtUtil.getClaimsFromToken(tokenCurrent);
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
@@ -384,10 +377,12 @@ public class AccountServiceImpl implements AccountService {
 				message.setMessage(TokenConstants.TOKEN_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
+			
 			if (!jwtUtil.isTokenExpired(claims)) {
 				message.setMessage(TokenConstants.IS_TOKEN_EXPIRED);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
+			
 			if (!jwtUtil.validateToken(tokenCurrent, account)) {
 				message.setMessage(TokenConstants.INVALID_TOKEN);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
@@ -400,9 +395,7 @@ public class AccountServiceImpl implements AccountService {
 			}
 
 		} catch (Exception e) {
-
 			message.setMessage(e.getLocalizedMessage());
-
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -414,39 +407,44 @@ public class AccountServiceImpl implements AccountService {
 		Message message = new Message();
 
 		try {
-
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
-
 			CONFIRM_CODE = code;
 
 			if (account.getUsername().equals("")) {
 				message.setMessage(UserConstants.USERNAME_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (account.getEmail().equals("")) {
 				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (account.getPassword().equals("")) {
 				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (!account.getUsername().matches(Validation.USERNAME_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_USERNAME_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (!account.getPassword().matches(Validation.PASSWORD_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (accountRepository.findByEmail(account.getEmail()) != null) {
 				message.setMessage(UserConstants.EMAIL_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (accountRepository.findByUsername(account.getUsername()) == null) {
 				try {
 					SimpleMailMessage messageEmail = new SimpleMailMessage();
@@ -465,7 +463,6 @@ public class AccountServiceImpl implements AccountService {
 					accountRepository.saveAndFlush(accountNew);
 					userRepository.saveAndFlush(user);
 					message.setMessage(CommonConstants.SUCCESS);
-
 					return ResponseEntity.ok(message);
 
 				} catch (Exception e) {
@@ -477,7 +474,6 @@ public class AccountServiceImpl implements AccountService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 
 			} else {
-
 				message.setMessage(UserConstants.USERNAME_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
@@ -494,44 +490,43 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> resetPassword(String email, String password) {
 
 		Message message = new Message();
-
 		Accounts account = accountRepository.findByEmail(email);
 
 		try {
-
 			if (email == null) {
 				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (!email.matches(Validation.EMAIL_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (password == null) {
 				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (!password.matches(Validation.PASSWORD_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+			
 			if (!account.getEmail().isEmpty() && account.isActive()) {
 				account.setPassword(new BCryptPasswordEncoder().encode(password));
 				accountRepository.saveAndFlush(account);
 				message.setMessage(CommonConstants.SUCCESS);
-
 				return ResponseEntity.ok(message);
 
 			} else {
 				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
-
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 		} catch (Exception e) {
 
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
-
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
