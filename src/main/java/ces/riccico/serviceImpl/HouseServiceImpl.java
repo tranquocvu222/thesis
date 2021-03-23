@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.notification.Notification;
+import ces.riccico.notification.CommonConstants;
 import ces.riccico.entities.Accounts;
 import ces.riccico.entities.House;
 import ces.riccico.entities.Images;
@@ -23,8 +23,8 @@ import ces.riccico.models.HouseModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.PaginationModel;
 import ces.riccico.models.Role;
-import ces.riccico.notification.HouseNotification;
-import ces.riccico.notification.UserNotification;
+import ces.riccico.notification.HouseConstants;
+import ces.riccico.notification.UserConstants;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.service.HouseService;
@@ -60,11 +60,11 @@ public class HouseServiceImpl implements HouseService {
 		try {
 			House house = houseRepository.findById(idHouse).get();
 			if (house.isApproved()) {
-				message.setMessage(HouseNotification.HOUSE_APPROVED);
+				message.setMessage(HouseConstants.HOUSE_APPROVED);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				house.setApproved(IS_APPROVED);
-				message.setMessage(Notification.SUCCESS);
+				message.setMessage(CommonConstants.SUCCESS);
 				houseRepository.saveAndFlush(house);
 				return ResponseEntity.ok(message);
 			}
@@ -81,34 +81,34 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 		
 		if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
-			message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(idHouse).isPresent()) {
-			message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
+			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		} else {
 			if (house.isDeleted()) {
-				message.setMessage(HouseNotification.HOUSE_DELETED);
+				message.setMessage(HouseConstants.HOUSE_DELETED);
 				return ResponseEntity.ok(message);
 			} else if (accountRepository.findById(idCurrent).get().getRole().equals(Role.ADMIN.getRole())) {
 				house.setDeleted(IS_DELETED);
 				houseRepository.saveAndFlush(house);
-				message.setMessage(HouseNotification.BY_ADMIN);
+				message.setMessage(HouseConstants.BY_ADMIN);
 				return ResponseEntity.ok(message);
 			} else {
 				if (!idCurrent.equals(houseRepository.findById(idHouse).get().getAccount().getIdAccount())) {
-					message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
+					message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 				}
 				
 				house.setDeleted(IS_DELETED);
 				houseRepository.saveAndFlush(house);
-				message.setMessage(HouseNotification.BY_USER);
+				message.setMessage(HouseConstants.BY_USER);
 				return ResponseEntity.ok(message);
 			}
 		}
 		
-		message.setMessage(Notification.FAIL);
+		message.setMessage(CommonConstants.FAIL);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
 
@@ -166,12 +166,12 @@ public class HouseServiceImpl implements HouseService {
 			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
 			
 			if (!accountRepository.findById(idAccount).isPresent()) {
-				message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
+				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 			
 			if (accountRepository.findById(idAccount).get().getHouses().size() == 0) {
-				message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
+				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 			
@@ -252,7 +252,7 @@ public class HouseServiceImpl implements HouseService {
 		HouseDetailModel houseDetail;
 		
 		if (house == null) {
-			message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
+			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		} else {
 			houseDetail = mapper.map(house, HouseDetailModel.class);
@@ -283,20 +283,20 @@ public class HouseServiceImpl implements HouseService {
 			account = accountRepository.findById(idCurrent).get();
 			
 			if (account == null) {
-				message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
+				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				if (houseDetail.getTitle().equals(null)) {
-					message.setMessage(HouseNotification.NAME_IS_NULL);
+					message.setMessage(HouseConstants.NAME_IS_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (houseDetail.getCountry() == null || houseDetail.getCountry().isEmpty()) {
-					message.setMessage(HouseNotification.COUNTRY_IS_NULL);
+					message.setMessage(HouseConstants.COUNTRY_IS_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (houseDetail.getProvince().equals(null)) {
-					message.setMessage(HouseNotification.CITY_IS_NULL);
+					message.setMessage(HouseConstants.CITY_IS_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (houseDetail.getAddress().equals(null)) {
-					message.setMessage(HouseNotification.ADDRESS_IS_NULL);
+					message.setMessage(HouseConstants.ADDRESS_IS_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
 					House house = mapper.map(houseDetail, House.class);
@@ -338,14 +338,13 @@ public class HouseServiceImpl implements HouseService {
 			byte ac_binary = (air_conditioner == true) ? Amenities.AC.getValue() : 0;
 			byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
 			byte swim_pool_binary = (swim_pool == true) ? Amenities.SWIM_POOL.getValue() : 0;
-			amenities = Integer
-					.toBinaryString(wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
+			amenities = Integer.toBinaryString(wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 			Pageable paging = PageRequest.of(page, size);
 			listHouse = houseRepository.searchFilter(country, province, sizeBelow, sizeAbove, priceBelow, priceAbove,
 					amenities, guestAbove, guestBelow, paging).getContent();
 			
 			if (listHouse.size() == 0) {
-				message.setMessage(HouseNotification.HOUSE_NOT_FOUND);
+				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				int pageMax = houseRepository.searchFilter(country, province, sizeBelow, sizeAbove, priceBelow,
@@ -376,13 +375,13 @@ public class HouseServiceImpl implements HouseService {
 			Accounts account = accountRepository.findById(idCurrent).get();
 			
 			if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
-				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
+				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!houseRepository.findById(idHouse).isPresent()) {
-				message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
+				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else if (!houseRepository.findById(idHouse).get().getAccount().getIdAccount().equals(idCurrent)) {
-				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
+				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 			

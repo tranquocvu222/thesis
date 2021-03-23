@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +26,9 @@ import ces.riccico.models.Message;
 import ces.riccico.models.Role;
 import ces.riccico.entities.Token;
 import ces.riccico.entities.Users;
-import ces.riccico.notification.Notification;
-import ces.riccico.notification.TokenNotification;
-import ces.riccico.notification.UserNotification;
+import ces.riccico.notification.CommonConstants;
+import ces.riccico.notification.TokenConstants;
+import ces.riccico.notification.UserConstants;
 
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TokenRepository;
@@ -46,6 +48,8 @@ public class AccountServiceImpl implements AccountService {
 
 	private static final boolean IS_NOT_BANNED = false;
 
+	private static Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
+
 	@Autowired
 	private AccountRepository accountRepository;
 
@@ -63,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private JavaMailSender sender;
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
@@ -77,23 +81,24 @@ public class AccountServiceImpl implements AccountService {
 			Accounts account = accountRepository.findByEmail(email);
 
 			if (account == null) {
-				message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
+				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (codeInput != CONFIRM_CODE) {
-				message.setMessage(UserNotification.INVALID_CODE);
+			}
+			if (codeInput != CONFIRM_CODE) {
+				message.setMessage(UserConstants.INVALID_CODE);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				account.setActive(true);
 				accountRepository.saveAndFlush(account);
-				message.setMessage(Notification.SUCCESS);
+				message.setMessage(CommonConstants.SUCCESS);
 				return ResponseEntity.ok(message);
 			}
 
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e.getMessage());
 		}
 
-		message.setMessage(Notification.FAIL);
+		message.setMessage(CommonConstants.FAIL);
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
@@ -108,114 +113,125 @@ public class AccountServiceImpl implements AccountService {
 			Accounts account = accountRepository.findById(idAccount).get();
 
 			if (account.isBanned() == IS_BANNED) {
-				message.setMessage(UserNotification.ACCOUNT_BANNED);
+				message.setMessage(UserConstants.ACCOUNT_BANNED);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				account.setBanned(IS_BANNED);
 				accountRepository.saveAndFlush(account);
 			}
 		} catch (Exception e) {
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
-		message.setMessage(Notification.SUCCESS);
-		
+
+		message.setMessage(CommonConstants.SUCCESS);
+
 		return ResponseEntity.ok(message);
 	}
-	
-	
+
 //	Change password  
 	@Override
 	public ResponseEntity<?> changePassword(String oldPassword, String newPassword) {
-		
+
 		Message message = new Message();
-		
+
 		try {
-			
+
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			
+
 			Accounts account = accountRepository.findById(idCurrent).get();
-			
+
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			
+
 			if (account == null) {
-				message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
+				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else {
 				if (oldPassword == null || oldPassword.isEmpty()) {
-					message.setMessage(UserNotification.PASSWORD_NULL);
+					message.setMessage(UserConstants.PASSWORD_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (newPassword == null || newPassword.isEmpty()) {
-					message.setMessage(UserNotification.PASSWORD_NEW_NULL);
+				} 
+				if (newPassword == null || newPassword.isEmpty()) {
+					message.setMessage(UserConstants.PASSWORD_NEW_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (!encoder.matches(oldPassword, account.getPassword())) {
-					message.setMessage(UserNotification.WRONG_OLD_PASSWORD);
+				} 
+				if (!encoder.matches(oldPassword, account.getPassword())) {
+					message.setMessage(UserConstants.WRONG_OLD_PASSWORD);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (!newPassword.matches(Validation.PASSWORD_PATTERN)) {
-					message.setMessage(UserNotification.INVALID_PASSWORD_FORMAT);
+				} 
+				if (!newPassword.matches(Validation.PASSWORD_PATTERN)) {
+					message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else if (newPassword.equals(oldPassword)) {
-					message.setMessage(UserNotification.IS_MATCHING_OLD_PASSWORD);
+				} 
+				if (newPassword.equals(oldPassword)) {
+					message.setMessage(UserConstants.IS_MATCHING_OLD_PASSWORD);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
-					message.setMessage(Notification.SUCCESS);
+					message.setMessage(CommonConstants.SUCCESS);
 					account.setPassword(encoder.encode(newPassword));
 					accountRepository.saveAndFlush(account);
 					return ResponseEntity.ok(message);
 				}
 			}
-			
+
 		} catch (Exception e) {
-			
-			message.setMessage(Notification.FAIL);
-			
+
+			message.setMessage(CommonConstants.FAIL);
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
-	
 
 //	Show list account was banned
 	@Override
 	public List<Accounts> findAllIsBanned() {
+
+		List<Accounts> listAccount = new ArrayList<Accounts>();
+
 		try {
-			List<Accounts> listAccount = new ArrayList<Accounts>();
+
 			for (Accounts account : accountRepository.findAll()) {
 				if (account.isBanned() == IS_BANNED) {
 					listAccount.add(account);
 				}
 			}
+
 			return listAccount;
+
 		} catch (Exception e) {
-			System.out.println("getAll: " + e);
-			return null;
+			logger.error(e.getMessage());
 		}
+
+		return listAccount;
 	}
 
-	
 //	Find account by idAccount
 	@Override
 	public Optional<Accounts> findById(int id) {
 		return accountRepository.findById(id);
 	}
 
-	
 //	Show list account was not banned
 	@Override
 	public List<Accounts> findAll() {
+
+		List<Accounts> listAccount = new ArrayList<Accounts>();
+
 		try {
-			List<Accounts> listAccount = new ArrayList<Accounts>();
+
 			for (Accounts account : accountRepository.findAll()) {
 				if (account.isBanned() == IS_NOT_BANNED) {
 					listAccount.add(account);
 				}
 			}
+
 			return listAccount;
+
 		} catch (Exception e) {
-			return null;
+			logger.error(e.getMessage());
 		}
+		return listAccount;
 	}
-	
 
 //  Recover password by email when forget 
 	@Override
@@ -227,46 +243,50 @@ public class AccountServiceImpl implements AccountService {
 
 		try {
 			if (email == null) {
-				message.setMessage(UserNotification.EMAIL_NULL);
+				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (!email.matches(Validation.EMAIL_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_EMAIL_FORMAT);
+			}
+
+			if (!email.matches(Validation.EMAIL_PATTERN)) {
+				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (!accounts.getEmail().isEmpty() && accounts.isActive()) {
+			}
+
+			if (!accounts.getEmail().isEmpty() && accounts.isActive()) {
 				SimpleMailMessage messageEmail = new SimpleMailMessage();
 				messageEmail.setTo(accounts.getEmail());
 				messageEmail.setSubject("Reset Password");
-				messageEmail.setText("Wellcome " + accounts.getEmail() + "\nYour Password is: " + accounts.getPassword());
-			
+				messageEmail
+						.setText("Wellcome " + accounts.getEmail() + "\nYour Password is: " + accounts.getPassword());
+
 				try {
 					sender.send(messageEmail);
 				} catch (Exception e) {
 					System.out.println("createNewServices: " + e);
 				}
-				
+
 			} else {
-				message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
+				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 		} catch (Exception e) {
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
-		message.setMessage(Notification.SUCCESS);
+
+		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
 	}
-	
-	
+
 //	Load user by username
 	@Override
 	public AccountDetail loadUserByUsername(String username) {
-		
+
 		Accounts account = accountRepository.findByUsername(username);
-		
+
 		AccountDetail accountDetail = mapper.map(account, AccountDetail.class);
-		
+
 		if (account == null) {
 			return null;
 		} else {
@@ -277,53 +297,55 @@ public class AccountServiceImpl implements AccountService {
 			accountDetail.setIdUser(account.getIdAccount());
 			accountDetail.setAuthorities(authorities);
 		}
-		
+
 		return accountDetail;
 	}
-	
-	
+
 //	Login by username or email and password
 	@Override
 	public ResponseEntity<?> login(LoginModel account) {
-		
+
 		Message message = new Message();
-		
+
 		try {
-			
+
 			String usernameOrEmail = account.getUsernameOrEmail();
 			String password = account.getPassword();
-			
+
 			if (usernameOrEmail == null || usernameOrEmail.isEmpty()) {
-				message.setMessage(UserNotification.USERNAME_NULL);
+				message.setMessage(UserConstants.USERNAME_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (password == null || password.isEmpty()) {
-				message.setMessage(UserNotification.PASSWORD_NULL);
+			}
+			if (password == null || password.isEmpty()) {
+				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				if (usernameOrEmail.matches(Validation.EMAIL_PATTERN)) {
 					if (accountRepository.findByEmail(usernameOrEmail) == null) {
-						message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
+						message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 					}
 					usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUsername();
 				}
-				
+
 				AccountDetail accountDetail = loadUserByUsername(usernameOrEmail);
-				
+
 				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-				
+
 				if (accountRepository.findByUsername(usernameOrEmail) == null) {
-					message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
+					message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				}else {
+				} else {
 					if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
-						message.setMessage(UserNotification.INVALID_ACCOUNT);
+						message.setMessage(UserConstants.INVALID_ACCOUNT);
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-					} else if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
-						message.setMessage(UserNotification.ACCOUNT_BANNED);
+					} 
+					if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
+						message.setMessage(UserConstants.ACCOUNT_BANNED);
 						return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-					} else if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
-						message.setMessage(UserNotification.NOT_ACTIVATED);
+					} 
+					if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
+						message.setMessage(UserConstants.NOT_ACTIVATED);
 						return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 					} else {
 						Token token = new Token();
@@ -334,91 +356,98 @@ public class AccountServiceImpl implements AccountService {
 					}
 				}
 			}
-			
+
 		} catch (Exception e) {
-			
-			message.setMessage(Notification.FAIL);
-			
+
+			message.setMessage(CommonConstants.FAIL);
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
-	
-	
+
 //	Logout account
 	@Override
 	public ResponseEntity<?> logout() {
-		
+
 		Message message = new Message();
-		
+
 		String tokenCurrent;
-		
+
 		try {
-			
+
 			tokenCurrent = jwtUtil.getJwtTokenHeader();
 			JWTClaimsSet claims = jwtUtil.getClaimsFromToken(tokenCurrent);
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Accounts account = accountRepository.findById(idCurrent).get();
-			
+
 			if (tokenRepository.findByToken(tokenCurrent) == null) {
-				message.setMessage(TokenNotification.TOKEN_NOT_EXIST);
+				message.setMessage(TokenConstants.TOKEN_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-			} else if (!jwtUtil.isTokenExpired(claims)) {
-				message.setMessage(TokenNotification.IS_TOKEN_EXPIRED);
+			}
+			if (!jwtUtil.isTokenExpired(claims)) {
+				message.setMessage(TokenConstants.IS_TOKEN_EXPIRED);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-			} else if (!jwtUtil.validateToken(tokenCurrent, account)) {
-				message.setMessage(TokenNotification.INVALID_TOKEN);
+			}
+			if (!jwtUtil.validateToken(tokenCurrent, account)) {
+				message.setMessage(TokenConstants.INVALID_TOKEN);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else {
 				Token token = tokenRepository.findByToken(tokenCurrent);
 				tokenRepository.delete(token);
-				message.setMessage(Notification.SUCCESS);
-				
+				message.setMessage(CommonConstants.SUCCESS);
+
 				return ResponseEntity.ok(message);
 			}
-			
+
 		} catch (Exception e) {
-			
+
 			message.setMessage(e.getLocalizedMessage());
-			
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
-	
 //	Register accountby username, email, password	
 	@Override
 	public ResponseEntity<?> register(Accounts account, Users user) {
-		
+
 		Message message = new Message();
 
 		try {
-			
+
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
-			
+
 			CONFIRM_CODE = code;
-			
+
 			if (account.getUsername().equals("")) {
-				message.setMessage(UserNotification.USERNAME_NULL);
+				message.setMessage(UserConstants.USERNAME_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (account.getEmail().equals("")) {
-				message.setMessage(UserNotification.EMAIL_NULL);
+			}
+			if (account.getEmail().equals("")) {
+				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (account.getPassword().equals("")) {
-				message.setMessage(UserNotification.PASSWORD_NULL);
+			}
+			if (account.getPassword().equals("")) {
+				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (!account.getUsername().matches(Validation.USERNAME_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_USERNAME_FORMAT);
+			}
+			if (!account.getUsername().matches(Validation.USERNAME_PATTERN)) {
+				message.setMessage(UserConstants.INVALID_USERNAME_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_EMAIL_FORMAT);
+			}
+			if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
+				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (!account.getPassword().matches(Validation.PASSWORD_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_PASSWORD_FORMAT);
+			}
+			if (!account.getPassword().matches(Validation.PASSWORD_PATTERN)) {
+				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (accountRepository.findByEmail(account.getEmail()) != null) {
-				message.setMessage(UserNotification.EMAIL_EXISTS);
+			}
+			if (accountRepository.findByEmail(account.getEmail()) != null) {
+				message.setMessage(UserConstants.EMAIL_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (accountRepository.findByUsername(account.getUsername()) == null) {
+			}
+			if (accountRepository.findByUsername(account.getUsername()) == null) {
 				try {
 					SimpleMailMessage messageEmail = new SimpleMailMessage();
 					messageEmail.setTo(account.getEmail());
@@ -426,7 +455,7 @@ public class AccountServiceImpl implements AccountService {
 					messageEmail.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
 							+ "\nPlease enter code on website to complete register");
 					sender.send(messageEmail);
-					
+
 					Accounts accountNew = mapper.map(account, Accounts.class);
 					accountNew.setRole(Role.USER.getRole());
 					accountNew.setBanned(false);
@@ -435,71 +464,74 @@ public class AccountServiceImpl implements AccountService {
 					user.setAccount(accountNew);
 					accountRepository.saveAndFlush(accountNew);
 					userRepository.saveAndFlush(user);
-					message.setMessage(Notification.SUCCESS);
-					
+					message.setMessage(CommonConstants.SUCCESS);
+
 					return ResponseEntity.ok(message);
-					
+
 				} catch (Exception e) {
-					
+
 					System.out.println("createNewServices: " + e);
 				}
 
-				message.setMessage(Notification.FAIL);
+				message.setMessage(CommonConstants.FAIL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 
 			} else {
-				
-				message.setMessage(UserNotification.USERNAME_EXISTS);
+
+				message.setMessage(UserConstants.USERNAME_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 		} catch (Exception e) {
-			
-			message.setMessage(Notification.FAIL);
+
+			message.setMessage(CommonConstants.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
 
-	
 //	Reset password when forgot password
 	@Override
 	public ResponseEntity<?> resetPassword(String email, String password) {
-		
+
 		Message message = new Message();
-		
+
 		Accounts account = accountRepository.findByEmail(email);
-		
+
 		try {
-			
+
 			if (email == null) {
-				message.setMessage(UserNotification.EMAIL_NULL);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (!email.matches(Validation.EMAIL_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_EMAIL_FORMAT);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (password == null) {
-				message.setMessage(UserNotification.PASSWORD_NULL);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (!password.matches(Validation.PASSWORD_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_PASSWORD_FORMAT);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else if (!account.getEmail().isEmpty() && account.isActive()) {
-				account.setPassword(new BCryptPasswordEncoder().encode(password));
-				accountRepository.saveAndFlush(account);
-				message.setMessage(Notification.SUCCESS);
-				
-				return ResponseEntity.ok(message);
-				
-			} else {
-				message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
-				
+				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+			if (!email.matches(Validation.EMAIL_PATTERN)) {
+				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			}
+			if (password == null) {
+				message.setMessage(UserConstants.PASSWORD_NULL);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			}
+			if (!password.matches(Validation.PASSWORD_PATTERN)) {
+				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			}
+			if (!account.getEmail().isEmpty() && account.isActive()) {
+				account.setPassword(new BCryptPasswordEncoder().encode(password));
+				accountRepository.saveAndFlush(account);
+				message.setMessage(CommonConstants.SUCCESS);
+
+				return ResponseEntity.ok(message);
+
+			} else {
+				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
+
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			}
+
 		} catch (Exception e) {
-			
-			message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
-			
+
+			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}

@@ -1,6 +1,6 @@
 package ces.riccico.notification;
 
-public class BookingNotification {
+public class BookingConstants {
 
 	public static final String ACCOUNT_WITHOUT_PERMISSION ="you can't book your homestay";
 	

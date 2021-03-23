@@ -13,15 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.notification.Notification;
-import ces.riccico.notification.HouseNotification;
-import ces.riccico.notification.UserNotification;
+import ces.riccico.notification.CommonConstants;
+import ces.riccico.notification.HouseConstants;
+import ces.riccico.notification.UserConstants;
 import ces.riccico.entities.Accounts;
 import ces.riccico.entities.Booking;
 import ces.riccico.entities.House;
 import ces.riccico.models.Message;
 import ces.riccico.models.Status;
-import ces.riccico.notification.BookingNotification;
+import ces.riccico.notification.BookingConstants;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
@@ -50,19 +50,19 @@ public class BookingServiceImpl implements BookingService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (!bookingRepository.findById(idBooking).isPresent()) {
-			message.setMessage(BookingNotification.BOOKING_NOT_EXITST);
+			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
-			message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
 		Booking booking = bookingRepository.findById(idBooking).get();
 		booking.setStatus(Status.APPROVAL.getStatusName());
 		bookingRepository.saveAndFlush(booking);
-		message.setMessage(Notification.SUCCESS);
+		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
 	}
 
@@ -74,21 +74,21 @@ public class BookingServiceImpl implements BookingService {
 		Booking booking = bookingRepository.findById(idBooking).get();
 
 		if (!bookingRepository.findById(idBooking).isPresent()) {
-			message.setMessage(BookingNotification.BOOKING_NOT_EXITST);
+			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		} else {
 			if (!idCurrent.equals(booking.getHouse().getAccount().getIdAccount())
 					|| !idCurrent.equals(booking.getAccount().getIdAccount())) {
-				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
+				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			} else {
 				booking.setStatus(Status.CANCELED.getStatusName());
 				bookingRepository.saveAndFlush(booking);
 				if (idCurrent.equals(booking.getAccount().getIdAccount())) {
-					message.setMessage(BookingNotification.BY_CUSTOMER);
+					message.setMessage(BookingConstants.BY_CUSTOMER);
 					return ResponseEntity.ok(message);
 				} else {
-					message.setMessage(BookingNotification.BY_HOST);
+					message.setMessage(BookingConstants.BY_HOST);
 					return ResponseEntity.ok(message);
 				}
 			}
@@ -112,23 +112,23 @@ public class BookingServiceImpl implements BookingService {
 			Booking booking = bookingRepository.findById(idBooking).get();
 
 			if (!bookingRepository.findById(idBooking).isPresent()) {
-				message.setMessage(BookingNotification.BOOKING_NOT_EXITST);
+				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
 			if (!Status.APPROVAL.getStatusName().equals(booking.getStatus())) {
-				message.setMessage(BookingNotification.INVALID_STATUS);
+				message.setMessage(BookingConstants.INVALID_STATUS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			if (currentDate.compareTo(booking.getCreateEnd()) < 0) {
-				message.setMessage(BookingNotification.INVALID_DATE_COMPLETE);
+				message.setMessage(BookingConstants.INVALID_DATE_COMPLETE);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			booking.setStatus(Status.COMPLETED.getStatusName());
 			bookingRepository.saveAndFlush(booking);
-			message.setMessage(Notification.SUCCESS);
+			message.setMessage(CommonConstants.SUCCESS);
 			return ResponseEntity.ok(message);
 
 		} catch (Exception e) {
@@ -167,23 +167,23 @@ public class BookingServiceImpl implements BookingService {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 			if (!bookingRepository.findById(idBooking).isPresent()) {
-				message.setMessage(BookingNotification.BOOKING_NOT_EXITST);
+				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
 			if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
-				message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
+				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 
 			if (!Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())) {
-				message.setMessage(BookingNotification.INVALID_STATUS);
+				message.setMessage(BookingConstants.INVALID_STATUS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			booking.setStatus(Status.PENDING_APPROVAL.getStatusName());
 			bookingRepository.saveAndFlush(booking);
-			message.setMessage(Notification.SUCCESS);
+			message.setMessage(CommonConstants.SUCCESS);
 			return ResponseEntity.ok(message);
 
 		} catch (Exception e) {
@@ -205,12 +205,12 @@ public class BookingServiceImpl implements BookingService {
 			House house = houseRepository.findById(idHouse).get();
 
 			if (idCurrent.equals(house.getAccount().getIdAccount())) {
-				message.setMessage(BookingNotification.ACCOUNT_WITHOUT_PERMISSION);
+				message.setMessage(BookingConstants.ACCOUNT_WITHOUT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 
 			} else {
 				if (!houseRepository.findById(idHouse).isPresent()) {
-					message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
+					message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 				} else {
 					List<Booking> listBookings = new ArrayList<Booking>();
@@ -236,12 +236,12 @@ public class BookingServiceImpl implements BookingService {
 					}
 
 					if (TimeUnit.MILLISECONDS.toDays(dateIn.getTime() - currentDate.getTime()) < 0) {
-						message.setMessage(BookingNotification.INVALID_CHECKIN);
+						message.setMessage(BookingConstants.INVALID_CHECKIN);
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 					}
 
 					if (dateIn.compareTo(dateOut) > 0) {
-						message.setMessage(BookingNotification.INVALID_CHECKOUT);
+						message.setMessage(BookingConstants.INVALID_CHECKOUT);
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 					}
 
@@ -251,7 +251,7 @@ public class BookingServiceImpl implements BookingService {
 								|| dateOut.compareTo(booking.getCreateCheckIn()) > 0
 										&& dateOut.compareTo(booking.getCreateEnd()) <= 0)
 								&& !Status.CANCELED.getStatusName().equals(booking.getStatus())) {
-							message.setMessage(BookingNotification.HOUSE_BOOKED);
+							message.setMessage(BookingConstants.HOUSE_BOOKED);
 							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 						}
 					}
