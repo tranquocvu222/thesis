@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Message;
+import ces.riccico.common.CommonConstants;
+import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Users;
-import ces.riccico.notification.CommonConstants;
-import ces.riccico.notification.UserConstants;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.SecurityAuditorAware;

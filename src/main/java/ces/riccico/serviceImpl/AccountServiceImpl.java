@@ -20,16 +20,15 @@ import org.springframework.stereotype.Service;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
+import ces.riccico.common.CommonConstants;
+import ces.riccico.common.TokenConstants;
+import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Accounts;
 import ces.riccico.models.LoginModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.Role;
 import ces.riccico.entities.Token;
 import ces.riccico.entities.Users;
-import ces.riccico.notification.CommonConstants;
-import ces.riccico.notification.TokenConstants;
-import ces.riccico.notification.UserConstants;
-
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;

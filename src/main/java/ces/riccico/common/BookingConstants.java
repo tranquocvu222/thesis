@@ -1,4 +1,4 @@
-package ces.riccico.notification;
+package ces.riccico.common;
 
 public class BookingConstants {
 
