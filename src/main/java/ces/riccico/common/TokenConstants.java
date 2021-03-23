@@ -1,6 +1,6 @@
-package ces.riccico.notification;
+package ces.riccico.common;
 
-public class TokenNotification {
+public class TokenConstants {
 	
 	public static final String IS_TOKEN_EXPIRED = "token expired";
 	

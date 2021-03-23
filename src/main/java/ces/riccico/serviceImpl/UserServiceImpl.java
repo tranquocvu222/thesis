@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.models.Message;
+import ces.riccico.common.CommonConstants;
+import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Users;
-import ces.riccico.notification.Notification;
-import ces.riccico.notification.UserNotification;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.SecurityAuditorAware;
@@ -42,22 +42,22 @@ public class UserServiceImpl implements UserService {
 
 			if (user != null) {
 				if (model.getFirstname().equals("")) {
-					message.setMessage(UserNotification.FIRST_NAME_NULL);
+					message.setMessage(UserConstants.FIRST_NAME_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getLastname().equals("")) {
-					message.setMessage(UserNotification.LAST_NAME_NULL);
+					message.setMessage(UserConstants.LAST_NAME_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getBirthday() == null) {
-					message.setMessage(UserNotification.BIRTHDAY_NULL);
+					message.setMessage(UserConstants.BIRTHDAY_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getAddress().equals("")) {
-					message.setMessage(UserNotification.ADDRESS_NULL);
+					message.setMessage(UserConstants.ADDRESS_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getCity().equals("")) {
-					message.setMessage(UserNotification.CITY_NULL);
+					message.setMessage(UserConstants.CITY_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (model.getCountry().equals("")) {
-					message.setMessage(UserNotification.COUNTRY_NULL);
+					message.setMessage(UserConstants.COUNTRY_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
 					user.setFirstname(model.getFirstname());
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 					System.out.println("==========" + user);
 				}
 
-				message.setMessage(Notification.SUCCESS);
+				message.setMessage(CommonConstants.SUCCESS);
 				return ResponseEntity.ok(message);
 			}
 
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
 			System.out.println("editAdmin: " + e);
 		}
 
-		message.setMessage(Notification.FAIL);
+		message.setMessage(CommonConstants.FAIL);
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
@@ -99,8 +99,8 @@ public class UserServiceImpl implements UserService {
 		try {
 			
 			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
-			Users user = userRepository.findById(idaccount).get();
-			message.setMessage(Notification.SUCCESS);
+			Users user = userRepository.findByIdAccount(idaccount).get();
+			message.setMessage(CommonConstants.SUCCESS);
 			
 			return ResponseEntity.ok(user);
 			

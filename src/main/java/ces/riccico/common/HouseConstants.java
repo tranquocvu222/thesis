@@ -1,6 +1,6 @@
-package ces.riccico.notification;
+package ces.riccico.common;
 
-public class HouseNotification {
+public class HouseConstants {
 	
 	public static final String ADDRESS_IS_NULL = "Please enter your address";
 	

@@ -9,17 +9,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.notification.Notification;
+import ces.riccico.common.BookingConstants;
+import ces.riccico.common.HouseConstants;
+import ces.riccico.common.CommonConstants;
+import ces.riccico.common.RatingConstants;
+import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Booking;
 import ces.riccico.models.Message;
 import ces.riccico.entities.Rating;
 import ces.riccico.models.RatingAccountModel;
 import ces.riccico.models.RatingHouseModel;
 import ces.riccico.models.Status;
-import ces.riccico.notification.BookingNotification;
-import ces.riccico.notification.HouseNotification;
-import ces.riccico.notification.RatingNotification;
-import ces.riccico.notification.UserNotification;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.repository.RatingRepository;
@@ -56,13 +56,13 @@ public class RatingServiceImpl implements RatingService {
 			List<Rating> listRating = new ArrayList<Rating>();
 			
 			if (!houseRepository.findById(houseId).isPresent()) {
-				message.setMessage(HouseNotification.HOUSE_NOT_EXIST);
+				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				listRating = ratingRepository.findByBookingHouseId(houseId);
 				List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
 				if (listRating.size() == 0) {
-					message.setMessage(RatingNotification.NULL_RATING);
+					message.setMessage(RatingConstants.NULL_RATING);
 					return ResponseEntity.ok(message);
 				} else {
 					for (Rating rating : listRating) {
@@ -77,7 +77,7 @@ public class RatingServiceImpl implements RatingService {
 			
 		} catch (Exception e) {
 			
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -98,7 +98,7 @@ public class RatingServiceImpl implements RatingService {
 			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
 			
 			if (listRating.size() == 0) {
-				message.setMessage(RatingNotification.NULL_RATING);
+				message.setMessage(RatingConstants.NULL_RATING);
 				return ResponseEntity.ok(message);
 			} else {
 				for (Rating rating : listRating) {
@@ -112,7 +112,7 @@ public class RatingServiceImpl implements RatingService {
 			
 		} catch (Exception e) {
 			
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -129,26 +129,25 @@ public class RatingServiceImpl implements RatingService {
 		try {
 			
 			if (!bookingRepository.findById(idBooking).isPresent()) {
-				message.setMessage(BookingNotification.BOOKING_NOT_EXITST);
+				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
-					message.setMessage(BookingNotification.INVALID_STATUS
-							);
+					message.setMessage(BookingConstants.INVALID_STATUS);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
 					if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
-						message.setMessage(UserNotification.ACCOUNT_NOT_PERMISSION);
+						message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 						return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 					} else {
 						if (ratingRepository.findByBookingId(idBooking) != null) {
-							message.setMessage(RatingNotification.IS_RATED);
+							message.setMessage(RatingConstants.IS_RATED);
 							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 						}
 						Rating ratingNew = mapper.map(rating, Rating.class);
 						ratingNew.setBooking(booking);
 						ratingRepository.saveAndFlush(ratingNew);
-						message.setMessage(Notification.FAIL);
+						message.setMessage(CommonConstants.FAIL);
 						
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 					}
@@ -159,7 +158,7 @@ public class RatingServiceImpl implements RatingService {
 			System.out.println(e);
 		}
 		
-		message.setMessage(Notification.FAIL);
+		message.setMessage(CommonConstants.FAIL);
 		
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	

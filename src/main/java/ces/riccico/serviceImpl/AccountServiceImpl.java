@@ -18,16 +18,15 @@ import org.springframework.stereotype.Service;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
+import ces.riccico.common.CommonConstants;
+import ces.riccico.common.TokenConstants;
+import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Accounts;
 import ces.riccico.models.LoginModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.Role;
 import ces.riccico.entities.Token;
 import ces.riccico.entities.Users;
-import ces.riccico.notification.Notification;
-import ces.riccico.notification.TokenNotification;
-import ces.riccico.notification.UserNotification;
-
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;
@@ -77,15 +76,15 @@ public class AccountServiceImpl implements AccountService {
 			Accounts account = accountRepository.findByEmail(email);
 
 			if (account == null) {
-				message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
+				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (codeInput != CONFIRM_CODE) {
-				message.setMessage(UserNotification.INVALID_CODE);
+				message.setMessage(UserConstants.INVALID_CODE);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				account.setActive(true);
 				accountRepository.saveAndFlush(account);
-				message.setMessage(Notification.SUCCESS);
+				message.setMessage(CommonConstants.SUCCESS);
 				return ResponseEntity.ok(message);
 			}
 
@@ -93,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
 			System.out.println(e);
 		}
 
-		message.setMessage(Notification.FAIL);
+		message.setMessage(CommonConstants.FAIL);
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 	}
@@ -108,18 +107,18 @@ public class AccountServiceImpl implements AccountService {
 			Accounts account = accountRepository.findById(idAccount).get();
 
 			if (account.isBanned() == IS_BANNED) {
-				message.setMessage(UserNotification.ACCOUNT_BANNED);
+				message.setMessage(UserConstants.ACCOUNT_BANNED);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				account.setBanned(IS_BANNED);
 				accountRepository.saveAndFlush(account);
 			}
 		} catch (Exception e) {
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 		
-		message.setMessage(Notification.SUCCESS);
+		message.setMessage(CommonConstants.SUCCESS);
 		
 		return ResponseEntity.ok(message);
 	}
@@ -140,26 +139,26 @@ public class AccountServiceImpl implements AccountService {
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 			
 			if (account == null) {
-				message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
+				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else {
 				if (oldPassword == null || oldPassword.isEmpty()) {
-					message.setMessage(UserNotification.PASSWORD_NULL);
+					message.setMessage(UserConstants.PASSWORD_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (newPassword == null || newPassword.isEmpty()) {
-					message.setMessage(UserNotification.PASSWORD_NEW_NULL);
+					message.setMessage(UserConstants.PASSWORD_NEW_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (!encoder.matches(oldPassword, account.getPassword())) {
-					message.setMessage(UserNotification.WRONG_OLD_PASSWORD);
+					message.setMessage(UserConstants.WRONG_OLD_PASSWORD);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (!newPassword.matches(Validation.PASSWORD_PATTERN)) {
-					message.setMessage(UserNotification.INVALID_PASSWORD_FORMAT);
+					message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else if (newPassword.equals(oldPassword)) {
-					message.setMessage(UserNotification.IS_MATCHING_OLD_PASSWORD);
+					message.setMessage(UserConstants.IS_MATCHING_OLD_PASSWORD);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
-					message.setMessage(Notification.SUCCESS);
+					message.setMessage(CommonConstants.SUCCESS);
 					account.setPassword(encoder.encode(newPassword));
 					accountRepository.saveAndFlush(account);
 					return ResponseEntity.ok(message);
@@ -168,7 +167,7 @@ public class AccountServiceImpl implements AccountService {
 			
 		} catch (Exception e) {
 			
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -227,10 +226,10 @@ public class AccountServiceImpl implements AccountService {
 
 		try {
 			if (email == null) {
-				message.setMessage(UserNotification.EMAIL_NULL);
+				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!email.matches(Validation.EMAIL_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_EMAIL_FORMAT);
+				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!accounts.getEmail().isEmpty() && accounts.isActive()) {
 				SimpleMailMessage messageEmail = new SimpleMailMessage();
@@ -245,16 +244,16 @@ public class AccountServiceImpl implements AccountService {
 				}
 				
 			} else {
-				message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
+				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 			
 		} catch (Exception e) {
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 		
-		message.setMessage(Notification.SUCCESS);
+		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
 	}
 	
@@ -294,15 +293,15 @@ public class AccountServiceImpl implements AccountService {
 			String password = account.getPassword();
 			
 			if (usernameOrEmail == null || usernameOrEmail.isEmpty()) {
-				message.setMessage(UserNotification.USERNAME_NULL);
+				message.setMessage(UserConstants.USERNAME_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (password == null || password.isEmpty()) {
-				message.setMessage(UserNotification.PASSWORD_NULL);
+				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
 				if (usernameOrEmail.matches(Validation.EMAIL_PATTERN)) {
 					if (accountRepository.findByEmail(usernameOrEmail) == null) {
-						message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
+						message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 					}
 					usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUsername();
@@ -313,17 +312,17 @@ public class AccountServiceImpl implements AccountService {
 				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 				
 				if (accountRepository.findByUsername(usernameOrEmail) == null) {
-					message.setMessage(UserNotification.ACCOUNT_NOT_EXISTS);
+					message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				}else {
 					if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
-						message.setMessage(UserNotification.INVALID_ACCOUNT);
+						message.setMessage(UserConstants.INVALID_ACCOUNT);
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 					} else if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
-						message.setMessage(UserNotification.ACCOUNT_BANNED);
+						message.setMessage(UserConstants.ACCOUNT_BANNED);
 						return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 					} else if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
-						message.setMessage(UserNotification.NOT_ACTIVATED);
+						message.setMessage(UserConstants.NOT_ACTIVATED);
 						return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 					} else {
 						Token token = new Token();
@@ -337,7 +336,7 @@ public class AccountServiceImpl implements AccountService {
 			
 		} catch (Exception e) {
 			
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -360,18 +359,18 @@ public class AccountServiceImpl implements AccountService {
 			Accounts account = accountRepository.findById(idCurrent).get();
 			
 			if (tokenRepository.findByToken(tokenCurrent) == null) {
-				message.setMessage(TokenNotification.TOKEN_NOT_EXIST);
+				message.setMessage(TokenConstants.TOKEN_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!jwtUtil.isTokenExpired(claims)) {
-				message.setMessage(TokenNotification.IS_TOKEN_EXPIRED);
+				message.setMessage(TokenConstants.IS_TOKEN_EXPIRED);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!jwtUtil.validateToken(tokenCurrent, account)) {
-				message.setMessage(TokenNotification.INVALID_TOKEN);
+				message.setMessage(TokenConstants.INVALID_TOKEN);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else {
 				Token token = tokenRepository.findByToken(tokenCurrent);
 				tokenRepository.delete(token);
-				message.setMessage(Notification.SUCCESS);
+				message.setMessage(CommonConstants.SUCCESS);
 				
 				return ResponseEntity.ok(message);
 			}
@@ -398,25 +397,25 @@ public class AccountServiceImpl implements AccountService {
 			CONFIRM_CODE = code;
 			
 			if (account.getUsername().equals("")) {
-				message.setMessage(UserNotification.USERNAME_NULL);
+				message.setMessage(UserConstants.USERNAME_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (account.getEmail().equals("")) {
-				message.setMessage(UserNotification.EMAIL_NULL);
+				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (account.getPassword().equals("")) {
-				message.setMessage(UserNotification.PASSWORD_NULL);
+				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!account.getUsername().matches(Validation.USERNAME_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_USERNAME_FORMAT);
+				message.setMessage(UserConstants.INVALID_USERNAME_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_EMAIL_FORMAT);
+				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!account.getPassword().matches(Validation.PASSWORD_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_PASSWORD_FORMAT);
+				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (accountRepository.findByEmail(account.getEmail()) != null) {
-				message.setMessage(UserNotification.EMAIL_EXISTS);
+				message.setMessage(UserConstants.EMAIL_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (accountRepository.findByUsername(account.getUsername()) == null) {
 				try {
@@ -435,7 +434,7 @@ public class AccountServiceImpl implements AccountService {
 					user.setAccount(accountNew);
 					accountRepository.saveAndFlush(accountNew);
 					userRepository.saveAndFlush(user);
-					message.setMessage(Notification.SUCCESS);
+					message.setMessage(CommonConstants.SUCCESS);
 					
 					return ResponseEntity.ok(message);
 					
@@ -444,18 +443,18 @@ public class AccountServiceImpl implements AccountService {
 					System.out.println("createNewServices: " + e);
 				}
 
-				message.setMessage(Notification.FAIL);
+				message.setMessage(CommonConstants.FAIL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 
 			} else {
 				
-				message.setMessage(UserNotification.USERNAME_EXISTS);
+				message.setMessage(UserConstants.USERNAME_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 		} catch (Exception e) {
 			
-			message.setMessage(Notification.FAIL);
+			message.setMessage(CommonConstants.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
@@ -472,33 +471,33 @@ public class AccountServiceImpl implements AccountService {
 		try {
 			
 			if (email == null) {
-				message.setMessage(UserNotification.EMAIL_NULL);
+				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!email.matches(Validation.EMAIL_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_EMAIL_FORMAT);
+				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (password == null) {
-				message.setMessage(UserNotification.PASSWORD_NULL);
+				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!password.matches(Validation.PASSWORD_PATTERN)) {
-				message.setMessage(UserNotification.INVALID_PASSWORD_FORMAT);
+				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else if (!account.getEmail().isEmpty() && account.isActive()) {
 				account.setPassword(new BCryptPasswordEncoder().encode(password));
 				accountRepository.saveAndFlush(account);
-				message.setMessage(Notification.SUCCESS);
+				message.setMessage(CommonConstants.SUCCESS);
 				
 				return ResponseEntity.ok(message);
 				
 			} else {
-				message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
+				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 				
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 			
 		} catch (Exception e) {
 			
-			message.setMessage(UserNotification.EMAIL_NOT_EXISTS);
+			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 			
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
