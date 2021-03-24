@@ -336,7 +336,8 @@ public class HouseServiceImpl implements HouseService {
 		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
-		String amenities = null;
+		byte amenities;
+		List<House> listHouseAmenities = new ArrayList<House>();
 
 		try {
 			byte wifi_binary = (wifi == true) ? Amenities.WIFI.getValue() : 0;
@@ -344,20 +345,25 @@ public class HouseServiceImpl implements HouseService {
 			byte ac_binary = (air_conditioner == true) ? Amenities.AC.getValue() : 0;
 			byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
 			byte swim_pool_binary = (swim_pool == true) ? Amenities.SWIM_POOL.getValue() : 0;
-			amenities = Integer
-					.toBinaryString(wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
+			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 			Pageable paging = PageRequest.of(page, size);
 			listHouse = houseRepository.searchFilter(country, province, lowestSize, highestSize, lowestPrice,
-					highestPrice, amenities, lowestGuest, highestGuest, paging).getContent();
+					highestPrice, lowestGuest, highestGuest, paging).getContent();
 
 			if (listHouse.size() == 0) {
 				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
 				int pageMax = houseRepository.searchFilter(country, province, lowestSize, highestSize, lowestPrice,
-						highestPrice, amenities, lowestGuest, highestGuest, paging).getTotalPages();
+						highestPrice, lowestGuest, highestGuest, paging).getTotalPages();
 
 				for (House house : listHouse) {
+					if ((byte) (amenities & Byte.parseByte(house.getAmenities(), 2)) == amenities) {
+						listHouseAmenities.add(house);
+					}
+				}
+
+				for (House house : listHouseAmenities) {
 					HouseModel houseModel = mapper.map(house, HouseModel.class);
 					listHouseModel.add(houseModel);
 				}
@@ -367,7 +373,8 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(paginationModel);
 
 			}
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage());
 			message.setMessage(e.toString());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -413,6 +420,7 @@ public class HouseServiceImpl implements HouseService {
 			return ResponseEntity.ok(house);
 
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			message.setMessage(e.toString());
 			System.out.print(e);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
