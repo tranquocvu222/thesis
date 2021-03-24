@@ -329,7 +329,7 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> searchFilter(String country, String province, Double lowestSize, Double highestSize,
+	public ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean air_conditioner,
 			boolean fridge, boolean swim_pool, byte lowestGuest, byte highestGuest, int page, int size) {
 		Message message = new Message();
@@ -347,14 +347,14 @@ public class HouseServiceImpl implements HouseService {
 			byte swim_pool_binary = (swim_pool == true) ? Amenities.SWIM_POOL.getValue() : 0;
 			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 			Pageable paging = PageRequest.of(page, size);
-			listHouse = houseRepository.searchFilter(country, province, lowestSize, highestSize, lowestPrice,
+			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice,
 					highestPrice, lowestGuest, highestGuest, paging).getContent();
 
 			if (listHouse.size() == 0) {
 				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
-				int pageMax = houseRepository.searchFilter(country, province, lowestSize, highestSize, lowestPrice,
+				int pageMax = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice,
 						highestPrice, lowestGuest, highestGuest, paging).getTotalPages();
 
 				for (House house : listHouse) {
@@ -401,7 +401,7 @@ public class HouseServiceImpl implements HouseService {
 			house.setAddress(houseDetail.getAddress());
 			house.setTitle(houseDetail.getTitle());
 			house.setCountry(houseDetail.getCountry());
-			house.setProvince(houseDetail.getProvince());
+			house.setCity(houseDetail.getCity());
 			house.setContent(houseDetail.getContent());
 			house.setPhoneContact(houseDetail.getPhoneContact());
 			house.setImage(houseDetail.getImage());
