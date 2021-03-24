@@ -117,7 +117,7 @@ public class HouseController {
 			@RequestParam(defaultValue = "false") boolean tivi, @RequestParam(defaultValue = "false") boolean wifi,
 			@RequestParam(defaultValue = "false") boolean air_conditioner,
 			@RequestParam(defaultValue = "false") boolean fridge,
-			@RequestParam(required = false) boolean swim_pool, @RequestParam(defaultValue = "0") byte lowestGuest,
+			@RequestParam(defaultValue = "false") boolean swim_pool, @RequestParam(defaultValue = "0") byte lowestGuest,
 			@RequestParam(defaultValue = "100") byte highestGuest, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
 		return houseService.searchFilter(country, province, lowestSize, highestSize, lowestPrice, highestPrice, tivi, wifi,
