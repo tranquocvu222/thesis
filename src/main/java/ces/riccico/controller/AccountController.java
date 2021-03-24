@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.entities.Accounts;
-import ces.riccico.entities.Users;
+import ces.riccico.entities.User;
 import ces.riccico.models.LoginModel;
 import ces.riccico.service.AccountService;
 import ces.riccico.service.UserService;
@@ -89,7 +89,7 @@ public class AccountController {
 	// this is the registration feature,you can create an account to use system's feature
 	@ResponseBody
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ResponseEntity<?> register(@RequestBody Accounts account, Users user) {
+	public ResponseEntity<?> register(@RequestBody Accounts account, User user) {
 		return accountService.register(account, user);
 	}
 

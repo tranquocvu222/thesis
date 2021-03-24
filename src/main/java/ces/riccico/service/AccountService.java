@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import ces.riccico.entities.Accounts;
 import ces.riccico.models.LoginModel;
-import ces.riccico.entities.Users;
+import ces.riccico.entities.User;
 import ces.riccico.security.AccountDetail;
 
 public interface AccountService {
@@ -33,7 +33,7 @@ public interface AccountService {
 
 	AccountDetail loadUserByUsername(String username);
 
-	ResponseEntity<?> register(Accounts account, Users user);
+	ResponseEntity<?> register(Accounts account, User user);
 
 	ResponseEntity<?> resetPassword(String email, String password);
 

@@ -28,7 +28,7 @@ import ces.riccico.models.LoginModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.Role;
 import ces.riccico.entities.Token;
-import ces.riccico.entities.Users;
+import ces.riccico.entities.User;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;
@@ -401,7 +401,7 @@ public class AccountServiceImpl implements AccountService {
 
 //	Register accountby username, email, password	
 	@Override
-	public ResponseEntity<?> register(Accounts account, Users user) {
+	public ResponseEntity<?> register(Accounts account, User user) {
 
 		Message message = new Message();
 
