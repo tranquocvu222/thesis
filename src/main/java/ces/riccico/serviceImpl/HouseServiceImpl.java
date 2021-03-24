@@ -165,7 +165,6 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 
 		try {
-
 			Integer idAccount = accountRepository.findByUsername(username).getAccountId();
 			
 			if (!accountRepository.findById(idAccount).isPresent()) {
@@ -323,7 +322,7 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> searchFilter(String country, String province, Double lowestSize, Double highestSize,
+	public ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean air_conditioner,
 			boolean fridge, boolean swim_pool, byte lowestGuest, byte highestGuest, int page, int size) {
 		
@@ -343,14 +342,14 @@ public class HouseServiceImpl implements HouseService {
 			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 
 			Pageable paging = PageRequest.of(page, size);
-			listHouse = houseRepository.searchFilter(country, province, lowestSize, highestSize, lowestPrice,
+			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice,
 					highestPrice, lowestGuest, highestGuest, paging).getContent();
 
 			if (listHouse.size() == 0) {
 				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
-				int pageMax = houseRepository.searchFilter(country, province, lowestSize, highestSize, lowestPrice,
+				int pageMax = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice,
 						highestPrice, lowestGuest, highestGuest, paging).getTotalPages();
 
 				for (House house : listHouse) {

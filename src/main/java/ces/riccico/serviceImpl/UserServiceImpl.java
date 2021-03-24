@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
 		}
 
 		try {
-			
 
 			if (!userRepository.findByAccountId(idCurrent).get().getAccount().getRole().equals(Role.ADMIN.getRole())
 					&& !idCurrent.equals(userRepository.findById(userId).get().getAccount().getAccountId())) {

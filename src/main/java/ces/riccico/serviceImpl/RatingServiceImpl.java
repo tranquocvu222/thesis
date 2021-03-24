@@ -135,9 +135,8 @@ public class RatingServiceImpl implements RatingService {
 			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-
 			}
-
+			
 			if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
 				message.setMessage(BookingConstants.INVALID_STATUS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);

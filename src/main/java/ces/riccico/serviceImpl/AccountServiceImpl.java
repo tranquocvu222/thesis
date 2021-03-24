@@ -379,6 +379,7 @@ public class AccountServiceImpl implements AccountService {
 //	Register accountby username, email, password	
 	@Override
 	public ResponseEntity<?> register(Account account, User user) {
+
 		MessageModel message = new MessageModel();
 
 		int code = (int) Math.floor(((Math.random() * 899999) + 100000));

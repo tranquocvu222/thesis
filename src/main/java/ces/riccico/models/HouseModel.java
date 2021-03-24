@@ -9,7 +9,7 @@ public class HouseModel {
 
 	private double price;
 
-	private String province;
+	private String city;
 
 	private Double size;
 
@@ -39,12 +39,12 @@ public class HouseModel {
 		this.price = price;
 	}
 
-	public String getProvince() {
-		return province;
+	public String getCity() {
+		return city;
 	}
 
-	public void setProvince(String province) {
-		this.province = province;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public Double getSize() {

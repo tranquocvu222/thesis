@@ -37,7 +37,7 @@ public class HouseDetailModel {
 
 	private String phoneContact;
 
-	private String province;
+	private String city;
 
 	private String title;
 
@@ -163,12 +163,12 @@ public class HouseDetailModel {
 		this.phoneContact = phoneContact;
 	}
 
-	public String getProvince() {
-		return province;
+	public String getCity() {
+		return city;
 	}
 
-	public void setProvince(String province) {
-		this.province = province;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public String getTitle() {

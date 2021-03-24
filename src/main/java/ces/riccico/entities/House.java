@@ -35,8 +35,8 @@ public class House extends Auditable {
 	@Column(name = "country", length = 50)
 	private String country;
 
-	@Column(name = "province", length = 50)
-	private String province;
+	@Column(name = "city", length = 50)
+	private String city;
 
 	@Column(name = "address", length = 1500)
 	private String address;
@@ -173,12 +173,12 @@ public class House extends Auditable {
 		this.content = content;
 	}
 
-	public String getProvince() {
-		return province;
+	public String getCity() {
+		return city;
 	}
 
-	public void setProvince(String province) {
-		this.province = province;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public Double getSize() {

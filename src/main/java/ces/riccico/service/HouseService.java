@@ -30,7 +30,7 @@ public interface HouseService {
 
 	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
 
-	ResponseEntity<?> searchFilter(String country, String province, Double lowestSize, Double highestSize,
+	ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge,
 			boolean swim_pool, byte lowestGuest, byte highestGuest, int page, int size);
 

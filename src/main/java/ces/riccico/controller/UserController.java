@@ -24,7 +24,6 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
-	
 
 	@RequestMapping(value = "/editUser/{userId}", method = RequestMethod.PUT)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
