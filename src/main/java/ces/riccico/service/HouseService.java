@@ -8,9 +8,9 @@ import ces.riccico.models.HouseDetailModel;
 
 public interface HouseService {
 
-	ResponseEntity<?> approveHouse(int idHouse);
+	ResponseEntity<?> approveHouse(int houseId);
 
-	ResponseEntity<?> deleteHouse(int idHouse);
+	ResponseEntity<?> deleteHouse(int houseId);
 
 	ResponseEntity<?> findByPageAndSize(int page, int size);
 
@@ -26,7 +26,7 @@ public interface HouseService {
 
 	List<House> getAllUnApproved();
 
-	ResponseEntity<?> getHouseDetail(Integer idHouse);
+	ResponseEntity<?> getHouseDetail(Integer houseId);
 
 	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
 
@@ -34,6 +34,6 @@ public interface HouseService {
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean air_conditioner, boolean fridge,
 			boolean swim_pool, byte lowestGuest, byte highestGuest, int page, int size);
 
-	ResponseEntity<?> updateHouse(int idHouse, HouseDetailModel houseDetail);
+	ResponseEntity<?> updateHouse(int houseId, HouseDetailModel houseDetail);
 
 }

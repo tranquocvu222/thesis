@@ -28,22 +28,24 @@ import io.swagger.annotations.Authorization;
 @RequestMapping("/houses")
 @CrossOrigin
 public class HouseController {
-	
+
 	@Autowired
 	private HouseService houseService;
-	
+
 	// confirm post to home page from user
-	@PutMapping("/approve/{idHouse}")
+	@PutMapping("/approve/{houseId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public ResponseEntity<?> approveHouse(@PathVariable int idHouse) {
-		return houseService.approveHouse(idHouse);
+	public ResponseEntity<?> approveHouse(@PathVariable int houseId) {
+		return houseService.approveHouse(houseId);
 	}
-	
+
 	// delete house
-	@DeleteMapping("/{idHouse}")
+	@DeleteMapping("/{houseId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> deleteHouse(@PathVariable int idHouse) {
-		return houseService.deleteHouse(idHouse);
+	public ResponseEntity<?> deleteHouse(@PathVariable int houseId) {
+		return houseService.deleteHouse(houseId);
 	}
 
 	// find house with pagination
@@ -52,7 +54,7 @@ public class HouseController {
 			@RequestParam(defaultValue = "20") int size) {
 		return houseService.findByPageAndSize(page, size);
 	}
-	
+
 	// search by tile of post
 	@GetMapping("/searchTitle")
 	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title,
@@ -62,25 +64,27 @@ public class HouseController {
 
 	// this is the all-post feature
 	@GetMapping("/getAll")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAll() {
 		return houseService.getAll();
 	}
-	
+
 	// shows approved houses list
 	@GetMapping("/isApproved")
 	public List<House> getAllApproved() {
 		return houseService.getAllApproved();
 	}
-	
-	//shows unapproved home lists
+
+	// shows unapproved home lists
 	@GetMapping("/notApproved")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAllUnApproved() {
 		return houseService.getAllUnApproved();
 	}
-	
-	//find house by username of host 
+
+	// find house by username of host
 	@GetMapping("/username/{username}")
 	public ResponseEntity<?> getHouseByUsername(@PathVariable String username) {
 		return houseService.findHouseByUsername(username);
@@ -93,13 +97,13 @@ public class HouseController {
 	public List<House> getHouseDelete() {
 		return houseService.getAllDeleted();
 	}
-	
-	// see house's detail,  service of room and view room
+
+	// see house's detail, service of room and view room
 	@GetMapping("/detail")
-	public ResponseEntity<?> getHouseDetail(@RequestParam Integer idHouse) {
-		return houseService.getHouseDetail(idHouse);
+	public ResponseEntity<?> getHouseDetail(@RequestParam Integer houseId) {
+		return houseService.getHouseDetail(houseId);
 	}
-	
+
 	// post your house on the website
 	@PostMapping("/create")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
@@ -107,11 +111,11 @@ public class HouseController {
 	public ResponseEntity<?> postNewHouse(@RequestBody HouseDetailModel houseDetail) {
 		return houseService.postNewHouse(houseDetail);
 	}
-	
 
 	// this is the filter search feature
 	@GetMapping("/filter")
 	public ResponseEntity<?> searchFilter(@RequestParam(defaultValue = "") String country,
+
 			@RequestParam(defaultValue = "") String province, @RequestParam(defaultValue = "0") Double lowestSize,
 			@RequestParam(defaultValue = "50000") Double highestSize, @RequestParam(defaultValue = "0") Double lowestPrice,
 			@RequestParam(defaultValue = "50000000") Double highestPrice,
@@ -126,10 +130,11 @@ public class HouseController {
 	}
 
 	// this is the house update feature
-	@PutMapping("/{idHouse}")
+	@PutMapping("/{houseId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody HouseDetailModel houseDetail) {
-		return houseService.updateHouse(idHouse, houseDetail);
+	public ResponseEntity<?> updateHouse(@PathVariable int houseId, @RequestBody HouseDetailModel houseDetail) {
+		return houseService.updateHouse(houseId, houseDetail);
 	}
 
 }

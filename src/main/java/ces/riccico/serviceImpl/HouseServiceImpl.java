@@ -18,8 +18,9 @@ import org.springframework.stereotype.Service;
 import ces.riccico.common.HouseConstants;
 import ces.riccico.common.CommonConstants;
 import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Account;
 import ces.riccico.entities.House;
+import ces.riccico.entities.Image;
 import ces.riccico.models.Amenities;
 import ces.riccico.models.HouseDetailModel;
 import ces.riccico.models.HouseModel;
@@ -56,11 +57,11 @@ public class HouseServiceImpl implements HouseService {
 	private SecurityAuditorAware securityAuditorAware;
 
 	@Override
-	public ResponseEntity<?> approveHouse(int idHouse) {
+	public ResponseEntity<?> approveHouse(int houseId) {
 		Message message = new Message();
 
 		try {
-			House house = houseRepository.findById(idHouse).get();
+			House house = houseRepository.findById(houseId).get();
 			if (house.isApproved()) {
 				message.setMessage(HouseConstants.HOUSE_APPROVED);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -78,27 +79,15 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteHouse(int idHouse) {
-		
+	public ResponseEntity<?> deleteHouse(int houseId) {
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		House house = houseRepository.findById(houseId).get();
 		Message message = new Message();
-		Integer idCurrent;
-		House house = houseRepository.findById(idHouse).get();
-
-		try {
-			idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		if (!accountRepository.findById(idCurrent).get().getRole().equals(Role.ADMIN.getRole())
-				&& !idCurrent.equals(houseRepository.findById(idHouse).get().getAccount().getIdAccount())) {
+		
+		if (idCurrent != houseRepository.findById(houseId).get().getAccount().getAccountId()) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-		}
-
-		if (!houseRepository.findById(idHouse).isPresent()) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+		} else if (!houseRepository.findById(houseId).isPresent()) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
@@ -115,6 +104,7 @@ public class HouseServiceImpl implements HouseService {
 			message.setMessage(HouseConstants.BY_ADMIN);
 			return ResponseEntity.ok(message);
 		} else {
+
 			message.setMessage(HouseConstants.BY_USER);
 			return ResponseEntity.ok(message);
 		}
@@ -123,7 +113,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> findByPageAndSize(int page, int size) {
-		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
+		List<Object> listHouseModel = new ArrayList<Object>();
 		List<House> listHouse = new ArrayList<House>();
 		PaginationModel paginationModel = new PaginationModel();
 		Message message = new Message();
@@ -175,8 +165,9 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 
 		try {
-			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
 
+			Integer idAccount = accountRepository.findByUsername(username).getAccountId();
+			
 			if (!accountRepository.findById(idAccount).isPresent()) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -269,9 +260,9 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> getHouseDetail(Integer idHouse) {
+	public ResponseEntity<?> getHouseDetail(Integer houseId) {
 		Message message = new Message();
-		House house = houseRepository.findById(idHouse).get();
+		House house = houseRepository.findById(houseId).get();
 		HouseDetailModel houseDetail;
 
 		if (house == null) {
@@ -298,7 +289,7 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail) {
 		Integer idCurrent = null;
-		Accounts account;
+		Account account;
 		Message message = new Message();
 
 		try {
@@ -335,8 +326,9 @@ public class HouseServiceImpl implements HouseService {
 	public ResponseEntity<?> searchFilter(String country, String province, Double lowestSize, Double highestSize,
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean air_conditioner,
 			boolean fridge, boolean swim_pool, byte lowestGuest, byte highestGuest, int page, int size) {
+		
 		Message message = new Message();
-		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
+		List<Object> listHouseModel = new ArrayList<Object>();
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
 		String amenities = null;
@@ -377,30 +369,28 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> updateHouse(int idHouse, HouseDetailModel houseDetail) {
+	public ResponseEntity<?> updateHouse(int houseId, HouseDetailModel houseDetail) {
+		
 		Message message = new Message();
+		
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			Accounts account = accountRepository.findById(idCurrent).get();
-			
-			if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-			} else if (!houseRepository.findById(idHouse).isPresent()) {
-				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			} else if (!houseRepository.findById(idHouse).get().getAccount().getIdAccount().equals(idCurrent)) {
+
+			if (!houseRepository.findById(houseId).get().getAccount().getAccountId().equals(idCurrent)) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 
-			if (!houseRepository.findById(idHouse).isPresent()) {
+			if (!houseRepository.findById(houseId).isPresent()) {
 				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 
+			} else if (!houseRepository.findById(houseId).get().getAccount().getAccountId().equals(idCurrent)) {
+				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 
-			House house = houseRepository.findById(idHouse).get();
+			House house = houseRepository.findById(houseId).get();
 			house.setAddress(houseDetail.getAddress());
 			house.setTitle(houseDetail.getTitle());
 			house.setCountry(houseDetail.getCountry());

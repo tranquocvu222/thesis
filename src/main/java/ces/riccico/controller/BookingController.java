@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.service.BookingService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping("/bookings")
@@ -22,37 +24,41 @@ public class BookingController {
 	private BookingService bookingService;
 	
 	// this is the feature of accepting guests' booking
-	@PutMapping("/acceptBooking/{idBooking}")
+	@PutMapping("/acceptBooking/{bookingId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> acceptBooking(@PathVariable int idBooking){
-		return bookingService.acceptBooking(idBooking);
+	public ResponseEntity<?> acceptBooking(@PathVariable int bookingId){
+		return bookingService.acceptBooking(bookingId);
 	}
 	
 	// this is the cancellation feature
-	@PutMapping("/cancelBooking/{idBooking}")
+	@PutMapping("/cancelBooking/{bookingId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> cancelBooking(@PathVariable int idBooking){
-		return bookingService.cancelBooking(idBooking);
+	public ResponseEntity<?> cancelBooking(@PathVariable int bookingId){
+		return bookingService.cancelBooking(bookingId);
 	}
 	
 	// this is the feature to confirm the booking has been completed
-	@PutMapping("/completeBooking/{idBooking}")
+	@PutMapping("/completeBooking/{bookingId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public ResponseEntity<?> completeBooking(@PathVariable int idBooking){
-		return bookingService.completeBooking̣̣̣(idBooking);
+	public ResponseEntity<?> completeBooking(@PathVariable int bookingId){
+		return bookingService.completeBooking̣̣̣(bookingId);
 	}
 	
 	// this is the booking payment feature
-	@PutMapping("/payment/{idBooking}")
+	@PutMapping("/payment/{bookingId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> payment(@PathVariable int idBooking){
-		return bookingService.payment(idBooking);
+	public ResponseEntity<?> payment(@PathVariable int bookingId){
+		return bookingService.payment(bookingId);
 	}
 	
 	// this is home booking feature
 	@PostMapping
-	public ResponseEntity<?> receiveBooking (@RequestParam int idHouse, @RequestParam String dateStart, @RequestParam String dateStop){
-		return bookingService.receiveBooking(idHouse, dateStart, dateStop);
+	public ResponseEntity<?> receiveBooking (@RequestParam int houseId, @RequestParam String dateStart, @RequestParam String dateStop){
+		return bookingService.receiveBooking(houseId, dateStart, dateStop);
 	}
 	
 }

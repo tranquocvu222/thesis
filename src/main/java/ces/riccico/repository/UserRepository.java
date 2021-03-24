@@ -10,6 +10,7 @@ import ces.riccico.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	@Query(value = "SELECT * FROM users where users.id_account = ?1", nativeQuery = true)
-	Optional<User> findByIdAccount(int account);
+	@Query(value = "SELECT * FROM users where users.account_id = ?1", nativeQuery = true)
+	Optional<User> findByAccountId(int account);
+
 }

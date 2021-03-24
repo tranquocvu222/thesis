@@ -19,7 +19,7 @@ import ces.riccico.common.BookingConstants;
 import ces.riccico.common.HouseConstants;
 import ces.riccico.common.CommonConstants;
 import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Account;
 import ces.riccico.entities.Booking;
 import ces.riccico.entities.House;
 import ces.riccico.models.Message;
@@ -48,21 +48,21 @@ public class BookingServiceImpl implements BookingService {
 	private SecurityAuditorAware securityAuditorAware;
 
 	@Override
-	public ResponseEntity<?> acceptBooking(int idBooking) {
+	public ResponseEntity<?> acceptBooking(int bookingId) {
 		Message message = new Message();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-		if (!bookingRepository.findById(idBooking).isPresent()) {
+		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
+		if (!idCurrent.equals(bookingRepository.findById(bookingId).get().getHouse().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
-		Booking booking = bookingRepository.findById(idBooking).get();
+		Booking booking = bookingRepository.findById(bookingId).get();
 		booking.setStatus(Status.APPROVAL.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 		message.setMessage(CommonConstants.SUCCESS);
@@ -70,18 +70,18 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> cancelBooking(int idBooking) {
+	public ResponseEntity<?> cancelBooking(int bookingId) {
 		Message message = new Message();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		Booking booking = bookingRepository.findById(idBooking).get();
+		Booking booking = bookingRepository.findById(bookingId).get();
 
-		if (!bookingRepository.findById(idBooking).isPresent()) {
+		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (!idCurrent.equals(booking.getHouse().getAccount().getIdAccount())
-				|| !idCurrent.equals(booking.getAccount().getIdAccount())) {
+		if (!idCurrent.equals(booking.getHouse().getAccount().getAccountId())
+				|| !idCurrent.equals(booking.getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
@@ -89,17 +89,18 @@ public class BookingServiceImpl implements BookingService {
 		booking.setStatus(Status.CANCELED.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 
-		if (idCurrent.equals(booking.getAccount().getIdAccount())) {
+		if (idCurrent.equals(booking.getAccount().getAccountId())) {
 			message.setMessage(BookingConstants.BY_CUSTOMER);
 			return ResponseEntity.ok(message);
 		} else {
+
 			message.setMessage(BookingConstants.BY_HOST);
 			return ResponseEntity.ok(message);
 		}
 	}
 
 	@Override
-	public ResponseEntity<?> completeBooking̣̣̣(int idBooking) {
+	public ResponseEntity<?> completeBooking̣̣̣(int bookingId) {
 		Message message = new Message();
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
@@ -114,9 +115,9 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		try {
-			Booking booking = bookingRepository.findById(idBooking).get();
+			Booking booking = bookingRepository.findById(bookingId).get();
 
-			if (!bookingRepository.findById(idBooking).isPresent()) {
+			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
@@ -144,8 +145,8 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public List<Booking> findByHouseId(int idHouse) {
-		return bookingRepository.findByHouseId(idHouse);
+	public List<Booking> findByHouseId(int houseId) {
+		return bookingRepository.findByHouseId(houseId);
 	}
 
 	@Override
@@ -159,19 +160,19 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> payment(int idBooking) {
+	public ResponseEntity<?> payment(int bookingId) {
 		Message message = new Message();
 
 		try {
-			Booking booking = bookingRepository.findById(idBooking).get();
+			Booking booking = bookingRepository.findById(bookingId).get();
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-			if (!bookingRepository.findById(idBooking).isPresent()) {
+			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
-			if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
+			if (!idCurrent.equals(booking.getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
@@ -195,6 +196,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
+
 		MessageModel message = new MessageModel();
 
 		if (houseRepository.findById(houseId) == null) {
@@ -271,7 +273,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> refund(int idBooking) {
+	public ResponseEntity<?> refund(int bookingId) {
 		return null;
 	}
 }

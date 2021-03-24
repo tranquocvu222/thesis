@@ -10,6 +10,6 @@ public interface RatingService {
 	
 	ResponseEntity<?> findRatingByHouseId(int houseId);
 	
-	ResponseEntity<?> writeRating(int idBooking, Rating rating);
+	ResponseEntity<?> writeRating(int bookingId, Rating rating);
 
 }
