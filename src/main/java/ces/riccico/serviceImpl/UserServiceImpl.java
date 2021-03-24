@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import ces.riccico.models.Message;
 import ces.riccico.common.CommonConstants;
 import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Users;
+import ces.riccico.entities.User;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.SecurityAuditorAware;
@@ -35,14 +35,14 @@ public class UserServiceImpl implements UserService {
 
 //	Update profile of user
 	@Override
-	public ResponseEntity<?> editUser(Users model) {
+	public ResponseEntity<?> editUser(User model) {
 
 		Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
 
 		Message message = new Message();
 		try {
 
-			Users user = userRepository.findByIdAccount(idaccount).get();
+			User user = userRepository.findByIdAccount(idaccount).get();
 
 			if (user != null) {
 				if (model.getFirstname().equals("")) {
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
 
 //	Show list user
 	@Override
-	public List<Users> findAll() {
+	public List<User> findAll() {
 		return userRepository.findAll();
 	}
 
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
 		
 		try {
 			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
-			Users user = userRepository.findByIdAccount(idaccount).get();
+			User user = userRepository.findByIdAccount(idaccount).get();
 			message.setMessage(CommonConstants.SUCCESS);
 			
 			return ResponseEntity.ok(user);

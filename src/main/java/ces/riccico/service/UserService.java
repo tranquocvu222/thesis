@@ -6,14 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-import ces.riccico.entities.Users;
+import ces.riccico.entities.User;
 
 @Service
 public interface UserService {
 	
-	ResponseEntity<?> editUser( Users model) ;
+	ResponseEntity<?> editUser( User model) ;
 	
-	List<Users> findAll();
+	List<User> findAll();
 	
 	ResponseEntity<?> findById();
 	

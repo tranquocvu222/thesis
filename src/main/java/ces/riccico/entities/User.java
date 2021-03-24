@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class Users {
 	@Column(name = "firstname", length = 100)
 	private String firstname;
 
-	@Column(name = "lastname", length = 100)
+	@Column(name = "lastame", length = 100)
 	private String lastname;
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -52,7 +52,7 @@ public class Users {
 	@JoinColumn(name = "idAccount",nullable = false)
 	private Accounts account;
 
-	public Users() {
+	public User() {
 
 	}
 
