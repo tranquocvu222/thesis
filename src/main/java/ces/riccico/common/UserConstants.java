@@ -25,7 +25,9 @@ public class UserConstants {
 	
 	public static final String EMAIL_NULL = "Email is required!";
 	
-	public static final String EMAIL_EXISTS = "Email has been existed!";;
+	public static final String EMAIL_EXISTS = "Email has been existed!";
+	
+	public static final String USER_NOT_EXISTS = "User is not existed!";
 	
 	public static final String USERNAME_EXISTS = "Username has been existed!";
 	

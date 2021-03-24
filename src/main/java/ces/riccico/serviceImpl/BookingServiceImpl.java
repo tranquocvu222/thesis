@@ -17,7 +17,7 @@ import ces.riccico.common.BookingConstants;
 import ces.riccico.common.CommonConstants;
 import ces.riccico.common.HouseConstants;
 import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Account;
 import ces.riccico.entities.Booking;
 import ces.riccico.entities.House;
 import ces.riccico.models.Message;
@@ -54,7 +54,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
+		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
@@ -77,14 +77,14 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		} else {
-			if (!idCurrent.equals(booking.getHouse().getAccount().getIdAccount())
-					|| !idCurrent.equals(booking.getAccount().getIdAccount())) {
+			if (!idCurrent.equals(booking.getHouse().getAccount().getAccountId())
+					|| !idCurrent.equals(booking.getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			} else {
 				booking.setStatus(Status.CANCELED.getStatusName());
 				bookingRepository.saveAndFlush(booking);
-				if (idCurrent.equals(booking.getAccount().getIdAccount())) {
+				if (idCurrent.equals(booking.getAccount().getAccountId())) {
 					message.setMessage(BookingConstants.BY_CUSTOMER);
 					return ResponseEntity.ok(message);
 				} else {
@@ -171,7 +171,7 @@ public class BookingServiceImpl implements BookingService {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
-			if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
+			if (!idCurrent.equals(booking.getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
@@ -201,10 +201,10 @@ public class BookingServiceImpl implements BookingService {
 
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			Accounts account = accountRepository.findById(idCurrent).get();
+			Account account = accountRepository.findById(idCurrent).get();
 			House house = houseRepository.findById(idHouse).get();
 
-			if (idCurrent.equals(house.getAccount().getIdAccount())) {
+			if (idCurrent.equals(house.getAccount().getAccountId())) {
 				message.setMessage(BookingConstants.ACCOUNT_WITHOUT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.service.BookingService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping("/bookings")
@@ -23,6 +25,7 @@ public class BookingController {
 	
 	// this is the feature of accepting guests' booking
 	@PutMapping("/acceptBooking/{idBooking}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> acceptBooking(@PathVariable int idBooking){
 		return bookingService.acceptBooking(idBooking);
@@ -30,6 +33,7 @@ public class BookingController {
 	
 	// this is the cancellation feature
 	@PutMapping("/cancelBooking/{idBooking}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> cancelBooking(@PathVariable int idBooking){
 		return bookingService.cancelBooking(idBooking);
@@ -37,6 +41,7 @@ public class BookingController {
 	
 	// this is the feature to confirm the booking has been completed
 	@PutMapping("/completeBooking/{idBooking}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> completeBooking(@PathVariable int idBooking){
 		return bookingService.completeBooking̣̣̣(idBooking);
@@ -44,6 +49,7 @@ public class BookingController {
 	
 	// this is the booking payment feature
 	@PutMapping("/payment/{idBooking}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> payment(@PathVariable int idBooking){
 		return bookingService.payment(idBooking);

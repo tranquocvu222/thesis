@@ -23,7 +23,7 @@ public class Booking extends Auditable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idBooking")
+	@Column(name = "bookingId")
 	private Integer id;
 	
 	@Column(name = "bill")
@@ -37,12 +37,12 @@ public class Booking extends Auditable {
 	private Date createEnd;
 	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name ="id_account", nullable = false)
+	@JoinColumn(name ="account_id", nullable = false)
 	@JsonIgnore
-	private Accounts account;
+	private Account account;
 	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "idHouse", nullable = false)
+	@JoinColumn(name = "houseId", nullable = false)
 	@JsonIgnore
 	private House house;
 	
@@ -80,11 +80,11 @@ public class Booking extends Auditable {
 		this.createEnd = createEnd;
 	}
 
-	public Accounts getAccount() {
+	public Account getAccount() {
 		return account;
 	}
 
-	public void setAccount(Accounts account) {
+	public void setAccount(Account account) {
 		this.account = account;
 	}
 

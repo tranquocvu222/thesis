@@ -9,8 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -18,12 +16,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "accounts")
-public class Accounts {
+public class Account {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer idAccount;
+	@Column(name = "accountId")
+	private Integer id;
 
 	@Column(name = "isActive")
 	private boolean isActive;
@@ -51,12 +49,12 @@ public class Accounts {
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
 
-	public Integer getIdAccount() {
-		return idAccount;
+	public Integer getAccountId() {
+		return id;
 	}
 
-	public void setIdAccount(Integer idAccount) {
-		this.idAccount = idAccount;
+	public void setAccountId(Integer id) {
+		this.id = id;
 	}
 
 	public String getUsername() {

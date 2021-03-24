@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import ces.riccico.entities.Accounts;
-import ces.riccico.entities.Users;
+import ces.riccico.entities.Account;
+import ces.riccico.entities.User;
 import ces.riccico.models.LoginModel;
 import ces.riccico.service.AccountService;
 import ces.riccico.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 @CrossOrigin
 @RestController
@@ -41,6 +43,7 @@ public class AccountController {
 
 	// this is change password feature,  can change the password
 	@PutMapping("/changePassword")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
 		return accountService.changePassword(oldPassword, newPassword);
@@ -48,15 +51,17 @@ public class AccountController {
 
 	// shows the list of accounts 
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Accounts> findAll() {
+	public List<Account> findAll() {
 		return accountService.findAll();
 	}
 
 	// shows banned accounts list
 	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Accounts> findAllIsBanned() {
+	public List<Account> findAllIsBanned() {
 		return accountService.findAllIsBanned();
 	}
 
@@ -68,6 +73,7 @@ public class AccountController {
 
 	// prevent users from using the system
 	@RequestMapping(value = "/banned/{idAccount}", method = RequestMethod.POST)
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> isBanneed(@PathVariable int idAccount) {
 		return accountService.banAccount(idAccount);
@@ -81,6 +87,7 @@ public class AccountController {
 
 	// this is logout feature
 	@DeleteMapping("/log-out")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> logout() {
 		return accountService.logout();
@@ -89,7 +96,7 @@ public class AccountController {
 	// this is the registration feature,you can create an account to use system's feature
 	@ResponseBody
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ResponseEntity<?> register(@RequestBody Accounts account, Users user) {
+	public ResponseEntity<?> register(@RequestBody Account account, User user) {
 		return accountService.register(account, user);
 	}
 

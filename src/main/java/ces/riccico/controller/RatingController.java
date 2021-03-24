@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.entities.Rating;
 import ces.riccico.service.RatingService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping("/ratings")
@@ -24,6 +26,7 @@ public class RatingController {
 	
 	
 	@GetMapping("/account")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> findByRatingAccountId(){
 		return ratingService.findByRatingAccountId();
@@ -37,6 +40,7 @@ public class RatingController {
 	
 	
 	@PostMapping("/write/{idBooking}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> writeRating(@PathVariable int idBooking, @RequestBody Rating rating){
 		return ratingService.writeRating(idBooking, rating);

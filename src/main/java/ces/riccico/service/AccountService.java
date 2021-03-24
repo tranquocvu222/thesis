@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 
-import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Account;
 import ces.riccico.models.LoginModel;
-import ces.riccico.entities.Users;
+import ces.riccico.entities.User;
 import ces.riccico.security.AccountDetail;
 
 public interface AccountService {
@@ -19,11 +19,11 @@ public interface AccountService {
 	
 	ResponseEntity<?> changePassword(String oldPassword, String newPassword);
 	
-	List<Accounts> findAll();
+	List<Account> findAll();
 
-	List<Accounts> findAllIsBanned();
+	List<Account> findAllIsBanned();
 	
-	Optional<Accounts> findById(int id);
+	Optional<Account> findById(int id);
 
 	ResponseEntity<?> forgetPassword(String email);
 
@@ -33,7 +33,7 @@ public interface AccountService {
 
 	AccountDetail loadUserByUsername(String username);
 
-	ResponseEntity<?> register(Accounts account, Users user);
+	ResponseEntity<?> register(Account account, User user);
 
 	ResponseEntity<?> resetPassword(String email, String password);
 

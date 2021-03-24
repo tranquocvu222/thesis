@@ -23,12 +23,12 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import ces.riccico.common.CommonConstants;
 import ces.riccico.common.TokenConstants;
 import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Account;
 import ces.riccico.models.LoginModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.Role;
 import ces.riccico.entities.Token;
-import ces.riccico.entities.Users;
+import ces.riccico.entities.User;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;
@@ -77,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
 		Message message = new Message();
 
 		try {
-			Accounts account = accountRepository.findByEmail(email);
+			Account account = accountRepository.findByEmail(email);
 
 			if (account == null) {
 				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
@@ -109,7 +109,7 @@ public class AccountServiceImpl implements AccountService {
 		Message message = new Message();
 
 		try {
-			Accounts account = accountRepository.findById(idAccount).get();
+			Account account = accountRepository.findById(idAccount).get();
 
 			if (account.isBanned() == IS_BANNED) {
 				message.setMessage(UserConstants.ACCOUNT_BANNED);
@@ -138,7 +138,7 @@ public class AccountServiceImpl implements AccountService {
 
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-			Accounts account = accountRepository.findById(idCurrent).get();
+			Account account = accountRepository.findById(idCurrent).get();
 
 			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -183,13 +183,13 @@ public class AccountServiceImpl implements AccountService {
 
 //	Show list account was banned
 	@Override
-	public List<Accounts> findAllIsBanned() {
+	public List<Account> findAllIsBanned() {
 
-		List<Accounts> listAccount = new ArrayList<Accounts>();
+		List<Account> listAccount = new ArrayList<Account>();
 
 		try {
 
-			for (Accounts account : accountRepository.findAll()) {
+			for (Account account : accountRepository.findAll()) {
 				if (account.isBanned() == IS_BANNED) {
 					listAccount.add(account);
 				}
@@ -206,18 +206,18 @@ public class AccountServiceImpl implements AccountService {
 
 //	Find account by idAccount
 	@Override
-	public Optional<Accounts> findById(int id) {
+	public Optional<Account> findById(int id) {
 		return accountRepository.findById(id);
 	}
 
 //	Show list account was not banned
 	@Override
-	public List<Accounts> findAll() {
+	public List<Account> findAll() {
 
-		List<Accounts> listAccount = new ArrayList<Accounts>();
+		List<Account> listAccount = new ArrayList<Account>();
 
 		try {
-			for (Accounts account : accountRepository.findAll()) {
+			for (Account account : accountRepository.findAll()) {
 				if (account.isBanned() == IS_NOT_BANNED) {
 					listAccount.add(account);
 				}
@@ -236,7 +236,7 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> forgetPassword(String email) {
 
 		Message message = new Message();
-		Accounts accounts = accountRepository.findByEmail(email);
+		Account accounts = accountRepository.findByEmail(email);
 
 		try {
 			if (email == null) {
@@ -280,7 +280,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public AccountDetail loadUserByUsername(String username) {
 
-		Accounts account = accountRepository.findByUsername(username);
+		Account account = accountRepository.findByUsername(username);
 		AccountDetail accountDetail = mapper.map(account, AccountDetail.class);
 
 		if (account == null) {
@@ -290,7 +290,7 @@ public class AccountServiceImpl implements AccountService {
 			if (account.getRole() != null) {
 				authorities.add(account.getRole());
 			}
-			accountDetail.setIdUser(account.getIdAccount());
+			accountDetail.setIdUser(account.getAccountId());
 			accountDetail.setAuthorities(authorities);
 		}
 
@@ -370,7 +370,7 @@ public class AccountServiceImpl implements AccountService {
 			tokenCurrent = jwtUtil.getJwtTokenHeader();
 			JWTClaimsSet claims = jwtUtil.getClaimsFromToken(tokenCurrent);
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			Accounts account = accountRepository.findById(idCurrent).get();
+			Account account = accountRepository.findById(idCurrent).get();
 
 			if (tokenRepository.findByToken(tokenCurrent) == null) {
 				message.setMessage(TokenConstants.TOKEN_NOT_EXIST);
@@ -401,7 +401,7 @@ public class AccountServiceImpl implements AccountService {
 
 //	Register accountby username, email, password	
 	@Override
-	public ResponseEntity<?> register(Accounts account, Users user) {
+	public ResponseEntity<?> register(Account account, User user) {
 
 		Message message = new Message();
 
@@ -453,7 +453,7 @@ public class AccountServiceImpl implements AccountService {
 							+ "\nPlease enter code on website to complete register");
 					sender.send(messageEmail);
 
-					Accounts accountNew = mapper.map(account, Accounts.class);
+					Account accountNew = mapper.map(account, Account.class);
 					accountNew.setRole(Role.USER.getRole());
 					accountNew.setBanned(false);
 					accountNew.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
@@ -489,7 +489,7 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> resetPassword(String email, String password) {
 
 		Message message = new Message();
-		Accounts account = accountRepository.findByEmail(email);
+		Account account = accountRepository.findByEmail(email);
 
 		try {
 			if (email == null) {

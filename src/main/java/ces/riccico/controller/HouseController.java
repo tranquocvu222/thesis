@@ -27,19 +27,21 @@ import io.swagger.annotations.Authorization;
 @RequestMapping("/houses")
 @CrossOrigin
 public class HouseController {
-	
+
 	@Autowired
 	private HouseService houseService;
-	
+
 	// confirm post to home page from user
 	@PutMapping("/approve/{idHouse}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> approveHouse(@PathVariable int idHouse) {
 		return houseService.approveHouse(idHouse);
 	}
-	
+
 	// delete house
 	@DeleteMapping("/{idHouse}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> deleteHouse(@PathVariable int idHouse) {
 		return houseService.deleteHouse(idHouse);
@@ -51,7 +53,7 @@ public class HouseController {
 			@RequestParam(defaultValue = "20") int size) {
 		return houseService.findByPageAndSize(page, size);
 	}
-	
+
 	// search by tile of post
 	@GetMapping("/searchTitle")
 	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title,
@@ -61,25 +63,27 @@ public class HouseController {
 
 	// this is the all-post feature
 	@GetMapping("/getAll")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAll() {
 		return houseService.getAll();
 	}
-	
+
 	// shows approved houses list
 	@GetMapping("/isApproved")
 	public List<House> getAllApproved() {
 		return houseService.getAllApproved();
 	}
-	
-	//shows unapproved home lists
+
+	// shows unapproved home lists
 	@GetMapping("/notApproved")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<House> getAllUnApproved() {
 		return houseService.getAllUnApproved();
 	}
-	
-	//find house by username of host 
+
+	// find house by username of host
 	@GetMapping("/username/{username}")
 	public ResponseEntity<?> getHouseByUsername(@PathVariable String username) {
 		return houseService.findHouseByUsername(username);
@@ -92,13 +96,13 @@ public class HouseController {
 	public List<House> getHouseDelete() {
 		return houseService.getAllDeleted();
 	}
-	
-	// see house's detail,  service of room and view room
+
+	// see house's detail, service of room and view room
 	@GetMapping("/detail")
 	public ResponseEntity<?> getHouseDetail(@RequestParam Integer idHouse) {
 		return houseService.getHouseDetail(idHouse);
 	}
-	
+
 	// post your house on the website
 	@PostMapping("/create")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
@@ -106,31 +110,26 @@ public class HouseController {
 	public ResponseEntity<?> postNewHouse(@RequestBody HouseDetailModel houseDetail) {
 		return houseService.postNewHouse(houseDetail);
 	}
-	
 
 	// this is the filter search feature
 	@GetMapping("/filter")
 	public ResponseEntity<?> searchFilter(@RequestParam(defaultValue = "") String country,
-			@RequestParam(defaultValue = "") String province, 
-			@RequestParam(defaultValue = "0") Double sizeBelow,
-			@RequestParam(defaultValue = "50000") Double sizeAbove, 
-			@RequestParam(defaultValue = "0") Double priceBelow,
+			@RequestParam(defaultValue = "") String province, @RequestParam(defaultValue = "0") Double sizeBelow,
+			@RequestParam(defaultValue = "50000") Double sizeAbove, @RequestParam(defaultValue = "0") Double priceBelow,
 			@RequestParam(defaultValue = "50000000") Double priceAbove,
-			@RequestParam(defaultValue = "true") boolean tivi, 
-			@RequestParam(defaultValue = "true") boolean wifi,
+			@RequestParam(defaultValue = "true") boolean tivi, @RequestParam(defaultValue = "true") boolean wifi,
 			@RequestParam(defaultValue = "true") boolean air_conditioner,
 			@RequestParam(defaultValue = "false") boolean fridge,
-			@RequestParam(defaultValue = "false") boolean swim_pool, 
-			@RequestParam(defaultValue = "0") byte guestAbove,
-			@RequestParam(defaultValue = "100") byte guestBelow, 
-			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "false") boolean swim_pool, @RequestParam(defaultValue = "0") byte guestAbove,
+			@RequestParam(defaultValue = "100") byte guestBelow, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
 		return houseService.searchFilter(country, province, sizeBelow, sizeAbove, priceBelow, priceAbove, tivi, wifi,
-				air_conditioner, fridge, swim_pool,  guestAbove, guestBelow, page, size);
+				air_conditioner, fridge, swim_pool, guestAbove, guestBelow, page, size);
 	}
 
 	// this is the house update feature
 	@PutMapping("/{idHouse}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody HouseDetailModel houseDetail) {
 		return houseService.updateHouse(idHouse, houseDetail);

@@ -95,7 +95,7 @@ public class RatingServiceImpl implements RatingService {
 			
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			List<Rating> listRating = new ArrayList<Rating>();
-			listRating = ratingRepository.findByBookingAccountIdAccount(idCurrent);
+			listRating = ratingRepository.findByBookingAccountId(idCurrent);
 			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
 			
 			if (listRating.size() == 0) {
@@ -138,7 +138,7 @@ public class RatingServiceImpl implements RatingService {
 							);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				} else {
-					if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
+					if (!idCurrent.equals(booking.getAccount().getAccountId())) {
 						message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 						return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 					} else {

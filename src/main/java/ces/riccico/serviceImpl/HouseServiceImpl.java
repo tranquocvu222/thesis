@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 import ces.riccico.common.CommonConstants;
 import ces.riccico.common.HouseConstants;
 import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Account;
 import ces.riccico.entities.House;
-import ces.riccico.entities.Images;
+import ces.riccico.entities.Image;
 import ces.riccico.models.Amenities;
 import ces.riccico.models.HouseDetailModel;
 import ces.riccico.models.HouseModel;
@@ -80,7 +80,7 @@ public class HouseServiceImpl implements HouseService {
 		House house = houseRepository.findById(idHouse).get();
 		Message message = new Message();
 		
-		if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
+		if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getAccountId()) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(idHouse).isPresent()) {
@@ -96,7 +96,7 @@ public class HouseServiceImpl implements HouseService {
 				message.setMessage(HouseConstants.BY_ADMIN);
 				return ResponseEntity.ok(message);
 			} else {
-				if (!idCurrent.equals(houseRepository.findById(idHouse).get().getAccount().getIdAccount())) {
+				if (!idCurrent.equals(houseRepository.findById(idHouse).get().getAccount().getAccountId())) {
 					message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 				}
@@ -163,7 +163,7 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 		
 		try {
-			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
+			Integer idAccount = accountRepository.findByUsername(username).getAccountId();
 			
 			if (!accountRepository.findById(idAccount).isPresent()) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
@@ -275,7 +275,7 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail) {
 		Integer idCurrent = null;
-		Accounts account;
+		Account account;
 		Message message = new Message();
 		
 		try {
@@ -372,15 +372,15 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			Accounts account = accountRepository.findById(idCurrent).get();
+			Account account = accountRepository.findById(idCurrent).get();
 			
-			if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getIdAccount()) {
+			if (idCurrent != houseRepository.findById(idHouse).get().getAccount().getAccountId()) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else if (!houseRepository.findById(idHouse).isPresent()) {
 				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			} else if (!houseRepository.findById(idHouse).get().getAccount().getIdAccount().equals(idCurrent)) {
+			} else if (!houseRepository.findById(idHouse).get().getAccount().getAccountId().equals(idCurrent)) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}

@@ -26,7 +26,7 @@ public class House extends Auditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idHouse")
+	@Column(name = "houseId")
 	private Integer id;
 
 	@Column(name = "title", length = 1500)
@@ -74,14 +74,14 @@ public class House extends Auditable {
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_account", nullable = false)
 	@JsonIgnore
-	private Accounts account;
+	private Account account;
 
 	@OneToMany(mappedBy = "house", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
 
 	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	private Set<Images> images = new HashSet<>();
+	private Set<Image> images = new HashSet<>();
 	
 //	private Set<String> image_url = new HashSet<>();
 	
@@ -109,11 +109,11 @@ public class House extends Auditable {
 		this.isDeleted = isDeleted;
 	}
 
-	public Accounts getAccount() {
+	public Account getAccount() {
 		return account;
 	}
 
-	public void setAccount(Accounts account) {
+	public void setAccount(Account account) {
 		this.account = account;
 	}
 
@@ -125,11 +125,11 @@ public class House extends Auditable {
 		this.bookings = bookings;
 	}
 
-	public Set<Images> getImages() {
+	public Set<Image> getImages() {
 		return images;
 	}
 
-	public void setImages(Set<Images> images) {
+	public void setImages(Set<Image> images) {
 		this.images = images;
 	}
 
