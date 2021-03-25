@@ -133,8 +133,13 @@ public class HouseController {
 	@PutMapping("/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
+<<<<<<< HEAD
 	public ResponseEntity<?> updateHouse(@PathVariable int houseId, @RequestBody HouseDetailModel houseDetail) {
 		return houseService.updateHouse(houseId, houseDetail);
+=======
+	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody(required = false) HouseDetailModel houseDetail) {
+		return houseService.updateHouse(idHouse, houseDetail);
+>>>>>>> 09617c1...  update edithouse
 	}
 
 }

@@ -74,6 +74,7 @@ public class RatingServiceImpl implements RatingService {
 				RatingHouseModel ratingModel = new RatingHouseModel();
 				ratingModel.setRating(rating);
 				ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
+				ratingModel.setCreatedAt(rating.getCreatedAt());
 				listRatingModel.add(ratingModel);
 			}
 
@@ -108,6 +109,7 @@ public class RatingServiceImpl implements RatingService {
 				RatingAccountModel ratingModel = new RatingAccountModel();
 				ratingModel.setRating(rating);
 				ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
+				ratingModel.setCreatedAt(rating.getCreatedAt());
 				listRatingModel.add(ratingModel);
 			}
 			return ResponseEntity.ok(listRatingModel);
