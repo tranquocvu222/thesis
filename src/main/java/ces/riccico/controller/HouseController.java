@@ -127,7 +127,7 @@ public class HouseController {
 	// this is the house update feature
 	@PutMapping("/{idHouse}")
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody HouseDetailModel houseDetail) {
+	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody(required = false) HouseDetailModel houseDetail) {
 		return houseService.updateHouse(idHouse, houseDetail);
 	}
 
