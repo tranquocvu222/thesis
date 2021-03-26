@@ -157,7 +157,7 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		try {
-			listBookings = bookingRepository.findByAccountIdAccount(accountId);
+			listBookings = bookingRepository.findByAccountId(accountId);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			message.setMessage(e.getMessage());
