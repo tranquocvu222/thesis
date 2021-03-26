@@ -13,12 +13,10 @@ public interface BookingService {
 	ResponseEntity<?> cancelBooking(int bookingId);
 
 	ResponseEntity<?> completeBooking̣̣̣(int bookingId);
-	
 
 	ResponseEntity<?> findByAccountId(int accountId);
 	
 	ResponseEntity<?> findByHouseId(int houseId);
-
 
 	List<Booking> getAlḷ();
 
