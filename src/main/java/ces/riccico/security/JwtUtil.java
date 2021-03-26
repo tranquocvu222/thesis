@@ -21,7 +21,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import ces.riccico.entities.Accounts;
+import ces.riccico.entity.Account;
 
 @Component
 public class JwtUtil {
@@ -105,7 +105,7 @@ public class JwtUtil {
 	}
 
 	// validate token
-	public Boolean validateToken(String token, Accounts account) {
+	public Boolean validateToken(String token, Account account) {
 		String username = getUserFromToken(token).getUsername();
 		return (username.equals(account.getUsername()) && isTokenExpired(getClaimsFromToken(token)));
 	}

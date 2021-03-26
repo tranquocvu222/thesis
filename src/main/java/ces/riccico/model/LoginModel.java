@@ -1,5 +1,5 @@
 
-package ces.riccico.models;
+package ces.riccico.model;
 
 public class LoginModel {
 	

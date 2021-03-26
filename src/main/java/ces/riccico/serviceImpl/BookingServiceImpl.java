@@ -15,16 +15,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.common.BookingConstants;
-import ces.riccico.common.HouseConstants;
-import ces.riccico.common.CommonConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Accounts;
-import ces.riccico.entities.Booking;
-import ces.riccico.entities.House;
-import ces.riccico.models.BookingModel;
-import ces.riccico.models.Message;
-import ces.riccico.models.Status;
+import ces.riccico.common.constants.BookingConstants;
+import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.HouseConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.enums.Status;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.Booking;
+import ces.riccico.entity.House;
+import ces.riccico.model.BookingModel;
+import ces.riccico.model.MessageModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
@@ -50,7 +50,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> acceptBooking(int idBooking) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (!bookingRepository.findById(idBooking).isPresent()) {
@@ -72,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> cancelBooking(int idBooking) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(idBooking).get();
 
@@ -102,7 +102,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> completeBooking̣̣̣(int idBooking) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
 		String dateNow = sdf.format(currentDate);
@@ -147,7 +147,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> findByAccountId(int accountId) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		List<Booking> listBookings = new ArrayList<Booking>();
 		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
@@ -182,7 +182,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> findByHouseId(int houseId) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		List<Booking> listBookings = new ArrayList<Booking>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
@@ -227,7 +227,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> payment(int idBooking) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Booking booking = bookingRepository.findById(idBooking).get();
@@ -262,11 +262,11 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> receiveBooking(int idHouse, String dateStart, String dateStop) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			Accounts account = accountRepository.findById(idCurrent).get();
+			Account account = accountRepository.findById(idCurrent).get();
 			House house = houseRepository.findById(idHouse).get();
 
 			if (idCurrent.equals(house.getAccount().getIdAccount())) {

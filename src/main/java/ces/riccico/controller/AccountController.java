@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import ces.riccico.entities.Accounts;
-import ces.riccico.entities.Users;
-import ces.riccico.models.LoginModel;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.User;
+import ces.riccico.model.LoginModel;
 import ces.riccico.service.AccountService;
 import ces.riccico.service.UserService;
 
@@ -49,14 +49,14 @@ public class AccountController {
 	// shows the list of accounts 
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Accounts> findAll() {
+	public List<Account> findAll() {
 		return accountService.findAll();
 	}
 
 	// shows banned accounts list
 	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Accounts> findAllIsBanned() {
+	public List<Account> findAllIsBanned() {
 		return accountService.findAllIsBanned();
 	}
 
@@ -89,7 +89,7 @@ public class AccountController {
 	// this is the registration feature,you can create an account to use system's feature
 	@ResponseBody
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ResponseEntity<?> register(@RequestBody Accounts account, Users user) {
+	public ResponseEntity<?> register(@RequestBody Account account, User user) {
 		return accountService.register(account, user);
 	}
 

@@ -1,9 +1,9 @@
-package ces.riccico.models;
+package ces.riccico.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import ces.riccico.entities.Images;
+import ces.riccico.entity.Image;
 
 public class HouseDetailModel {
 
@@ -41,7 +41,7 @@ public class HouseDetailModel {
 
 	private String title;
 
-	private Set<Images> images = new HashSet<>();
+	private Set<Image> images = new HashSet<>();
 
 	public Integer getId() {
 		return id;
@@ -179,11 +179,11 @@ public class HouseDetailModel {
 		this.title = title;
 	}
 
-	public Set<Images> getImages() {
+	public Set<Image> getImages() {
 		return images;
 	}
 
-	public void setImages(Set<Images> images) {
+	public void setImages(Set<Image> images) {
 		this.images = images;
 	}
 

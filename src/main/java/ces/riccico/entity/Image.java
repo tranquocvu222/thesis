@@ -1,4 +1,4 @@
-package ces.riccico.entities;
+package ces.riccico.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "images")
-public class Images {
+public class Image {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

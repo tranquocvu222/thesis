@@ -15,17 +15,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.common.HouseConstants;
-import ces.riccico.common.CommonConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Accounts;
-import ces.riccico.entities.House;
-import ces.riccico.models.Amenities;
-import ces.riccico.models.HouseDetailModel;
-import ces.riccico.models.HouseModel;
-import ces.riccico.models.Message;
-import ces.riccico.models.PaginationModel;
-import ces.riccico.models.Role;
+import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.HouseConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.enums.Amenities;
+import ces.riccico.common.enums.Role;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.House;
+import ces.riccico.model.HouseDetailModel;
+import ces.riccico.model.HouseModel;
+import ces.riccico.model.MessageModel;
+import ces.riccico.model.PaginationModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.service.HouseService;
@@ -56,7 +56,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> approveHouse(int idHouse) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			House house = houseRepository.findById(idHouse).get();
@@ -78,7 +78,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> deleteHouse(int idHouse) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		Integer idCurrent;
 		House house = houseRepository.findById(idHouse).get();
 
@@ -123,7 +123,7 @@ public class HouseServiceImpl implements HouseService {
 		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
 		List<House> listHouse = new ArrayList<House>();
 		PaginationModel paginationModel = new PaginationModel();
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Pageable paging = PageRequest.of(page, size);
@@ -148,7 +148,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> findByTitle(String title, int page, int size) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Pageable paging = PageRequest.of(page, size);
@@ -169,7 +169,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> findHouseByUsername(String username) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
@@ -267,7 +267,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> getHouseDetail(Integer idHouse) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		House house = houseRepository.findById(idHouse).get();
 		HouseDetailModel houseDetail;
 
@@ -295,8 +295,8 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail) {
 		Integer idCurrent = null;
-		Accounts account;
-		Message message = new Message();
+		Account account;
+		MessageModel message = new MessageModel();
 
 		try {
 			idCurrent = securityAuditorAware.getCurrentAuditor().get();
@@ -332,7 +332,7 @@ public class HouseServiceImpl implements HouseService {
 	public ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner,
 			boolean fridge, boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
@@ -382,7 +382,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> updateHouse(int idHouse, HouseDetailModel houseDetail) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 

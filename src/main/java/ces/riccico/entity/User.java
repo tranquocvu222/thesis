@@ -1,4 +1,4 @@
-package ces.riccico.entities;
+package ces.riccico.entity;
 
 import java.util.Date;
 
@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,9 +50,9 @@ public class Users {
 	@OneToOne
 	@JsonIgnore
 	@JoinColumn(name = "idAccount",nullable = false)
-	private Accounts account;
+	private Account account;
 
-	public Users() {
+	public User() {
 
 	}
 
@@ -113,11 +113,11 @@ public class Users {
 		this.address = address;
 	}
 
-	public Accounts getAccount() {
+	public Account getAccount() {
 		return account;
 	}
 
-	public void setAccount(Accounts account) {
+	public void setAccount(Account account) {
 		this.account = account;
 	}
 

@@ -1,5 +1,5 @@
 
-package ces.riccico.validation;
+package ces.riccico.common.constants;
 
 import org.springframework.stereotype.Component;
 

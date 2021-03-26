@@ -1,4 +1,4 @@
-package ces.riccico.common;
+package ces.riccico.common.constants;
 
 import org.springframework.stereotype.Component;
 

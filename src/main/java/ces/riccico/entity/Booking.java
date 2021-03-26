@@ -1,4 +1,4 @@
-package ces.riccico.entities;
+package ces.riccico.entity;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import ces.riccico.models.Auditable;
+import ces.riccico.model.Auditable;
 
 @Entity
 @Table(name ="booking")
@@ -39,7 +39,7 @@ public class Booking extends Auditable {
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name ="id_account", nullable = false)
 	@JsonIgnore
-	private Accounts account;
+	private Account account;
 	
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "idHouse", nullable = false)
@@ -80,11 +80,11 @@ public class Booking extends Auditable {
 		this.createEnd = createEnd;
 	}
 
-	public Accounts getAccount() {
+	public Account getAccount() {
 		return account;
 	}
 
-	public void setAccount(Accounts account) {
+	public void setAccount(Account account) {
 		this.account = account;
 	}
 

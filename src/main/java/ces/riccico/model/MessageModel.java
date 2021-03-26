@@ -1,6 +1,6 @@
-package ces.riccico.models;
+package ces.riccico.model;
 
-public class Message {
+public class MessageModel {
 
 	private Object data;
 
