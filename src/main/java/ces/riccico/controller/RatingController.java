@@ -39,11 +39,11 @@ public class RatingController {
 	}
 	
 	
-	@PostMapping("/write/{idBooking}")
+	@PostMapping("/write/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> writeRating(@PathVariable int idBooking, @RequestBody Rating rating){
-		return ratingService.writeRating(idBooking, rating);
+	public ResponseEntity<?> writeRating(@PathVariable int bookingId, @RequestBody Rating rating){
+		return ratingService.writeRating(bookingId, rating);
 	}
 	
 

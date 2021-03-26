@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,12 +51,12 @@ public class AccountController {
 	}
 
 	// shows the list of accounts 
-	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Account> findAll() {
-		return accountService.findAll();
-	}
+//	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	@PreAuthorize("hasAnyAuthority('admin')")
+//	public List<Account> findAll() {
+//		return accountService.findAll();
+//	}
 
 	// shows banned accounts list
 	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)
@@ -63,6 +64,15 @@ public class AccountController {
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public List<Account> findAllIsBanned() {
 		return accountService.findAllIsBanned();
+	}
+	
+	// find house with pagination
+	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	@PreAuthorize("hasAnyAuthority('admin')")
+	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return accountService.findByPageAndSize(page, size);
 	}
 
 	// this is a forgotten password feature, which helps you recover your password when you forget it
@@ -72,11 +82,11 @@ public class AccountController {
 	}
 
 	// prevent users from using the system
-	@RequestMapping(value = "/banned/{idAccount}", method = RequestMethod.POST)
+	@RequestMapping(value = "/banned/{accountId}", method = RequestMethod.POST)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public ResponseEntity<?> isBanneed(@PathVariable int idAccount) {
-		return accountService.banAccount(idAccount);
+	public ResponseEntity<?> isBanneed(@PathVariable int accountId) {
+		return accountService.banAccount(accountId);
 	}
 
 	// this is a login feature that helps you log into the system

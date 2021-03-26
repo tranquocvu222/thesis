@@ -32,19 +32,19 @@ public class HouseController {
 	private HouseService houseService;
 
 	// confirm post to home page from user
-	@PutMapping("/approve/{idHouse}")
+	@PutMapping("/approve/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public ResponseEntity<?> approveHouse(@PathVariable int idHouse) {
-		return houseService.approveHouse(idHouse);
+	public ResponseEntity<?> approveHouse(@PathVariable int houseId) {
+		return houseService.approveHouse(houseId);
 	}
 
 	// delete house
-	@DeleteMapping("/{idHouse}")
+	@DeleteMapping("/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> deleteHouse(@PathVariable int idHouse) {
-		return houseService.deleteHouse(idHouse);
+	public ResponseEntity<?> deleteHouse(@PathVariable int houseId) {
+		return houseService.deleteHouse(houseId);
 	}
 
 	// find house with pagination
@@ -99,8 +99,8 @@ public class HouseController {
 
 	// see house's detail, service of room and view room
 	@GetMapping("/detail")
-	public ResponseEntity<?> getHouseDetail(@RequestParam Integer idHouse) {
-		return houseService.getHouseDetail(idHouse);
+	public ResponseEntity<?> getHouseDetail(@RequestParam Integer houseId) {
+		return houseService.getHouseDetail(houseId);
 	}
 
 	// post your house on the website
@@ -128,11 +128,11 @@ public class HouseController {
 	}
 
 	// this is the house update feature
-	@PutMapping("/{idHouse}")
+	@PutMapping("/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> updateHouse(@PathVariable int idHouse, @RequestBody HouseDetailModel houseDetail) {
-		return houseService.updateHouse(idHouse, houseDetail);
+	public ResponseEntity<?> updateHouse(@PathVariable int houseId, @RequestBody HouseDetailModel houseDetail) {
+		return houseService.updateHouse(houseId, houseDetail);
 	}
 
 }

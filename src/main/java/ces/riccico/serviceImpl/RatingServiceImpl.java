@@ -122,14 +122,14 @@ public class RatingServiceImpl implements RatingService {
 	
 //	Write rating house 	
 	@Override
-	public ResponseEntity<?> writeRating(int idBooking, Rating rating) {
+	public ResponseEntity<?> writeRating(int bookingId, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		Booking booking = bookingRepository.findById(idBooking).get();
+		Booking booking = bookingRepository.findById(bookingId).get();
 		Message message = new Message();
 		
 		try {
 			
-			if (!bookingRepository.findById(idBooking).isPresent()) {
+			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
@@ -142,7 +142,7 @@ public class RatingServiceImpl implements RatingService {
 						message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 						return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 					} else {
-						if (ratingRepository.findByBookingId(idBooking) != null) {
+						if (ratingRepository.findByBookingId(bookingId) != null) {
 							message.setMessage(RatingConstants.IS_RATED);
 							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 						}

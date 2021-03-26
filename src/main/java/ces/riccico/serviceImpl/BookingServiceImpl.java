@@ -45,21 +45,21 @@ public class BookingServiceImpl implements BookingService {
 
 	
 	@Override
-	public ResponseEntity<?> acceptBooking(int idBooking) {
+	public ResponseEntity<?> acceptBooking(int bookingId) {
 		Message message = new Message();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-		if (!bookingRepository.findById(idBooking).isPresent()) {
+		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getAccountId())) {
+		if (!idCurrent.equals(bookingRepository.findById(bookingId).get().getHouse().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
-		Booking booking = bookingRepository.findById(idBooking).get();
+		Booking booking = bookingRepository.findById(bookingId).get();
 		booking.setStatus(Status.APPROVAL.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 		message.setMessage(CommonConstants.SUCCESS);
@@ -68,12 +68,12 @@ public class BookingServiceImpl implements BookingService {
 
 	
 	@Override
-	public ResponseEntity<?> cancelBooking(int idBooking) {
+	public ResponseEntity<?> cancelBooking(int bookingId) {
 		Message message = new Message();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		Booking booking = bookingRepository.findById(idBooking).get();
+		Booking booking = bookingRepository.findById(bookingId).get();
 
-		if (!bookingRepository.findById(idBooking).isPresent()) {
+		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		} else {
@@ -97,7 +97,7 @@ public class BookingServiceImpl implements BookingService {
 
 	
 	@Override
-	public ResponseEntity<?> completeBooking̣̣̣(int idBooking) {
+	public ResponseEntity<?> completeBooking̣̣̣(int bookingId) {
 		Message message = new Message();
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
@@ -109,9 +109,9 @@ public class BookingServiceImpl implements BookingService {
 			e.printStackTrace();
 		}
 		try {
-			Booking booking = bookingRepository.findById(idBooking).get();
+			Booking booking = bookingRepository.findById(bookingId).get();
 
-			if (!bookingRepository.findById(idBooking).isPresent()) {
+			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
@@ -141,8 +141,8 @@ public class BookingServiceImpl implements BookingService {
 
 	
 	@Override
-	public List<Booking> findByHouseId(int idHouse) {
-		return bookingRepository.findByHouseId(idHouse);
+	public List<Booking> findByHouseId(int houseId) {
+		return bookingRepository.findByHouseId(houseId);
 	}
 
 	
@@ -159,14 +159,14 @@ public class BookingServiceImpl implements BookingService {
 
 	
 	@Override
-	public ResponseEntity<?> payment(int idBooking) {
+	public ResponseEntity<?> payment(int bookingId) {
 		Message message = new Message();
 
 		try {
-			Booking booking = bookingRepository.findById(idBooking).get();
+			Booking booking = bookingRepository.findById(bookingId).get();
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-			if (!bookingRepository.findById(idBooking).isPresent()) {
+			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
@@ -196,27 +196,27 @@ public class BookingServiceImpl implements BookingService {
 
 	
 	@Override
-	public ResponseEntity<?> receiveBooking(int idHouse, String dateStart, String dateStop) {
+	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
 		Message message = new Message();
 
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Account account = accountRepository.findById(idCurrent).get();
-			House house = houseRepository.findById(idHouse).get();
+			House house = houseRepository.findById(houseId).get();
 
 			if (idCurrent.equals(house.getAccount().getAccountId())) {
 				message.setMessage(BookingConstants.ACCOUNT_WITHOUT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 
 			} else {
-				if (!houseRepository.findById(idHouse).isPresent()) {
+				if (!houseRepository.findById(houseId).isPresent()) {
 					message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 				} else {
 					List<Booking> listBookings = new ArrayList<Booking>();
 
 					try {
-						listBookings = bookingRepository.findByHouseId(idHouse);
+						listBookings = bookingRepository.findByHouseId(houseId);
 					} catch (NullPointerException e) {
 						e.printStackTrace();
 					}
@@ -280,7 +280,7 @@ public class BookingServiceImpl implements BookingService {
 
 	
 	@Override
-	public ResponseEntity<?> refund(int idBooking) {
+	public ResponseEntity<?> refund(int bookingId) {
 		return null;
 	}
 }

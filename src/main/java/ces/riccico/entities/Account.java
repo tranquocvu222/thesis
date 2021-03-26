@@ -33,6 +33,7 @@ public class Account {
 	private String username;
 
 	@Column(name = "password", length = 100)
+	@JsonIgnore
 	private String password;
 
 	@Column(name = "role")

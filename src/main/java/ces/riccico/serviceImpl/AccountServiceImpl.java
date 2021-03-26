@@ -11,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -24,8 +26,11 @@ import ces.riccico.common.CommonConstants;
 import ces.riccico.common.TokenConstants;
 import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Account;
+import ces.riccico.entities.House;
+import ces.riccico.models.HouseModel;
 import ces.riccico.models.LoginModel;
 import ces.riccico.models.Message;
+import ces.riccico.models.PaginationModel;
 import ces.riccico.models.Role;
 import ces.riccico.entities.Token;
 import ces.riccico.entities.User;
@@ -104,12 +109,12 @@ public class AccountServiceImpl implements AccountService {
 
 //	Banned account 
 	@Override
-	public ResponseEntity<?> banAccount(int idAccount) {
+	public ResponseEntity<?> banAccount(int accountId) {
 
 		Message message = new Message();
 
 		try {
-			Account account = accountRepository.findById(idAccount).get();
+			Account account = accountRepository.findById(accountId).get();
 
 			if (account.isBanned() == IS_BANNED) {
 				message.setMessage(UserConstants.ACCOUNT_BANNED);
@@ -230,6 +235,33 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return listAccount;
 	}
+	
+	@Override
+	public ResponseEntity<?> findByPageAndSize(int page, int size) {
+		List<Object> listAccountModel = new ArrayList<Object>();
+		List<Account> listAccount = new ArrayList<Account>();
+		PaginationModel paginationModel = new PaginationModel();
+		Message message = new Message();
+		
+		try {
+			Pageable paging = PageRequest.of(page, size);
+			listAccount = accountRepository.findAll(paging).getContent();
+			int pageMax = accountRepository.findAll(paging).getTotalPages();
+			
+			for (Account account : listAccount) {
+				Account accountModel = mapper.map(account, Account.class);
+				listAccountModel.add(accountModel);
+			}
+			
+			paginationModel.setListHouse(listAccountModel);
+			paginationModel.setPageMax(pageMax);
+			return ResponseEntity.ok(paginationModel);
+			
+		} catch (Exception e) {
+			message.setMessage(e.getLocalizedMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+	}
 
 //  Recover password by email when forget 
 	@Override
@@ -275,6 +307,7 @@ public class AccountServiceImpl implements AccountService {
 		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
 	}
+	
 
 //	Load user by username
 	@Override

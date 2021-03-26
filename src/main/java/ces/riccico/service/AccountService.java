@@ -15,7 +15,7 @@ public interface AccountService {
 	
 	ResponseEntity<?> activeAccount(int codeInput, String email);
 
-	ResponseEntity<?> banAccount(int idAccount);
+	ResponseEntity<?> banAccount(int accountId);
 	
 	ResponseEntity<?> changePassword(String oldPassword, String newPassword);
 	
@@ -36,6 +36,8 @@ public interface AccountService {
 	ResponseEntity<?> register(Account account, User user);
 
 	ResponseEntity<?> resetPassword(String email, String password);
+
+	ResponseEntity<?> findByPageAndSize(int page, int size);
 
 	
 

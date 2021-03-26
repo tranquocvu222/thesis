@@ -8,22 +8,22 @@ import ces.riccico.entities.Booking;
 
 public interface BookingService {
 	
-	ResponseEntity<?> acceptBooking(int idBooking);
+	ResponseEntity<?> acceptBooking(int bookingId);
 
-	ResponseEntity<?> cancelBooking(int idBooking);
+	ResponseEntity<?> cancelBooking(int bookingId);
 
-	ResponseEntity<?> completeBooking̣̣̣(int idBooking);
+	ResponseEntity<?> completeBooking̣̣̣(int bookingId);
 	
-	List<Booking> findByHouseId(int idHouse);
+	List<Booking> findByHouseId(int houseId);
 
 	List<Booking> getAlḷ();
 
 	List<Booking> getByUsername(String username);
 	
-	ResponseEntity<?> payment(int idBooking);
+	ResponseEntity<?> payment(int bookingId);
 
-	ResponseEntity<?> receiveBooking(int idHouse, String dateStart, String dateStop);
+	ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop);
 
-	ResponseEntity<?> refund(int idBooking);
+	ResponseEntity<?> refund(int bookingId);
 
 }
