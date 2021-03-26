@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ces.riccico.entities.Rating;
+import ces.riccico.entity.Rating;
 import ces.riccico.service.RatingService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;

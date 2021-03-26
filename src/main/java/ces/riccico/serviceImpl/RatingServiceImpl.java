@@ -11,16 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.common.BookingConstants;
-import ces.riccico.common.HouseConstants;
-import ces.riccico.common.RatingConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Booking;
-import ces.riccico.models.Message;
-import ces.riccico.entities.Rating;
-import ces.riccico.models.RatingAccountModel;
-import ces.riccico.models.RatingHouseModel;
-import ces.riccico.models.Status;
+import ces.riccico.common.constants.BookingConstants;
+import ces.riccico.common.constants.HouseConstants;
+import ces.riccico.common.constants.RatingConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.enums.Status;
+import ces.riccico.entity.Booking;
+import ces.riccico.entity.Rating;
+import ces.riccico.model.MessageModel;
+import ces.riccico.model.RatingAccountModel;
+import ces.riccico.model.RatingHouseModel;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.repository.RatingRepository;
@@ -51,7 +51,7 @@ public class RatingServiceImpl implements RatingService {
 	@Override
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			List<Rating> listRating = new ArrayList<Rating>();
@@ -92,7 +92,7 @@ public class RatingServiceImpl implements RatingService {
 	@Override
 	public ResponseEntity<?> findByRatingAccountId() {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
@@ -126,7 +126,8 @@ public class RatingServiceImpl implements RatingService {
 	public ResponseEntity<?> writeRating(int bookingId, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(bookingId).get();
-		Message message = new Message();
+		MessageModel message = new MessageModel();
+
 
 		try {
 			if (!idCurrent.equals(booking.getAccount().getAccountId())) {

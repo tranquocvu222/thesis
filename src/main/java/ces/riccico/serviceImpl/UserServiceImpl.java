@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import ces.riccico.models.Message;
-import ces.riccico.models.Role;
-import ces.riccico.common.CommonConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.User;
+import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.enums.Role;
+import ces.riccico.entity.User;
+import ces.riccico.model.MessageModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.SecurityAuditorAware;
@@ -40,8 +39,7 @@ public class UserServiceImpl implements UserService {
 	public ResponseEntity<?> editUser(User model, Integer userId) {
 
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		User user = new User();
 		logger.error("=====" + user.toString());
@@ -55,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
 		try {
 
-			if (!userRepository.findByAccountId(idCurrent).get().getAccount().getRole().equals(Role.ADMIN.getRole())
+			if (!userRepository.findByIdAccount(idCurrent).get().getAccount().getRole().equals(Role.ADMIN.getRole())
 					&& !idCurrent.equals(userRepository.findById(userId).get().getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
@@ -121,15 +119,13 @@ public class UserServiceImpl implements UserService {
 //	Find user by id_account was login
 	@Override
 	public ResponseEntity<?> findById() {
-
-		Message message = new Message();
-
+		
+		MessageModel message = new MessageModel();
+		
 		try {
 
 			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
-
-			User user = userRepository.findByAccountId(idaccount).get();
-
+			User user = userRepository.findByIdAccount(idaccount).get();
 			message.setMessage(CommonConstants.SUCCESS);
 
 			return ResponseEntity.ok(user);

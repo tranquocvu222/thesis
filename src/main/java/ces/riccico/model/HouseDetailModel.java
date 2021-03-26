@@ -1,9 +1,9 @@
-package ces.riccico.models;
+package ces.riccico.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import ces.riccico.entities.Image;
+import ces.riccico.entity.Image;
 
 public class HouseDetailModel {
 

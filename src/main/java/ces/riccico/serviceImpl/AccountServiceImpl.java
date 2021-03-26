@@ -21,24 +21,22 @@ import org.springframework.stereotype.Service;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
-import ces.riccico.common.CommonConstants;
-import ces.riccico.common.TokenConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Account;
-import ces.riccico.entities.House;
-import ces.riccico.entities.Token;
-import ces.riccico.entities.User;
-import ces.riccico.models.HouseModel;
-import ces.riccico.models.LoginModel;
-import ces.riccico.models.Message;
-import ces.riccico.models.PaginationModel;
-import ces.riccico.models.Role;
+import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.TokenConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.constants.Validation;
+import ces.riccico.common.enums.Role;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.Token;
+import ces.riccico.entity.User;
+import ces.riccico.model.LoginModel;
+import ces.riccico.model.MessageModel;
+import ces.riccico.model.PaginationModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.AccountDetail;
 import ces.riccico.service.AccountService;
-import ces.riccico.validation.Validation;
 import ces.riccico.security.JwtUtil;
 import ces.riccico.security.SecurityAuditorAware;
 
@@ -78,8 +76,8 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> activeAccount(int codeInput, String email) {
 		
-		Message message = new Message();
 		Account account = accountRepository.findByEmail(email);
+		MessageModel message = new MessageModel();
 
 		if (account == null) {
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
@@ -291,8 +289,8 @@ public class AccountServiceImpl implements AccountService {
 //	Login by username or email and password
 	@Override
 	public ResponseEntity<?> login(LoginModel account) {
+		
 		MessageModel message = new MessageModel();
-
 		String usernameOrEmail = account.getUsernameOrEmail();
 		String password = account.getPassword();
 
@@ -348,6 +346,7 @@ public class AccountServiceImpl implements AccountService {
 //	Logout account
 	@Override
 	public ResponseEntity<?> logout() {
+
 		MessageModel message = new MessageModel();
 		String tokenCurrent;
 		tokenCurrent = jwtUtil.getJwtTokenHeader();
@@ -381,7 +380,6 @@ public class AccountServiceImpl implements AccountService {
 	public ResponseEntity<?> register(Account account, User user) {
 
 		MessageModel message = new MessageModel();
-
 		int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 		CONFIRM_CODE = code;
 

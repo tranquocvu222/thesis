@@ -2,7 +2,7 @@ package ces.riccico.service;
 
 import org.springframework.http.ResponseEntity;
 
-import ces.riccico.entities.Rating;
+import ces.riccico.entity.Rating;
 
 public interface RatingService {
 	

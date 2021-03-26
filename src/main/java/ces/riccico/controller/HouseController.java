@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ces.riccico.entities.House;
-import ces.riccico.models.HouseDetailModel;
+import ces.riccico.entity.House;
+import ces.riccico.model.HouseDetailModel;
 import ces.riccico.service.HouseService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -116,7 +116,7 @@ public class HouseController {
 	@GetMapping("/filter")
 	public ResponseEntity<?> searchFilter(@RequestParam(defaultValue = "") String country,
 
-			@RequestParam(defaultValue = "") String province, @RequestParam(defaultValue = "0") Double lowestSize,
+			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "0") Double lowestSize,
 			@RequestParam(defaultValue = "50000") Double highestSize, @RequestParam(defaultValue = "0") Double lowestPrice,
 			@RequestParam(defaultValue = "50000000") Double highestPrice,
 			@RequestParam(defaultValue = "false") boolean tivi, @RequestParam(defaultValue = "false") boolean wifi,

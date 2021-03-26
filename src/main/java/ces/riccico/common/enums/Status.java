@@ -1,4 +1,4 @@
-package ces.riccico.models;
+package ces.riccico.common.enums;
 
 public enum Status {
 

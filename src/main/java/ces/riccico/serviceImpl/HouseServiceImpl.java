@@ -15,18 +15,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.common.HouseConstants;
-import ces.riccico.common.CommonConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Account;
-import ces.riccico.entities.House;
-import ces.riccico.entities.Image;
-import ces.riccico.models.Amenities;
-import ces.riccico.models.HouseDetailModel;
-import ces.riccico.models.HouseModel;
-import ces.riccico.models.Message;
-import ces.riccico.models.PaginationModel;
-import ces.riccico.models.Role;
+import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.HouseConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.enums.Amenities;
+import ces.riccico.common.enums.Role;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.House;
+import ces.riccico.model.HouseDetailModel;
+import ces.riccico.model.HouseModel;
+import ces.riccico.model.MessageModel;
+import ces.riccico.model.PaginationModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.service.HouseService;
@@ -57,8 +56,10 @@ public class HouseServiceImpl implements HouseService {
 	private SecurityAuditorAware securityAuditorAware;
 
 	@Override
+
 	public ResponseEntity<?> approveHouse(int houseId) {
-		Message message = new Message();
+
+		MessageModel message = new MessageModel();
 
 		try {
 			House house = houseRepository.findById(houseId).get();
@@ -79,12 +80,14 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
+
 	public ResponseEntity<?> deleteHouse(int houseId) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		House house = houseRepository.findById(houseId).get();
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		
 		if (idCurrent != houseRepository.findById(houseId).get().getAccount().getAccountId()) {
+
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(houseId).isPresent()) {
@@ -116,7 +119,7 @@ public class HouseServiceImpl implements HouseService {
 		List<Object> listHouseModel = new ArrayList<Object>();
 		List<House> listHouse = new ArrayList<House>();
 		PaginationModel paginationModel = new PaginationModel();
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Pageable paging = PageRequest.of(page, size);
@@ -141,7 +144,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> findByTitle(String title, int page, int size) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Pageable paging = PageRequest.of(page, size);
@@ -162,7 +165,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> findHouseByUsername(String username) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Integer idAccount = accountRepository.findByUsername(username).getAccountId();
@@ -259,9 +262,9 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> getHouseDetail(Integer houseId) {
-		Message message = new Message();
-		House house = houseRepository.findById(houseId).get();
+	public ResponseEntity<?> getHouseDetail(Integer idHouse) {
+		MessageModel message = new MessageModel();
+		House house = houseRepository.findById(idHouse).get();
 		HouseDetailModel houseDetail;
 
 		if (house == null) {
@@ -278,7 +281,7 @@ public class HouseServiceImpl implements HouseService {
 		boolean swimPool = ((amenities & Amenities.SWIM_POOL.getValue()) != 0) ? true : false;
 		houseDetail.setWifi(wifi);
 		houseDetail.setTivi(tivi);
-		houseDetail.setAir_conditioner(airConditioner);
+		houseDetail.setAirConditioner(airConditioner);
 		houseDetail.setFridge(fridge);
 		houseDetail.setSwimPool(swimPool);
 
@@ -287,9 +290,11 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail) {
+		
 		Integer idCurrent = null;
 		Account account;
-		Message message = new Message();
+		MessageModel message = new MessageModel();
+
 
 		try {
 			idCurrent = securityAuditorAware.getCurrentAuditor().get();
@@ -303,7 +308,7 @@ public class HouseServiceImpl implements HouseService {
 			House house = mapper.map(houseDetail, House.class);
 			byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
 			byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
-			byte ac = ((houseDetail.isAir_conditioner() == true)) ? Amenities.AC.getValue() : 0;
+			byte ac = ((houseDetail.isAirConditioner() == true)) ? Amenities.AC.getValue() : 0;
 			byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
 			byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
 			String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
@@ -327,8 +332,9 @@ public class HouseServiceImpl implements HouseService {
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner,
 			boolean fridge, boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
 
-		Message message = new Message();
+
 		List<Object> listHouseModel = new ArrayList<Object>();
+		MessageModel message = new MessageModel();
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
 		byte amenities;
@@ -378,10 +384,11 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
+
 	public ResponseEntity<?> updateHouse(int houseId, HouseDetailModel houseDetail) {
 		
-		Message message = new Message();
-		
+		MessageModel message = new MessageModel();
+
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 

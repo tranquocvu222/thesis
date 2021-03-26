@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import ces.riccico.entities.Booking;
+import ces.riccico.entity.Booking;
 
 public interface BookingService {
 	

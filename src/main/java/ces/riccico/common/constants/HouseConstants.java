@@ -1,4 +1,4 @@
-package ces.riccico.common;
+package ces.riccico.common.constants;
 
 public class HouseConstants {
 	

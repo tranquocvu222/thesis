@@ -1,5 +1,5 @@
+package ces.riccico.model;
 
-package ces.riccico.models;
 
 public class HouseModel {
 

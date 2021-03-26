@@ -1,4 +1,4 @@
-package ces.riccico.entities;
+package ces.riccico.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

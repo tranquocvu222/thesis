@@ -3,8 +3,8 @@ package ces.riccico.service;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 
-import ces.riccico.entities.House;
-import ces.riccico.models.HouseDetailModel;
+import ces.riccico.entity.House;
+import ces.riccico.model.HouseDetailModel;
 
 public interface HouseService {
 

@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import ces.riccico.entities.Account;
-import ces.riccico.entities.User;
-import ces.riccico.models.LoginModel;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.User;
+import ces.riccico.model.LoginModel;
 import ces.riccico.service.AccountService;
 import ces.riccico.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -50,18 +50,17 @@ public class AccountController {
 	}
 
 	// shows the list of accounts 
-//	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-//	@PreAuthorize("hasAnyAuthority('admin')")
-//	public List<Account> findAll() {
-//		return accountService.findAll();
-//	}
+	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+	@PreAuthorize("hasAnyAuthority('admin')")
+	public ResponseEntity<?> findAll() {
+		return accountService.findAll();
+	}
 
 	// shows banned accounts list
 	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Account> findAllIsBanned() {
+	public ResponseEntity<?> findAllIsBanned() {
 		return accountService.findAllIsBanned();
 	}
 	

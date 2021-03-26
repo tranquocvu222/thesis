@@ -1,14 +1,14 @@
-package ces.riccico.models;
+package ces.riccico.model;
 
 import java.util.Date;
 
-import ces.riccico.entities.Rating;
+import ces.riccico.entity.Rating;
 
-public class RatingHouseModel {
+public class RatingAccountModel {
 
 	private Rating rating;
 
-	private String username;
+	private String houseName;
 
 	private Date createdAt;
 
@@ -20,12 +20,12 @@ public class RatingHouseModel {
 		this.rating = rating;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getHouseName() {
+		return houseName;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setHouseName(String houseName) {
+		this.houseName = houseName;
 	}
 
 	public Date getCreatedAt() {

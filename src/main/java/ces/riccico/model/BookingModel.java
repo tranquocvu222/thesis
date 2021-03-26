@@ -1,6 +1,6 @@
-package ces.riccico.models;
+package ces.riccico.model;
 
-import ces.riccico.entities.Booking;
+import ces.riccico.entity.Booking;
 
 public class BookingModel {
 	private Booking booking;
