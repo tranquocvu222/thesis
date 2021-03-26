@@ -10,11 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.models.Message;
-import ces.riccico.models.Role;
-import ces.riccico.common.CommonConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.User;
+import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.enums.Role;
+import ces.riccico.entity.User;
+import ces.riccico.model.MessageModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.SecurityAuditorAware;
@@ -37,11 +37,13 @@ public class UserServiceImpl implements UserService {
 //	Update profile of user
 
 	@Override
+
 	public ResponseEntity<?> editUser(User model, Integer userId) {
+
 
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		User user = new User();
 		logger.error("=====" + user.toString());
@@ -59,7 +61,6 @@ public class UserServiceImpl implements UserService {
 					&& !idCurrent.equals(userRepository.findById(userId).get().getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-
 			}
 
 			if (model.getFirstName().equals("")) {
@@ -123,12 +124,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseEntity<?> findById() {
 
-		Message message = new Message();
-
+		
+		MessageModel message = new MessageModel();
+		
 		try {
-			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
-
-			User user = userRepository.findByAccountId(idaccount).get();
+			Integer accountId = securityAuditorAware.getCurrentAuditor().get();
+			User user = userRepository.findByAccountId(accountId).get();
 
 			message.setMessage(CommonConstants.SUCCESS);
 

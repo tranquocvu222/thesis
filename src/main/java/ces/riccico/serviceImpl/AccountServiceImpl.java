@@ -22,18 +22,17 @@ import org.springframework.stereotype.Service;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 
-import ces.riccico.common.CommonConstants;
-import ces.riccico.common.TokenConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Account;
-import ces.riccico.entities.House;
-import ces.riccico.models.HouseModel;
-import ces.riccico.models.LoginModel;
-import ces.riccico.models.Message;
-import ces.riccico.models.PaginationModel;
-import ces.riccico.models.Role;
-import ces.riccico.entities.Token;
-import ces.riccico.entities.User;
+import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.TokenConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.constants.Validation;
+import ces.riccico.common.enums.Role;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.Token;
+import ces.riccico.entity.User;
+import ces.riccico.model.LoginModel;
+import ces.riccico.model.MessageModel;
+import ces.riccico.model.PaginationModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;
@@ -41,7 +40,6 @@ import ces.riccico.security.AccountDetail;
 import ces.riccico.service.AccountService;
 import ces.riccico.security.JwtUtil;
 import ces.riccico.security.SecurityAuditorAware;
-import ces.riccico.validation.Validation;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -79,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> activeAccount(int codeInput, String email) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Account account = accountRepository.findByEmail(email);
@@ -88,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
 				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (codeInput != CONFIRM_CODE) {
 				message.setMessage(UserConstants.INVALID_CODE);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -112,7 +110,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> banAccount(int accountId) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			Account account = accountRepository.findById(accountId).get();
@@ -137,7 +135,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> changePassword(String oldPassword, String newPassword) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 
@@ -154,23 +152,23 @@ public class AccountServiceImpl implements AccountService {
 				if (oldPassword == null || oldPassword.isEmpty()) {
 					message.setMessage(UserConstants.PASSWORD_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} 
-				
+				}
+
 				if (newPassword == null || newPassword.isEmpty()) {
 					message.setMessage(UserConstants.PASSWORD_NEW_NULL);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} 
-				
+				}
+
 				if (!encoder.matches(oldPassword, account.getPassword())) {
 					message.setMessage(UserConstants.WRONG_OLD_PASSWORD);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} 
-				
+				}
+
 				if (!newPassword.matches(Validation.PASSWORD_PATTERN)) {
 					message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} 
-				
+				}
+
 				if (newPassword.equals(oldPassword)) {
 					message.setMessage(UserConstants.IS_MATCHING_OLD_PASSWORD);
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -237,28 +235,28 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return listAccount;
 	}
-	
+
 	@Override
 	public ResponseEntity<?> findByPageAndSize(int page, int size) {
 		List<Object> listAccountModel = new ArrayList<Object>();
 		List<Account> listAccount = new ArrayList<Account>();
 		PaginationModel paginationModel = new PaginationModel();
-		Message message = new Message();
-		
+		MessageModel message = new MessageModel();
+
 		try {
 			Pageable paging = PageRequest.of(page, size);
 			listAccount = accountRepository.findAll(paging).getContent();
 			int pageMax = accountRepository.findAll(paging).getTotalPages();
-			
+
 			for (Account account : listAccount) {
 				Account accountModel = mapper.map(account, Account.class);
 				listAccountModel.add(accountModel);
 			}
-			
+
 			paginationModel.setListHouse(listAccountModel);
 			paginationModel.setPageMax(pageMax);
 			return ResponseEntity.ok(paginationModel);
-			
+
 		} catch (Exception e) {
 			message.setMessage(e.getLocalizedMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -269,7 +267,8 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> forgetPassword(String email) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
+
 		Account accounts = accountRepository.findByEmail(email);
 
 		try {
@@ -309,7 +308,6 @@ public class AccountServiceImpl implements AccountService {
 		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
 	}
-	
 
 //	Load user by username
 	@Override
@@ -336,7 +334,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> login(LoginModel account) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 
@@ -347,7 +345,7 @@ public class AccountServiceImpl implements AccountService {
 				message.setMessage(UserConstants.USERNAME_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (password == null || password.isEmpty()) {
 				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -371,13 +369,13 @@ public class AccountServiceImpl implements AccountService {
 					if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
 						message.setMessage(UserConstants.INVALID_ACCOUNT);
 						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-					} 
-					
+					}
+
 					if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
 						message.setMessage(UserConstants.ACCOUNT_BANNED);
 						return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-					} 
-					
+					}
+
 					if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
 						message.setMessage(UserConstants.NOT_ACTIVATED);
 						return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
@@ -401,7 +399,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> logout() {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		String tokenCurrent;
 
 		try {
@@ -414,12 +412,12 @@ public class AccountServiceImpl implements AccountService {
 				message.setMessage(TokenConstants.TOKEN_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
-			
+
 			if (!jwtUtil.isTokenExpired(claims)) {
 				message.setMessage(TokenConstants.IS_TOKEN_EXPIRED);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
-			
+
 			if (!jwtUtil.validateToken(tokenCurrent, account)) {
 				message.setMessage(TokenConstants.INVALID_TOKEN);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
@@ -440,7 +438,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> register(Account account, User user) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			int code = (int) Math.floor(((Math.random() * 899999) + 100000));
@@ -450,37 +448,37 @@ public class AccountServiceImpl implements AccountService {
 				message.setMessage(UserConstants.USERNAME_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (account.getEmail().equals("")) {
 				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (account.getPassword().equals("")) {
 				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (!account.getUsername().matches(Validation.USERNAME_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_USERNAME_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (!account.getPassword().matches(Validation.PASSWORD_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (accountRepository.findByEmail(account.getEmail()) != null) {
 				message.setMessage(UserConstants.EMAIL_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (accountRepository.findByUsername(account.getUsername()) == null) {
 				try {
 					SimpleMailMessage messageEmail = new SimpleMailMessage();
@@ -525,7 +523,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public ResponseEntity<?> resetPassword(String email, String password) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		Account account = accountRepository.findByEmail(email);
 
 		try {
@@ -533,22 +531,22 @@ public class AccountServiceImpl implements AccountService {
 				message.setMessage(UserConstants.EMAIL_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (!email.matches(Validation.EMAIL_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (password == null) {
 				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (!password.matches(Validation.PASSWORD_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (!account.getEmail().isEmpty() && account.isActive()) {
 				account.setPassword(new BCryptPasswordEncoder().encode(password));
 				accountRepository.saveAndFlush(account);

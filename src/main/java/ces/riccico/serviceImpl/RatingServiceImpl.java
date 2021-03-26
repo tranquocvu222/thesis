@@ -11,16 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.common.BookingConstants;
-import ces.riccico.common.HouseConstants;
-import ces.riccico.common.RatingConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Booking;
-import ces.riccico.models.Message;
-import ces.riccico.entities.Rating;
-import ces.riccico.models.RatingAccountModel;
-import ces.riccico.models.RatingHouseModel;
-import ces.riccico.models.Status;
+import ces.riccico.common.constants.BookingConstants;
+import ces.riccico.common.constants.HouseConstants;
+import ces.riccico.common.constants.RatingConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.enums.Status;
+import ces.riccico.entity.Booking;
+import ces.riccico.entity.Rating;
+import ces.riccico.model.MessageModel;
+import ces.riccico.model.RatingAccountModel;
+import ces.riccico.model.RatingHouseModel;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.repository.RatingRepository;
@@ -51,7 +51,7 @@ public class RatingServiceImpl implements RatingService {
 	@Override
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
 
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 
 		try {
 			List<Rating> listRating = new ArrayList<Rating>();
@@ -68,7 +68,7 @@ public class RatingServiceImpl implements RatingService {
 				message.setMessage(RatingConstants.NULL_RATING);
 				return ResponseEntity.ok(message);
 			}
-			
+
 			RatingHouseModel ratingModel = new RatingHouseModel();
 			for (Rating rating : listRating) {
 				ratingModel.setRating(rating);
@@ -88,12 +88,18 @@ public class RatingServiceImpl implements RatingService {
 
 //	Find rating by id_account
 	@Override
-	public ResponseEntity<?> findByRatingAccountId() {
+	public ResponseEntity<?> findByRatingAccountId(int accountId) {
 
-		Message message = new Message();
-
+		MessageModel message = new MessageModel();
+		
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+			
+			if(idCurrent != accountId) {
+				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+			}
+			
 			List<Rating> listRating = new ArrayList<Rating>();
 			listRating = ratingRepository.findByBookingAccountId(idCurrent);
 			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
@@ -102,7 +108,7 @@ public class RatingServiceImpl implements RatingService {
 				message.setMessage(RatingConstants.NULL_RATING);
 				return ResponseEntity.ok(message);
 			}
-			
+
 			RatingAccountModel ratingModel = new RatingAccountModel();
 			for (Rating rating : listRating) {
 				ratingModel.setRating(rating);
@@ -118,20 +124,43 @@ public class RatingServiceImpl implements RatingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
+	
+	@Override
+	public ResponseEntity<?> getRatingDetail(int ratingId) {
+		MessageModel message = new MessageModel();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Rating rating = new Rating();
+		
+		try {
+			rating = ratingRepository.findById(ratingId).get();
+		}catch(Exception e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+		
+		if(!idCurrent.equals(rating.getBooking().getAccount().getAccountId())) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+		
+		return ResponseEntity.ok(rating);
+	}
 
 //	Write rating house 	
 	@Override
 	public ResponseEntity<?> writeRating(int bookingId, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(bookingId).get();
-		Message message = new Message();
+		MessageModel message = new MessageModel();
+
 
 		try {
 			if (!idCurrent.equals(booking.getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
-			
+		
 			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -159,5 +188,25 @@ public class RatingServiceImpl implements RatingService {
 		}
 
 	}
+
+	@Override
+	public ResponseEntity<?> updateRating(int ratingId, Rating rating) {
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		MessageModel message = new MessageModel();
+		
+		if(!idCurrent.equals(ratingRepository.findById(ratingId).get().getBooking().getAccount().getAccountId())) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+		
+		Rating ratingUpdate = ratingRepository.findById(ratingId).get();
+		logger.error(ratingUpdate.toString());
+		ratingUpdate.setStar(rating.getStar());
+		ratingUpdate.setContent(rating.getContent());
+		ratingRepository.saveAndFlush(ratingUpdate);
+		
+		return ResponseEntity.ok(ratingUpdate);
+	}
+
 
 }

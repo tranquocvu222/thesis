@@ -1,5 +1,5 @@
 
-package ces.riccico.entities;
+package ces.riccico.entity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +18,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import ces.riccico.models.Auditable;
+import ces.riccico.model.Auditable;
 
 @Entity
 @Table(name = "houses")

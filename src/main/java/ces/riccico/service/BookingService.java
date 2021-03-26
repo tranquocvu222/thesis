@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import ces.riccico.entities.Booking;
+import ces.riccico.entity.Booking;
 
 public interface BookingService {
 	
@@ -19,8 +19,8 @@ public interface BookingService {
 	ResponseEntity<?> findByHouseId(int houseId);
 
 	List<Booking> getAlḷ();
-
-	List<Booking> getByUsername(String username);
+	
+	ResponseEntity<?> getBookingDetail(int bookingId);
 	
 	ResponseEntity<?> payment(int bookingId);
 

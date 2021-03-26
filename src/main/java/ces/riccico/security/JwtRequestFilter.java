@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import ces.riccico.entities.Token;
+import ces.riccico.entity.Token;
 import ces.riccico.repository.TokenRepository;
 
 @Component

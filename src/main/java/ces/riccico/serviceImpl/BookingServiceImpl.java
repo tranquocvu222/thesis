@@ -15,16 +15,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import ces.riccico.common.BookingConstants;
-import ces.riccico.common.HouseConstants;
-import ces.riccico.common.CommonConstants;
-import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Account;
-import ces.riccico.entities.Booking;
-import ces.riccico.entities.House;
-import ces.riccico.models.BookingModel;
-import ces.riccico.models.Message;
-import ces.riccico.models.Status;
+import ces.riccico.common.constants.BookingConstants;
+import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.HouseConstants;
+import ces.riccico.common.constants.UserConstants;
+import ces.riccico.common.enums.Status;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.Booking;
+import ces.riccico.entity.House;
+import ces.riccico.entity.Rating;
+import ces.riccico.model.BookingModel;
+import ces.riccico.model.MessageModel;
+
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
@@ -49,8 +51,10 @@ public class BookingServiceImpl implements BookingService {
 	private SecurityAuditorAware securityAuditorAware;
 
 	@Override
+
 	public ResponseEntity<?> acceptBooking(int bookingId) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
+
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (!bookingRepository.findById(bookingId).isPresent()) {
@@ -71,8 +75,11 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+
 	public ResponseEntity<?> cancelBooking(int bookingId) {
-		Message message = new Message();
+
+		MessageModel message = new MessageModel();
+
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(bookingId).get();
 
@@ -98,8 +105,11 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+
 	public ResponseEntity<?> completeBooking̣̣̣(int bookingId) {
-		Message message = new Message();
+
+		MessageModel message = new MessageModel();
+
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
 		String dateNow = sdf.format(currentDate);
@@ -143,7 +153,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	public ResponseEntity<?> findByAccountId(int accountId) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		List<Booking> listBookings = new ArrayList<Booking>();
 		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
@@ -178,7 +188,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> findByHouseId(int houseId) {
-		Message message = new Message();
+		MessageModel message = new MessageModel();
 		List<Booking> listBookings = new ArrayList<Booking>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
@@ -217,13 +227,33 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public List<Booking> getByUsername(String username) {
-		return null;
+	public ResponseEntity<?> getBookingDetail(int bookingId) {
+		MessageModel message = new MessageModel();
+		Booking booking = new Booking();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+
+		try {
+			booking = bookingRepository.findById(bookingId).get();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		if (!idCurrent.equals(booking.getAccount().getAccountId())
+				&& !idCurrent.equals(booking.getHouse().getAccount().getAccountId())) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+
+		return ResponseEntity.ok(booking);
 	}
 
 	@Override
+
 	public ResponseEntity<?> payment(int bookingId) {
-		Message message = new Message();
+
+		MessageModel message = new MessageModel();
 
 		try {
 			Booking booking = bookingRepository.findById(bookingId).get();
@@ -257,12 +287,15 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
+
 	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
-		Message message = new Message();
+
+		MessageModel message = new MessageModel();
 
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Account account = accountRepository.findById(idCurrent).get();
+
 			House house = houseRepository.findById(houseId).get();
 
 			if (idCurrent.equals(house.getAccount().getAccountId())) {
@@ -283,16 +316,18 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(e.getLocalizedMessage());
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+
 			Date dateIn = null;
 			Date dateOut = null;
 			Date currentDate = new Date();
-			String dateNow = sdf.format(currentDate);
+			String dateNow = dateFormat.format(currentDate);
 
 			try {
-				dateIn = sdf.parse(dateStart);
-				dateOut = sdf.parse(dateStop);
-				currentDate = sdf.parse(dateNow);
+				dateIn = dateFormat.parse(dateStart);
+				dateOut = dateFormat.parse(dateStop);
+				currentDate = dateFormat.parse(dateNow);
 			} catch (ParseException e) {
 				logger.error(e.getMessage());
 				message.setMessage(e.getMessage());
@@ -303,7 +338,7 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(BookingConstants.INVALID_CHECKIN);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
-			
+
 			if (dateIn.compareTo(dateOut) > 0) {
 				message.setMessage(BookingConstants.INVALID_CHECKOUT);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);

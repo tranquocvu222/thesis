@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import ces.riccico.entities.Account;
-import ces.riccico.entities.User;
-import ces.riccico.models.LoginModel;
+import ces.riccico.entity.Account;
+import ces.riccico.entity.User;
+import ces.riccico.model.LoginModel;
+
 import ces.riccico.service.AccountService;
 import ces.riccico.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +37,7 @@ public class AccountController {
 	@Autowired
 	UserService userService;
 
-	// this is the account authentication feature
+	// this is the account authentication feature.
 	@RequestMapping(value = "/register/activeEmail/{codeInput}/{email}", method = RequestMethod.POST)
 	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String email) {
 		return accountService.activeAccount(codeInput, email);
@@ -49,14 +50,6 @@ public class AccountController {
 	public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
 		return accountService.changePassword(oldPassword, newPassword);
 	}
-
-	// shows the list of accounts 
-//	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-//	@PreAuthorize("hasAnyAuthority('admin')")
-//	public List<Account> findAll() {
-//		return accountService.findAll();
-//	}
 
 	// shows banned accounts list
 	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)

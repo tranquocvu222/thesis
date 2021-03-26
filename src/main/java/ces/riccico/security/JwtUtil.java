@@ -21,7 +21,8 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import ces.riccico.entities.Account;
+import ces.riccico.entity.Account;
+
 
 @Component
 public class JwtUtil {

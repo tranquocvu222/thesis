@@ -1,4 +1,4 @@
-package ces.riccico.entities;
+package ces.riccico.entity;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import ces.riccico.models.Auditable;
+import ces.riccico.model.Auditable;
 
 @Entity
 @Table(name ="booking")
