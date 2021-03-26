@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,6 +41,20 @@ public class BookingController {
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> completeBooking(@PathVariable int idBooking){
 		return bookingService.completeBooking̣̣̣(idBooking);
+	}
+	
+	//get list booking of account
+	@GetMapping("/account/{accountId}")
+	@PreAuthorize("hasAnyAuthority('user')")
+	public ResponseEntity<?> getBookingByAccountId(@PathVariable int accountId){
+		return bookingService.findByAccountId(accountId);
+	}
+	
+	//get list booking of house
+		@GetMapping("/house/{houseId}")
+		@PreAuthorize("hasAnyAuthority('user')")
+		public ResponseEntity<?> getBookingByHouseId(@PathVariable int houseId){
+			return bookingService.findByHouseId(houseId);
 	}
 	
 	// this is the booking payment feature

@@ -145,8 +145,56 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public List<Booking> findByHouseId(int idHouse) {
-		return bookingRepository.findByHouseId(idHouse);
+	public ResponseEntity<?> findByAccountId(int accountId) {
+		Message message = new Message();
+		List<Booking> listBookings = new ArrayList<Booking>();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+
+		if (idCurrent != accountId) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+
+		try {
+			listBookings = bookingRepository.findByAccountIdAccount(accountId);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+		
+		if(listBookings.size() == 0) {
+			message.setMessage(BookingConstants.NULL_BOOKING);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+		
+		return ResponseEntity.ok(listBookings);
+	}
+
+	@Override
+	public ResponseEntity<?> findByHouseId(int houseId) {
+		Message message = new Message();
+		List<Booking> listBookings = new ArrayList<Booking>();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+
+		if (!idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getIdAccount())) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+
+		try {
+			listBookings = bookingRepository.findByHouseId(houseId);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+		
+		if(listBookings.size() == 0) {
+			message.setMessage(BookingConstants.NULL_BOOKING);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+		return ResponseEntity.ok(listBookings);
 	}
 
 	@Override
@@ -282,4 +330,5 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> refund(int idBooking) {
 		return null;
 	}
+
 }
