@@ -19,8 +19,8 @@ public interface BookingService {
 	ResponseEntity<?> findByHouseId(int houseId);
 
 	List<Booking> getAlḷ();
-
-	List<Booking> getByUsername(String username);
+	
+	ResponseEntity<?> getBookingDetail(int bookingId);
 	
 	ResponseEntity<?> payment(int idBooking);
 

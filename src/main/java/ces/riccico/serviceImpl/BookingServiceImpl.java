@@ -23,6 +23,7 @@ import ces.riccico.common.enums.Status;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
+import ces.riccico.entity.Rating;
 import ces.riccico.model.BookingModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.repository.AccountRepository;
@@ -164,19 +165,19 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
-		if(listBookings.size() == 0) {
+
+		if (listBookings.size() == 0) {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 		BookingModel bookingModel = new BookingModel();
-		for(Booking booking : listBookings) {
+		for (Booking booking : listBookings) {
 			bookingModel.setBooking(booking);
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
 			listBookingModels.add(bookingModel);
 		}
-		
+
 		return ResponseEntity.ok(listBookingModels);
 	}
 
@@ -198,20 +199,20 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
-		if(listBookings.size() == 0) {
+
+		if (listBookings.size() == 0) {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
+
 		BookingModel bookingModel = new BookingModel();
-		for(Booking booking : listBookings) {
+		for (Booking booking : listBookings) {
 			bookingModel.setBooking(booking);
 			bookingModel.setAccountId(booking.getAccount().getIdAccount());
 			bookingModel.setAccountName(booking.getAccount().getUsername());
 			listBookingModels.add(bookingModel);
 		}
-		
+
 		return ResponseEntity.ok(listBookingModels);
 	}
 
@@ -221,8 +222,26 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public List<Booking> getByUsername(String username) {
-		return null;
+	public ResponseEntity<?> getBookingDetail(int bookingId) {
+		MessageModel message = new MessageModel();
+		Booking booking = new Booking();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+
+		try {
+			booking = bookingRepository.findById(bookingId).get();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		if (idCurrent != booking.getAccount().getIdAccount()
+				&& idCurrent != booking.getHouse().getAccount().getIdAccount()) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+
+		return ResponseEntity.ok(booking);
 	}
 
 	@Override
@@ -288,16 +307,16 @@ public class BookingServiceImpl implements BookingService {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 			Date dateIn = null;
 			Date dateOut = null;
 			Date currentDate = new Date();
-			String dateNow = sdf.format(currentDate);
+			String dateNow = dateFormat.format(currentDate);
 
 			try {
-				dateIn = sdf.parse(dateStart);
-				dateOut = sdf.parse(dateStop);
-				currentDate = sdf.parse(dateNow);
+				dateIn = dateFormat.parse(dateStart);
+				dateOut = dateFormat.parse(dateStop);
+				currentDate = dateFormat.parse(dateNow);
 			} catch (ParseException e) {
 				logger.error(e.getMessage());
 				message.setMessage(e.getMessage());

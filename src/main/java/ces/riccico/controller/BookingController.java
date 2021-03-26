@@ -18,56 +18,65 @@ import ces.riccico.service.BookingService;
 @RequestMapping("/bookings")
 @CrossOrigin
 public class BookingController {
-	
+
 	@Autowired
 	private BookingService bookingService;
-	
+
 	// this is the feature of accepting guests' booking
 	@PutMapping("/acceptBooking/{idBooking}")
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> acceptBooking(@PathVariable int idBooking){
+	public ResponseEntity<?> acceptBooking(@PathVariable int idBooking) {
 		return bookingService.acceptBooking(idBooking);
 	}
-	
+
 	// this is the cancellation feature
 	@PutMapping("/cancelBooking/{idBooking}")
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> cancelBooking(@PathVariable int idBooking){
+	public ResponseEntity<?> cancelBooking(@PathVariable int idBooking) {
 		return bookingService.cancelBooking(idBooking);
 	}
-	
+
 	// this is the feature to confirm the booking has been completed
 	@PutMapping("/completeBooking/{idBooking}")
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public ResponseEntity<?> completeBooking(@PathVariable int idBooking){
+	public ResponseEntity<?> completeBooking(@PathVariable int idBooking) {
 		return bookingService.completeBooking̣̣̣(idBooking);
 	}
-	
-	//get list booking of account
+
+	// get list booking of account
 	@GetMapping("/account/{accountId}")
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> getBookingByAccountId(@PathVariable int accountId){
+	public ResponseEntity<?> getBookingByAccountId(@PathVariable int accountId) {
 		return bookingService.findByAccountId(accountId);
 	}
-	
-	//get list booking of house
-		@GetMapping("/house/{houseId}")
-		@PreAuthorize("hasAnyAuthority('user')")
-		public ResponseEntity<?> getBookingByHouseId(@PathVariable int houseId){
-			return bookingService.findByHouseId(houseId);
+
+	// get list booking of house
+	@GetMapping("/house/{houseId}")
+	@PreAuthorize("hasAnyAuthority('user')")
+	public ResponseEntity<?> getBookingByHouseId(@PathVariable int houseId) {
+		return bookingService.findByHouseId(houseId);
 	}
-	
+
+	// get booking detail
+	@GetMapping("/{bookingId}")
+	@PreAuthorize("hasAnyAuthority('user')")
+	public ResponseEntity<?> getBookingDetail(@PathVariable int bookingId){
+		return bookingService.getBookingDetail(bookingId);
+	}
+
+ 	
 	// this is the booking payment feature
 	@PutMapping("/payment/{idBooking}")
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> payment(@PathVariable int idBooking){
+	public ResponseEntity<?> payment(@PathVariable int idBooking) {
 		return bookingService.payment(idBooking);
 	}
-	
+
 	// this is home booking feature
 	@PostMapping
-	public ResponseEntity<?> receiveBooking (@RequestParam int idHouse, @RequestParam String dateStart, @RequestParam String dateStop){
+	public ResponseEntity<?> receiveBooking(@RequestParam int idHouse, @RequestParam String dateStart,
+			@RequestParam String dateStop) {
 		return bookingService.receiveBooking(idHouse, dateStart, dateStop);
 	}
-	
+
 }
