@@ -35,7 +35,7 @@ public class AccountController {
 	@Autowired
 	UserService userService;
 
-	// this is the account authentication feature
+	// this is the account authentication feature.
 	@RequestMapping(value = "/register/activeEmail/{codeInput}/{email}", method = RequestMethod.POST)
 	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String email) {
 		return accountService.activeAccount(codeInput, email);
