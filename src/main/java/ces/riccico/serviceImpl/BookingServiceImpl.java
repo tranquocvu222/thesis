@@ -22,6 +22,7 @@ import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Accounts;
 import ces.riccico.entities.Booking;
 import ces.riccico.entities.House;
+import ces.riccico.models.BookingModel;
 import ces.riccico.models.Message;
 import ces.riccico.models.Status;
 import ces.riccico.repository.AccountRepository;
@@ -148,6 +149,7 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> findByAccountId(int accountId) {
 		Message message = new Message();
 		List<Booking> listBookings = new ArrayList<Booking>();
+		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (idCurrent != accountId) {
@@ -167,8 +169,15 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+		BookingModel bookingModel = new BookingModel();
+		for(Booking booking : listBookings) {
+			bookingModel.setBooking(booking);
+			bookingModel.setHouseName(booking.getHouse().getTitle());
+			bookingModel.setHouseId(booking.getHouse().getId());
+			listBookingModels.add(bookingModel);
+		}
 		
-		return ResponseEntity.ok(listBookings);
+		return ResponseEntity.ok(listBookingModels);
 	}
 
 	@Override
@@ -176,7 +185,7 @@ public class BookingServiceImpl implements BookingService {
 		Message message = new Message();
 		List<Booking> listBookings = new ArrayList<Booking>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-
+		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
 		if (!idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getIdAccount())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
@@ -194,7 +203,16 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		return ResponseEntity.ok(listBookings);
+		
+		BookingModel bookingModel = new BookingModel();
+		for(Booking booking : listBookings) {
+			bookingModel.setBooking(booking);
+			bookingModel.setAccountId(booking.getAccount().getIdAccount());
+			bookingModel.setAccountName(booking.getAccount().getUsername());
+			listBookingModels.add(bookingModel);
+		}
+		
+		return ResponseEntity.ok(listBookingModels);
 	}
 
 	@Override

@@ -68,9 +68,9 @@ public class RatingServiceImpl implements RatingService {
 				message.setMessage(RatingConstants.NULL_RATING);
 				return ResponseEntity.ok(message);
 			}
-
+			
+			RatingHouseModel ratingModel = new RatingHouseModel();
 			for (Rating rating : listRating) {
-				RatingHouseModel ratingModel = new RatingHouseModel();
 				ratingModel.setRating(rating);
 				ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
 				ratingModel.setCreatedAt(rating.getCreatedAt());
@@ -102,9 +102,9 @@ public class RatingServiceImpl implements RatingService {
 				message.setMessage(RatingConstants.NULL_RATING);
 				return ResponseEntity.ok(message);
 			}
-
+			
+			RatingAccountModel ratingModel = new RatingAccountModel();
 			for (Rating rating : listRating) {
-				RatingAccountModel ratingModel = new RatingAccountModel();
 				ratingModel.setRating(rating);
 				ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
 				ratingModel.setCreatedAt(rating.getCreatedAt());
