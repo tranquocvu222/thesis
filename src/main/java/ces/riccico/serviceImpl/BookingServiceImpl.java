@@ -235,8 +235,8 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		if (idCurrent != booking.getAccount().getIdAccount()
-				&& idCurrent != booking.getHouse().getAccount().getIdAccount()) {
+		if (!idCurrent.equals(booking.getAccount().getIdAccount())
+				&& !idCurrent.equals(booking.getHouse().getAccount().getIdAccount())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}

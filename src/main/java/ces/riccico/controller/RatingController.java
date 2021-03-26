@@ -34,7 +34,7 @@ public class RatingController {
 		return ratingService.findRatingByHouseId(houseId);
 	}
 	
-	@GetMapping("{/bookingId}")
+	@GetMapping("/detail/{ratingId}")
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> getRatingDetail(@PathVariable int ratingId){
 		return ratingService.getRatingDetail(ratingId);
@@ -46,7 +46,7 @@ public class RatingController {
 		return ratingService.writeRating(idBooking, rating);
 	}
 	
-	@PutMapping("/{bookingId}")
+	@PutMapping("/{ratingId}")
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> updateRating(@PathVariable int ratingId, @RequestBody Rating rating){
 		return ratingService.updateRating(ratingId, rating);

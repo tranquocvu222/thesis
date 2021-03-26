@@ -139,7 +139,7 @@ public class RatingServiceImpl implements RatingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 		
-		if(idCurrent != rating.getBooking().getAccount().getIdAccount()) {
+		if(!idCurrent.equals(rating.getBooking().getAccount().getIdAccount())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
@@ -193,12 +193,13 @@ public class RatingServiceImpl implements RatingService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
 		
-		if(idCurrent != rating.getBooking().getAccount().getIdAccount()) {
+		if(!idCurrent.equals(ratingRepository.findById(ratingId).get().getBooking().getAccount().getIdAccount())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 		
 		Rating ratingUpdate = ratingRepository.findById(ratingId).get();
+		logger.error(ratingUpdate.toString());
 		ratingUpdate.setStar(rating.getStar());
 		ratingUpdate.setContent(rating.getContent());
 		ratingRepository.saveAndFlush(ratingUpdate);
