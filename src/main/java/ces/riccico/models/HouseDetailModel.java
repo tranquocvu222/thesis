@@ -9,7 +9,7 @@ public class HouseDetailModel {
 
 	private Integer id;
 
-	private boolean air_conditioner;
+	private boolean airConditioner;
 
 	private boolean fridge;
 
@@ -51,12 +51,12 @@ public class HouseDetailModel {
 		this.id = id;
 	}
 
-	public boolean isAir_conditioner() {
-		return air_conditioner;
+	public boolean isAirConditioner() {
+		return airConditioner;
 	}
 
-	public void setAir_conditioner(boolean air_conditioner) {
-		this.air_conditioner = air_conditioner;
+	public void setAirConditioner(boolean airConditioner) {
+		this.airConditioner = airConditioner;
 	}
 
 	public boolean isFridge() {

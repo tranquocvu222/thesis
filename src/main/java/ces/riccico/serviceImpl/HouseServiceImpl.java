@@ -273,12 +273,12 @@ public class HouseServiceImpl implements HouseService {
 		int amenities = Integer.parseInt(house.getAmenities(), 2);
 		boolean wifi = ((amenities & Amenities.WIFI.getValue()) != 0) ? true : false;
 		boolean tivi = ((amenities & Amenities.TIVI.getValue()) != 0) ? true : false;
-		boolean air_conditioner = ((amenities & Amenities.AC.getValue()) != 0) ? true : false;
+		boolean airConditioner = ((amenities & Amenities.AC.getValue()) != 0) ? true : false;
 		boolean fridge = ((amenities & Amenities.FRIDGE.getValue()) != 0) ? true : false;
 		boolean swimPool = ((amenities & Amenities.SWIM_POOL.getValue()) != 0) ? true : false;
 		houseDetail.setWifi(wifi);
 		houseDetail.setTivi(tivi);
-		houseDetail.setAir_conditioner(air_conditioner);
+		houseDetail.setAir_conditioner(airConditioner);
 		houseDetail.setFridge(fridge);
 		houseDetail.setSwimPool(swimPool);
 
@@ -323,9 +323,10 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
-			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean air_conditioner,
-			boolean fridge, boolean swim_pool, byte lowestGuest, byte highestGuest, int page, int size) {
-		
+
+			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner,
+			boolean fridge, boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
+
 		Message message = new Message();
 		List<Object> listHouseModel = new ArrayList<Object>();
 		PaginationModel paginationModel = new PaginationModel();
@@ -336,9 +337,9 @@ public class HouseServiceImpl implements HouseService {
 		try {
 			byte wifi_binary = (wifi == true) ? Amenities.WIFI.getValue() : 0;
 			byte tivi_binary = (tivi == true) ? Amenities.TIVI.getValue() : 0;
-			byte ac_binary = (air_conditioner == true) ? Amenities.AC.getValue() : 0;
+			byte ac_binary = (airConditioner == true) ? Amenities.AC.getValue() : 0;
 			byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
-			byte swim_pool_binary = (swim_pool == true) ? Amenities.SWIM_POOL.getValue() : 0;
+			byte swim_pool_binary = (swimPool == true) ? Amenities.SWIM_POOL.getValue() : 0;
 			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 
 			Pageable paging = PageRequest.of(page, size);
@@ -402,7 +403,7 @@ public class HouseServiceImpl implements HouseService {
 			house.setAddress(houseDetail.getAddress());
 			house.setTitle(houseDetail.getTitle());
 			house.setCountry(houseDetail.getCountry());
-			house.setProvince(houseDetail.getProvince());
+			house.setCity(houseDetail.getCity());
 			house.setContent(houseDetail.getContent());
 			house.setPhoneContact(houseDetail.getPhoneContact());
 			house.setImage(houseDetail.getImage());
@@ -410,7 +411,7 @@ public class HouseServiceImpl implements HouseService {
 			house.setPrice(houseDetail.getPrice());
 			byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
 			byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
-			byte ac = ((houseDetail.isAir_conditioner() == true)) ? Amenities.AC.getValue() : 0;
+			byte ac = ((houseDetail.isAirConditioner() == true)) ? Amenities.AC.getValue() : 0;
 			byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
 			byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
 			String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);

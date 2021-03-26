@@ -20,4 +20,6 @@ public class BookingConstants {
 	
 	public static final String HOUSE_BOOKED= "The house has been booked";
 	
+	public static final String NULL_BOOKING  = "no bookings yet";
+	
 }
