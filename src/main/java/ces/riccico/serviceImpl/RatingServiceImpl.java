@@ -94,7 +94,7 @@ public class RatingServiceImpl implements RatingService {
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			List<Rating> listRating = new ArrayList<Rating>();
-			listRating = ratingRepository.findByBookingAccountIdAccount(idCurrent);
+			listRating = ratingRepository.findByBookingAccountId(idCurrent);
 			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
 
 			if (listRating.size() == 0) {
@@ -119,9 +119,9 @@ public class RatingServiceImpl implements RatingService {
 
 //	Write rating house 	
 	@Override
-	public ResponseEntity<?> writeRating(int idBooking, Rating rating) {
+	public ResponseEntity<?> writeRating(int bookingId, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		Booking booking = bookingRepository.findById(idBooking).get();
+		Booking booking = bookingRepository.findById(bookingId).get();
 		Message message = new Message();
 
 		try {
@@ -130,9 +130,34 @@ public class RatingServiceImpl implements RatingService {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 			
-			if (!bookingRepository.findById(idBooking).isPresent()) {
+			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+<<<<<<< HEAD
+=======
+			} else {
+				if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
+					message.setMessage(BookingConstants.INVALID_STATUS
+							);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+				} else {
+					if (!idCurrent.equals(booking.getAccount().getAccountId())) {
+						message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+						return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+					} else {
+						if (ratingRepository.findByBookingId(bookingId) != null) {
+							message.setMessage(RatingConstants.IS_RATED);
+							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+						}
+						Rating ratingNew = mapper.map(rating, Rating.class);
+						ratingNew.setBooking(booking);
+						ratingRepository.saveAndFlush(ratingNew);
+						message.setMessage(CommonConstants.FAIL);
+						
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+					}
+				}
+>>>>>>> codingstandards
 			}
 
 			if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {

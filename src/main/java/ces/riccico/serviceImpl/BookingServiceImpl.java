@@ -19,7 +19,7 @@ import ces.riccico.common.BookingConstants;
 import ces.riccico.common.HouseConstants;
 import ces.riccico.common.CommonConstants;
 import ces.riccico.common.UserConstants;
-import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Account;
 import ces.riccico.entities.Booking;
 import ces.riccico.entities.House;
 import ces.riccico.models.Message;
@@ -48,21 +48,21 @@ public class BookingServiceImpl implements BookingService {
 	private SecurityAuditorAware securityAuditorAware;
 
 	@Override
-	public ResponseEntity<?> acceptBooking(int idBooking) {
+	public ResponseEntity<?> acceptBooking(int bookingId) {
 		Message message = new Message();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-		if (!bookingRepository.findById(idBooking).isPresent()) {
+		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (!idCurrent.equals(bookingRepository.findById(idBooking).get().getHouse().getAccount().getIdAccount())) {
+		if (!idCurrent.equals(bookingRepository.findById(bookingId).get().getHouse().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
-		Booking booking = bookingRepository.findById(idBooking).get();
+		Booking booking = bookingRepository.findById(bookingId).get();
 		booking.setStatus(Status.APPROVAL.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 		message.setMessage(CommonConstants.SUCCESS);
@@ -70,12 +70,12 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> cancelBooking(int idBooking) {
+	public ResponseEntity<?> cancelBooking(int bookingId) {
 		Message message = new Message();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		Booking booking = bookingRepository.findById(idBooking).get();
+		Booking booking = bookingRepository.findById(bookingId).get();
 
-		if (!bookingRepository.findById(idBooking).isPresent()) {
+		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
@@ -93,14 +93,32 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.BY_CUSTOMER);
 			return ResponseEntity.ok(message);
 		} else {
+<<<<<<< HEAD
 			message.setMessage(BookingConstants.BY_HOST);
 			return ResponseEntity.ok(message);
 
+=======
+			if (!idCurrent.equals(booking.getHouse().getAccount().getAccountId())
+					|| !idCurrent.equals(booking.getAccount().getAccountId())) {
+				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+			} else {
+				booking.setStatus(Status.CANCELED.getStatusName());
+				bookingRepository.saveAndFlush(booking);
+				if (idCurrent.equals(booking.getAccount().getAccountId())) {
+					message.setMessage(BookingConstants.BY_CUSTOMER);
+					return ResponseEntity.ok(message);
+				} else {
+					message.setMessage(BookingConstants.BY_HOST);
+					return ResponseEntity.ok(message);
+				}
+			}
+>>>>>>> codingstandards
 		}
 	}
 
 	@Override
-	public ResponseEntity<?> completeBooking̣̣̣(int idBooking) {
+	public ResponseEntity<?> completeBooking̣̣̣(int bookingId) {
 		Message message = new Message();
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
@@ -115,9 +133,9 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		try {
-			Booking booking = bookingRepository.findById(idBooking).get();
+			Booking booking = bookingRepository.findById(bookingId).get();
 
-			if (!bookingRepository.findById(idBooking).isPresent()) {
+			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
@@ -145,8 +163,8 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public List<Booking> findByHouseId(int idHouse) {
-		return bookingRepository.findByHouseId(idHouse);
+	public List<Booking> findByHouseId(int houseId) {
+		return bookingRepository.findByHouseId(houseId);
 	}
 
 	@Override
@@ -160,19 +178,19 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> payment(int idBooking) {
+	public ResponseEntity<?> payment(int bookingId) {
 		Message message = new Message();
 
 		try {
-			Booking booking = bookingRepository.findById(idBooking).get();
+			Booking booking = bookingRepository.findById(bookingId).get();
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-			if (!bookingRepository.findById(idBooking).isPresent()) {
+			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
-			if (!idCurrent.equals(booking.getAccount().getIdAccount())) {
+			if (!idCurrent.equals(booking.getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
@@ -195,15 +213,15 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> receiveBooking(int idHouse, String dateStart, String dateStop) {
+	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
 		Message message = new Message();
 
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			Accounts account = accountRepository.findById(idCurrent).get();
-			House house = houseRepository.findById(idHouse).get();
+			Account account = accountRepository.findById(idCurrent).get();
+			House house = houseRepository.findById(houseId).get();
 
-			if (idCurrent.equals(house.getAccount().getIdAccount())) {
+			if (idCurrent.equals(house.getAccount().getAccountId())) {
 				message.setMessage(BookingConstants.ACCOUNT_WITHOUT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
@@ -222,6 +240,7 @@ public class BookingServiceImpl implements BookingService {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
+<<<<<<< HEAD
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 			Date dateIn = null;
 			Date dateOut = null;
@@ -242,6 +261,69 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(BookingConstants.INVALID_CHECKIN);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
+=======
+			} else {
+				if (!houseRepository.findById(houseId).isPresent()) {
+					message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+				} else {
+					List<Booking> listBookings = new ArrayList<Booking>();
+
+					try {
+						listBookings = bookingRepository.findByHouseId(houseId);
+					} catch (NullPointerException e) {
+						e.printStackTrace();
+					}
+
+					SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+					Date dateIn = null;
+					Date dateOut = null;
+					Date currentDate = new Date();
+					String dateNow = sdf.format(currentDate);
+
+					try {
+						dateIn = sdf.parse(dateStart);
+						dateOut = sdf.parse(dateStop);
+						currentDate = sdf.parse(dateNow);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+
+					if (TimeUnit.MILLISECONDS.toDays(dateIn.getTime() - currentDate.getTime()) < 0) {
+						message.setMessage(BookingConstants.INVALID_CHECKIN);
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+					}
+
+					if (dateIn.compareTo(dateOut) > 0) {
+						message.setMessage(BookingConstants.INVALID_CHECKOUT);
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+					}
+
+					for (Booking booking : listBookings) {
+						if ((dateIn.compareTo(booking.getCreateCheckIn()) >= 0
+								&& dateIn.compareTo(booking.getCreateEnd()) < 0
+								|| dateOut.compareTo(booking.getCreateCheckIn()) > 0
+										&& dateOut.compareTo(booking.getCreateEnd()) <= 0)
+								&& !Status.CANCELED.getStatusName().equals(booking.getStatus())) {
+							message.setMessage(BookingConstants.HOUSE_BOOKED);
+							return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+						}
+					}
+
+					long days = TimeUnit.MILLISECONDS.toDays(dateOut.getTime() - dateIn.getTime());
+					double price = house.getPrice();
+					double bill = price * days;
+					Booking booking = new Booking();
+					booking.setAccount(account);
+					booking.setHouse(house);
+					booking.setStatus(Status.PENDING_PAYMENT.getStatusName());
+					booking.setCreateCheckIn(dateIn);
+					booking.setCreateEnd(dateOut);
+					booking.setBill(bill);
+					houseRepository.saveAndFlush(house);
+					bookingRepository.saveAndFlush(booking);
+					return ResponseEntity.ok(booking);
+>>>>>>> codingstandards
 
 			if (dateIn.compareTo(dateOut) > 0) {
 				message.setMessage(BookingConstants.INVALID_CHECKOUT);
@@ -279,7 +361,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> refund(int idBooking) {
+	public ResponseEntity<?> refund(int bookingId) {
 		return null;
 	}
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,11 +18,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+<<<<<<< HEAD
 import ces.riccico.entities.Accounts;
+=======
+import ces.riccico.entities.Account;
+>>>>>>> codingstandards
 import ces.riccico.entities.User;
 import ces.riccico.models.LoginModel;
 import ces.riccico.service.AccountService;
 import ces.riccico.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 @CrossOrigin
 @RestController
@@ -41,23 +48,35 @@ public class AccountController {
 
 	// this is change password feature,  can change the password
 	@PutMapping("/changePassword")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
 		return accountService.changePassword(oldPassword, newPassword);
 	}
 
 	// shows the list of accounts 
-	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Accounts> findAll() {
-		return accountService.findAll();
-	}
+//	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	@PreAuthorize("hasAnyAuthority('admin')")
+//	public List<Account> findAll() {
+//		return accountService.findAll();
+//	}
 
 	// shows banned accounts list
 	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Accounts> findAllIsBanned() {
+	public List<Account> findAllIsBanned() {
 		return accountService.findAllIsBanned();
+	}
+	
+	// find house with pagination
+	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	@PreAuthorize("hasAnyAuthority('admin')")
+	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return accountService.findByPageAndSize(page, size);
 	}
 
 	// this is a forgotten password feature, which helps you recover your password when you forget it
@@ -67,10 +86,11 @@ public class AccountController {
 	}
 
 	// prevent users from using the system
-	@RequestMapping(value = "/banned/{idAccount}", method = RequestMethod.POST)
+	@RequestMapping(value = "/banned/{accountId}", method = RequestMethod.POST)
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public ResponseEntity<?> isBanneed(@PathVariable int idAccount) {
-		return accountService.banAccount(idAccount);
+	public ResponseEntity<?> isBanneed(@PathVariable int accountId) {
+		return accountService.banAccount(accountId);
 	}
 
 	// this is a login feature that helps you log into the system
@@ -81,6 +101,7 @@ public class AccountController {
 
 	// this is logout feature
 	@DeleteMapping("/log-out")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> logout() {
 		return accountService.logout();
@@ -89,7 +110,11 @@ public class AccountController {
 	// this is the registration feature,you can create an account to use system's feature
 	@ResponseBody
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
+<<<<<<< HEAD
 	public ResponseEntity<?> register(@RequestBody Accounts account, User user) {
+=======
+	public ResponseEntity<?> register(@RequestBody Account account, User user) {
+>>>>>>> codingstandards
 		return accountService.register(account, user);
 	}
 

@@ -22,7 +22,7 @@ public class Rating extends Auditable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idRating")
+	@Column(name = "ratingId")
 	private Integer id;
 
 	@Column(name = "star")

@@ -23,15 +23,19 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
-	@Column(name = "idUser")
+	@Column(name = "userId")
 	private Integer id;
 
-	@Column(name = "firstname", length = 100)
-	private String firstname;
+	@Column(name = "firstName", length = 100)
+	private String firstName;
 
+<<<<<<< HEAD:src/main/java/ces/riccico/entities/User.java
 	@Column(name = "lastame", length = 100)
 	private String lastname;
+=======
+	@Column(name = "lastName", length = 100)
+	private String lastName;
+>>>>>>> codingstandards:src/main/java/ces/riccico/entities/Users.java
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@Temporal(TemporalType.DATE)
@@ -49,43 +53,42 @@ public class User {
 
 	@OneToOne
 	@JsonIgnore
-	@JoinColumn(name = "idAccount",nullable = false)
-	private Accounts account;
+	@JoinColumn(name = "accountId",nullable = false)
+	private Account account;
 
 	public User() {
 
 	}
 
-	public Integer getIdUser() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setIdUser(Integer idUser) {
-		this.id = idUser;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-
-	public String getFirstname() {
-		return firstname;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setFirstname(String firstName) {
-		this.firstname = firstName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getLastname() {
-		return lastname;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setLastname(String lastName) {
-		this.lastname = lastName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
-	public Date getBirthday() {
+	public Date getBirthDay() {
 		return birthDay;
 	}
 
-	public void setBirthday(Date birthDay) {
+	public void setBirthDay(Date birthDay) {
 		this.birthDay = birthDay;
 	}
 
@@ -113,18 +116,18 @@ public class User {
 		this.address = address;
 	}
 
-	public Accounts getAccount() {
+	public Account getAccount() {
 		return account;
 	}
 
-	public void setAccount(Accounts account) {
+	public void setAccount(Account account) {
 		this.account = account;
 	}
 
 	@Override
 	public String toString() {
 
-		return "Users [id=" + id + ", firstName=" + firstname + ", lastName=" + lastname
+		return "Users [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", birthDay=" + birthDay + ", city=" + city + ", country=" + country + ", address=" + address
 				+ ", account=" + account + "]";
 	}

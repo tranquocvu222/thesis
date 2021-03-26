@@ -11,10 +11,15 @@ import ces.riccico.entities.User;
 @Service
 public interface UserService {
 	
+<<<<<<< HEAD
 	ResponseEntity<?> editUser( User model) ;
+=======
+>>>>>>> codingstandards
 	
 	List<User> findAll();
 	
 	ResponseEntity<?> findById();
+
+	ResponseEntity<?> editUser(User model, Integer userId);
 	
 }

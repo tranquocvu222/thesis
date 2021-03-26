@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 
-import ces.riccico.entities.Accounts;
+import ces.riccico.entities.Account;
 import ces.riccico.models.LoginModel;
 import ces.riccico.entities.User;
 import ces.riccico.security.AccountDetail;
@@ -15,15 +15,15 @@ public interface AccountService {
 	
 	ResponseEntity<?> activeAccount(int codeInput, String email);
 
-	ResponseEntity<?> banAccount(int idAccount);
+	ResponseEntity<?> banAccount(int accountId);
 	
 	ResponseEntity<?> changePassword(String oldPassword, String newPassword);
 	
-	List<Accounts> findAll();
+	List<Account> findAll();
 
-	List<Accounts> findAllIsBanned();
+	List<Account> findAllIsBanned();
 	
-	Optional<Accounts> findById(int id);
+	Optional<Account> findById(int id);
 
 	ResponseEntity<?> forgetPassword(String email);
 
@@ -33,9 +33,15 @@ public interface AccountService {
 
 	AccountDetail loadUserByUsername(String username);
 
+<<<<<<< HEAD
 	ResponseEntity<?> register(Accounts account, User user);
+=======
+	ResponseEntity<?> register(Account account, User user);
+>>>>>>> codingstandards
 
 	ResponseEntity<?> resetPassword(String email, String password);
+
+	ResponseEntity<?> findByPageAndSize(int page, int size);
 
 	
 
