@@ -29,13 +29,8 @@ public class User {
 	@Column(name = "firstName", length = 100)
 	private String firstName;
 
-<<<<<<< HEAD:src/main/java/ces/riccico/entities/User.java
-	@Column(name = "lastame", length = 100)
-	private String lastname;
-=======
 	@Column(name = "lastName", length = 100)
 	private String lastName;
->>>>>>> codingstandards:src/main/java/ces/riccico/entities/Users.java
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@Temporal(TemporalType.DATE)

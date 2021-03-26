@@ -37,11 +37,7 @@ public class UserServiceImpl implements UserService {
 //	Update profile of user
 
 	@Override
-<<<<<<< HEAD
-	public ResponseEntity<?> editUser(User model) {
-=======
 	public ResponseEntity<?> editUser(User model, Integer userId) {
->>>>>>> codingstandards
 
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
@@ -57,60 +53,13 @@ public class UserServiceImpl implements UserService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-<<<<<<< HEAD
-			User user = userRepository.findByIdAccount(idaccount).get();
-
-			if (user != null) {
-				if (model.getFirstname().equals("")) {
-					message.setMessage(UserConstants.FIRST_NAME_NULL);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} 
-				
-				if (model.getLastname().equals("")) {
-					message.setMessage(UserConstants.LAST_NAME_NULL);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				}
-				
-				if (model.getBirthday() == null) {
-					message.setMessage(UserConstants.BIRTHDAY_NULL);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} 
-				
-				if (model.getAddress().equals("")) {
-					message.setMessage(UserConstants.ADDRESS_NULL);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} 
-				
-				if (model.getCity().equals("")) {
-					message.setMessage(UserConstants.CITY_NULL);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} 
-				
-				if (model.getCountry().equals("")) {
-					message.setMessage(UserConstants.COUNTRY_NULL);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else {
-					user.setFirstname(model.getFirstname());
-					user.setLastname(model.getLastname());
-					user.setBirthday(model.getBirthday());
-					user.setAddress(model.getAddress());
-					user.setCity(model.getCity());
-					user.setCountry(model.getCountry());
-					userRepository.saveAndFlush(user);
-
-				}
-
-				message.setMessage(CommonConstants.SUCCESS);
-				return ResponseEntity.ok(message);
-=======
 		try {
-			
 
 			if (!userRepository.findByAccountId(idCurrent).get().getAccount().getRole().equals(Role.ADMIN.getRole())
 					&& !idCurrent.equals(userRepository.findById(userId).get().getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
->>>>>>> codingstandards
+
 			}
 
 			if (model.getFirstName().equals("")) {
@@ -177,16 +126,10 @@ public class UserServiceImpl implements UserService {
 		Message message = new Message();
 
 		try {
-<<<<<<< HEAD
-			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
-			User user = userRepository.findByIdAccount(idaccount).get();
-=======
-
 			Integer idaccount = securityAuditorAware.getCurrentAuditor().get();
 
 			User user = userRepository.findByAccountId(idaccount).get();
 
->>>>>>> codingstandards
 			message.setMessage(CommonConstants.SUCCESS);
 
 			return ResponseEntity.ok(user);

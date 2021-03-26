@@ -2,7 +2,6 @@
 package ces.riccico.controller;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -115,31 +114,19 @@ public class HouseController {
 	// this is the filter search feature
 	@GetMapping("/filter")
 	public ResponseEntity<?> searchFilter(@RequestParam(defaultValue = "") String country,
-<<<<<<< HEAD
-			@RequestParam(defaultValue = "") String province, @RequestParam(defaultValue = "0") Double lowestSize,
+			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "0") Double lowestSize,
 			@RequestParam(defaultValue = "50000") Double highestSize, @RequestParam(defaultValue = "0") Double lowestPrice,
 			@RequestParam(defaultValue = "50000000") Double highestPrice,
-			@RequestParam(defaultValue = "true") boolean tivi, @RequestParam(defaultValue = "true") boolean wifi,
-			@RequestParam(defaultValue = "true") boolean air_conditioner,
+			@RequestParam(defaultValue = "false") boolean tivi, @RequestParam(defaultValue = "false") boolean wifi,
+			@RequestParam(defaultValue = "false") boolean airConditioner,
 			@RequestParam(defaultValue = "false") boolean fridge,
-			@RequestParam(defaultValue = "false") boolean swim_pool, @RequestParam(defaultValue = "0") byte lowestGuest,
+			@RequestParam(defaultValue = "false") boolean swimPool, @RequestParam(defaultValue = "0") byte lowestGuest,
 			@RequestParam(defaultValue = "100") byte highestGuest, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
-		return houseService.searchFilter(country, province, lowestSize, highestSize, lowestPrice, highestPrice, tivi, wifi,
-				air_conditioner, fridge, swim_pool,  lowestGuest, highestGuest, page, size);
-=======
-			@RequestParam(defaultValue = "") String province, @RequestParam(defaultValue = "0") Double sizeBelow,
-			@RequestParam(defaultValue = "50000") Double sizeAbove, @RequestParam(defaultValue = "0") Double priceBelow,
-			@RequestParam(defaultValue = "50000000") Double priceAbove,
-			@RequestParam(defaultValue = "true") boolean tivi, @RequestParam(defaultValue = "true") boolean wifi,
-			@RequestParam(defaultValue = "true") boolean air_conditioner,
-			@RequestParam(defaultValue = "false") boolean fridge,
-			@RequestParam(defaultValue = "false") boolean swim_pool, @RequestParam(defaultValue = "0") byte guestAbove,
-			@RequestParam(defaultValue = "100") byte guestBelow, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
-		return houseService.searchFilter(country, province, sizeBelow, sizeAbove, priceBelow, priceAbove, tivi, wifi,
-				air_conditioner, fridge, swim_pool, guestAbove, guestBelow, page, size);
->>>>>>> codingstandards
+
+		return houseService.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice, tivi, wifi,
+				airConditioner, fridge, swimPool,  lowestGuest, highestGuest, page, size);
+
 	}
 
 	// this is the house update feature
@@ -148,6 +135,7 @@ public class HouseController {
 	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> updateHouse(@PathVariable int houseId, @RequestBody HouseDetailModel houseDetail) {
 		return houseService.updateHouse(houseId, houseDetail);
+
 	}
 
 }

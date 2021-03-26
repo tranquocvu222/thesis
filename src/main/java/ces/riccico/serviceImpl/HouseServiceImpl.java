@@ -20,10 +20,7 @@ import ces.riccico.common.CommonConstants;
 import ces.riccico.common.UserConstants;
 import ces.riccico.entities.Account;
 import ces.riccico.entities.House;
-<<<<<<< HEAD
-=======
 import ces.riccico.entities.Image;
->>>>>>> codingstandards
 import ces.riccico.models.Amenities;
 import ces.riccico.models.HouseDetailModel;
 import ces.riccico.models.HouseModel;
@@ -81,38 +78,16 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public ResponseEntity<?> deleteHouse(int idHouse) {
-		Message message = new Message();
-		Integer idCurrent;
-		House house = houseRepository.findById(idHouse).get();
-
-		try {
-			idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		if (!accountRepository.findById(idCurrent).get().getRole().equals(Role.ADMIN.getRole())
-				&& !idCurrent.equals(houseRepository.findById(idHouse).get().getAccount().getIdAccount())) {
-			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-		}
-
-		if (!houseRepository.findById(idHouse).isPresent()) {
-=======
 	public ResponseEntity<?> deleteHouse(int houseId) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		House house = houseRepository.findById(houseId).get();
 		Message message = new Message();
-		
+
 		if (idCurrent != houseRepository.findById(houseId).get().getAccount().getAccountId()) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(houseId).isPresent()) {
->>>>>>> codingstandards
+
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
@@ -129,30 +104,9 @@ public class HouseServiceImpl implements HouseService {
 			message.setMessage(HouseConstants.BY_ADMIN);
 			return ResponseEntity.ok(message);
 		} else {
-<<<<<<< HEAD
 			message.setMessage(HouseConstants.BY_USER);
 			return ResponseEntity.ok(message);
-=======
-			if (house.isDeleted()) {
-				message.setMessage(HouseConstants.HOUSE_DELETED);
-				return ResponseEntity.ok(message);
-			} else if (accountRepository.findById(idCurrent).get().getRole().equals(Role.ADMIN.getRole())) {
-				house.setDeleted(IS_DELETED);
-				houseRepository.saveAndFlush(house);
-				message.setMessage(HouseConstants.BY_ADMIN);
-				return ResponseEntity.ok(message);
-			} else {
-				if (!idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getAccountId())) {
-					message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-				}
-				
-				house.setDeleted(IS_DELETED);
-				houseRepository.saveAndFlush(house);
-				message.setMessage(HouseConstants.BY_USER);
-				return ResponseEntity.ok(message);
-			}
->>>>>>> codingstandards
+
 		}
 	}
 
@@ -210,13 +164,9 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 
 		try {
-<<<<<<< HEAD
-			Integer idAccount = accountRepository.findByUsername(username).getIdAccount();
 
-=======
 			Integer idAccount = accountRepository.findByUsername(username).getAccountId();
 			
->>>>>>> codingstandards
 			if (!accountRepository.findById(idAccount).isPresent()) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -323,12 +273,12 @@ public class HouseServiceImpl implements HouseService {
 		int amenities = Integer.parseInt(house.getAmenities(), 2);
 		boolean wifi = ((amenities & Amenities.WIFI.getValue()) != 0) ? true : false;
 		boolean tivi = ((amenities & Amenities.TIVI.getValue()) != 0) ? true : false;
-		boolean air_conditioner = ((amenities & Amenities.AC.getValue()) != 0) ? true : false;
+		boolean airConditioner = ((amenities & Amenities.AC.getValue()) != 0) ? true : false;
 		boolean fridge = ((amenities & Amenities.FRIDGE.getValue()) != 0) ? true : false;
 		boolean swimPool = ((amenities & Amenities.SWIM_POOL.getValue()) != 0) ? true : false;
 		houseDetail.setWifi(wifi);
 		houseDetail.setTivi(tivi);
-		houseDetail.setAir_conditioner(air_conditioner);
+		houseDetail.setAirConditioner(airConditioner);
 		houseDetail.setFridge(fridge);
 		houseDetail.setSwimPool(swimPool);
 
@@ -353,7 +303,7 @@ public class HouseServiceImpl implements HouseService {
 			House house = mapper.map(houseDetail, House.class);
 			byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
 			byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
-			byte ac = ((houseDetail.isAir_conditioner() == true)) ? Amenities.AC.getValue() : 0;
+			byte ac = ((houseDetail.isAirConditioner() == true)) ? Amenities.AC.getValue() : 0;
 			byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
 			byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
 			String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
@@ -372,40 +322,43 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> searchFilter(String country, String province, Double lowestSize, Double highestSize,
-			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean air_conditioner,
-			boolean fridge, boolean swim_pool, byte lowestGuest, byte highestGuest, int page, int size) {
+	public ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
+			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner,
+			boolean fridge, boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
 		Message message = new Message();
-<<<<<<< HEAD
-		List<HouseModel> listHouseModel = new ArrayList<HouseModel>();
-=======
 
 		List<Object> listHouseModel = new ArrayList<Object>();
->>>>>>> codingstandards
+
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
-		String amenities = null;
+		byte amenities;
+		List<House> listHouseAmenities = new ArrayList<House>();
 
 		try {
 			byte wifi_binary = (wifi == true) ? Amenities.WIFI.getValue() : 0;
 			byte tivi_binary = (tivi == true) ? Amenities.TIVI.getValue() : 0;
-			byte ac_binary = (air_conditioner == true) ? Amenities.AC.getValue() : 0;
+			byte ac_binary = (airConditioner == true) ? Amenities.AC.getValue() : 0;
 			byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
-			byte swim_pool_binary = (swim_pool == true) ? Amenities.SWIM_POOL.getValue() : 0;
-			amenities = Integer
-					.toBinaryString(wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
+			byte swim_pool_binary = (swimPool == true) ? Amenities.SWIM_POOL.getValue() : 0;
+			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 			Pageable paging = PageRequest.of(page, size);
-			listHouse = houseRepository.searchFilter(country, province, lowestSize, highestSize, lowestPrice,
-					highestPrice, amenities, lowestGuest, highestGuest, paging).getContent();
+			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice,
+					highestPrice, lowestGuest, highestGuest, paging).getContent();
 
 			if (listHouse.size() == 0) {
 				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			} else {
-				int pageMax = houseRepository.searchFilter(country, province, lowestSize, highestSize, lowestPrice,
-						highestPrice, amenities, lowestGuest, highestGuest, paging).getTotalPages();
+				int pageMax = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice,
+						highestPrice, lowestGuest, highestGuest, paging).getTotalPages();
 
 				for (House house : listHouse) {
+					if ((byte) (amenities & Byte.parseByte(house.getAmenities(), 2)) == amenities) {
+						listHouseAmenities.add(house);
+					}
+				}
+
+				for (House house : listHouseAmenities) {
 					HouseModel houseModel = mapper.map(house, HouseModel.class);
 					listHouseModel.add(houseModel);
 				}
@@ -415,7 +368,8 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.ok(paginationModel);
 
 			}
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage());
 			message.setMessage(e.toString());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -426,40 +380,23 @@ public class HouseServiceImpl implements HouseService {
 		Message message = new Message();
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-<<<<<<< HEAD
 
-			if (!houseRepository.findById(idHouse).get().getAccount().getIdAccount().equals(idCurrent)) {
+			if (!houseRepository.findById(houseId).get().getAccount().getAccountId().equals(idCurrent)) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
 
-			if (!houseRepository.findById(idHouse).isPresent()) {
+			if (!houseRepository.findById(houseId).isPresent()) {
 				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 
 			}
 
-			House house = houseRepository.findById(idHouse).get();
-=======
-			Account account = accountRepository.findById(idCurrent).get();
-			
-			if (idCurrent != houseRepository.findById(houseId).get().getAccount().getAccountId()) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-			} else if (!houseRepository.findById(houseId).isPresent()) {
-				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			} else if (!houseRepository.findById(houseId).get().getAccount().getAccountId().equals(idCurrent)) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-			}
-			
 			House house = houseRepository.findById(houseId).get();
->>>>>>> codingstandards
 			house.setAddress(houseDetail.getAddress());
 			house.setTitle(houseDetail.getTitle());
 			house.setCountry(houseDetail.getCountry());
-			house.setProvince(houseDetail.getProvince());
+			house.setCity(houseDetail.getCity());
 			house.setContent(houseDetail.getContent());
 			house.setPhoneContact(houseDetail.getPhoneContact());
 			house.setImage(houseDetail.getImage());
@@ -467,7 +404,7 @@ public class HouseServiceImpl implements HouseService {
 			house.setPrice(houseDetail.getPrice());
 			byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
 			byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
-			byte ac = ((houseDetail.isAir_conditioner() == true)) ? Amenities.AC.getValue() : 0;
+			byte ac = ((houseDetail.isAirConditioner() == true)) ? Amenities.AC.getValue() : 0;
 			byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
 			byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
 			String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
@@ -478,6 +415,7 @@ public class HouseServiceImpl implements HouseService {
 			return ResponseEntity.ok(house);
 
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			message.setMessage(e.toString());
 			System.out.print(e);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);

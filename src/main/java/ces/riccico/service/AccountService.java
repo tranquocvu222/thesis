@@ -33,11 +33,9 @@ public interface AccountService {
 
 	AccountDetail loadUserByUsername(String username);
 
-<<<<<<< HEAD
-	ResponseEntity<?> register(Accounts account, User user);
-=======
+
 	ResponseEntity<?> register(Account account, User user);
->>>>>>> codingstandards
+
 
 	ResponseEntity<?> resetPassword(String email, String password);
 

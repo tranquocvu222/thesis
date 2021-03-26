@@ -9,7 +9,7 @@ public class HouseDetailModel {
 
 	private Integer id;
 
-	private boolean air_conditioner;
+	private boolean airConditioner;
 
 	private boolean fridge;
 
@@ -37,7 +37,7 @@ public class HouseDetailModel {
 
 	private String phoneContact;
 
-	private String province;
+	private String city;
 
 	private String title;
 
@@ -51,12 +51,12 @@ public class HouseDetailModel {
 		this.id = id;
 	}
 
-	public boolean isAir_conditioner() {
-		return air_conditioner;
+	public boolean isAirConditioner() {
+		return airConditioner;
 	}
 
-	public void setAir_conditioner(boolean air_conditioner) {
-		this.air_conditioner = air_conditioner;
+	public void setAirConditioner(boolean airConditioner) {
+		this.airConditioner = airConditioner;
 	}
 
 	public boolean isFridge() {
@@ -163,12 +163,12 @@ public class HouseDetailModel {
 		this.phoneContact = phoneContact;
 	}
 
-	public String getProvince() {
-		return province;
+	public String getCity() {
+		return city;
 	}
 
-	public void setProvince(String province) {
-		this.province = province;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public String getTitle() {

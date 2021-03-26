@@ -23,6 +23,7 @@ public class Rating extends Auditable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ratingId")
+	@JsonIgnore
 	private Integer id;
 
 	@Column(name = "star")

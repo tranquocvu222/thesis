@@ -438,11 +438,7 @@ public class AccountServiceImpl implements AccountService {
 
 //	Register accountby username, email, password	
 	@Override
-<<<<<<< HEAD
-	public ResponseEntity<?> register(Accounts account, User user) {
-=======
 	public ResponseEntity<?> register(Account account, User user) {
->>>>>>> codingstandards
 
 		Message message = new Message();
 

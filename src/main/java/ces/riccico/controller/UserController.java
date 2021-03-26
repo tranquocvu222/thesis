@@ -26,19 +26,13 @@ public class UserController {
 	UserService userService;
 	
 	
-<<<<<<< HEAD
-	@RequestMapping(value = "/editUser", method = RequestMethod.POST)
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user','admin')")
-	public ResponseEntity<?> editUser(@RequestBody User model) {
-		return userService.editUser(model);
-=======
+
 	@RequestMapping(value = "/editUser/{userId}", method = RequestMethod.PUT)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> editUser(@RequestBody User model, @PathVariable Integer userId) {
 		return userService.editUser(model, userId);
->>>>>>> codingstandards
+
 	}
 
 	
