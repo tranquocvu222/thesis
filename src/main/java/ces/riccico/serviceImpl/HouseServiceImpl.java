@@ -58,24 +58,20 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 
 	public ResponseEntity<?> approveHouse(int houseId) {
+		
 		MessageModel message = new MessageModel();
+		House house = houseRepository.findById(houseId).get();
 
-		try {
-			House house = houseRepository.findById(houseId).get();
-			if (house.isApproved()) {
-				message.setMessage(HouseConstants.HOUSE_APPROVED);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else {
-				house.setApproved(IS_APPROVED);
-				message.setMessage(CommonConstants.SUCCESS);
-				houseRepository.saveAndFlush(house);
-				return ResponseEntity.ok(message);
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
+		if (house.isApproved()) {
+			message.setMessage(HouseConstants.HOUSE_APPROVED);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
+		house.setApproved(IS_APPROVED);
+		message.setMessage(CommonConstants.SUCCESS);
+		houseRepository.saveAndFlush(house);
+		return ResponseEntity.ok(message);
+
 	}
 
 	@Override
@@ -83,14 +79,7 @@ public class HouseServiceImpl implements HouseService {
 		MessageModel message = new MessageModel();
 		Integer idCurrent;
 		House house = houseRepository.findById(houseId).get();
-
-		try {
-			idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
+		idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (!accountRepository.findById(idCurrent).get().getRole().equals(Role.ADMIN.getRole())
 				&& !idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getAccountId())) {
@@ -129,152 +118,142 @@ public class HouseServiceImpl implements HouseService {
 		PaginationModel paginationModel = new PaginationModel();
 		MessageModel message = new MessageModel();
 
-		try {
-			Pageable paging = PageRequest.of(page, size);
-			listHouse = houseRepository.findList(paging).getContent();
-			int pageMax = houseRepository.findList(paging).getTotalPages();
+		Pageable paging = PageRequest.of(page, size);
+		listHouse = houseRepository.findList(paging).getContent();
+		int pageMax = houseRepository.findList(paging).getTotalPages();
 
-			for (House house : listHouse) {
-				HouseModel houseModel = mapper.map(house, HouseModel.class);
-				listHouseModel.add(houseModel);
-			}
-
-			if (page >= pageMax) {
-				message.setMessage(CommonConstants.INVALID_PAGE);
-			}
-
-			paginationModel.setListObject(listHouseModel);
-			paginationModel.setPageMax(pageMax);
-			return ResponseEntity.ok(paginationModel);
-
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		for (House house : listHouse) {
+			HouseModel houseModel = mapper.map(house, HouseModel.class);
+			listHouseModel.add(houseModel);
 		}
+
+		if (page >= pageMax) {
+			message.setMessage(CommonConstants.INVALID_PAGE);
+		}
+
+		paginationModel.setListObject(listHouseModel);
+		paginationModel.setPageMax(pageMax);
+		return ResponseEntity.ok(paginationModel);
+
 	}
 
 	@Override
 	public ResponseEntity<?> findByTitle(String title, int page, int size) {
-		MessageModel message = new MessageModel();
+		Pageable paging = PageRequest.of(page, size);
 
-		try {
-			Pageable paging = PageRequest.of(page, size);
-
-			if (title == null || title.isEmpty()) {
-				return ResponseEntity.ok(houseRepository.findAll(paging).getContent());
-			} else {
-				return ResponseEntity.ok(houseRepository.findByTitle(title, paging).getContent());
-			}
-
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		if (title == null || title.isEmpty()) {
+			return ResponseEntity.ok(houseRepository.findAll(paging).getContent());
+		} else {
+			return ResponseEntity.ok(houseRepository.findByTitle(title, paging).getContent());
 		}
 
 	}
 
 	@Override
 	public ResponseEntity<?> findHouseByUsername(String username) {
+		
+		MessageModel message = new MessageModel();
+		Integer idAccount = accountRepository.findByUsername(username).getAccountId();
+
+
+		if (!accountRepository.findById(idAccount).isPresent()) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+
+		if (accountRepository.findById(idAccount).get().getHouses().size() == 0) {
+			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+
+		Set<House> listHouses = new HashSet<House>();
+		listHouses = accountRepository.findById(idAccount).get().getHouses();
+		Set<House> listHousesApprove = new HashSet<House>();
+
+		for (House house : listHouses) {
+			if (house.isDeleted() == false && house.isApproved() == true) {
+				listHousesApprove.add(house);
+			}
+		}
+
+		return ResponseEntity.ok(listHousesApprove);
+
+	}
+
+	@Override
+	public ResponseEntity<?> getAll() {
+		List<House> listHouse = new ArrayList<House>();
 		MessageModel message = new MessageModel();
 
-		try {
-
-			Integer idAccount = accountRepository.findByUsername(username).getAccountId();
-
-			if (!accountRepository.findById(idAccount).isPresent()) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		for (House house : houseRepository.findAll()) {
+			if (!house.isDeleted()) {
+				listHouse.add(house);
 			}
-
-			if (accountRepository.findById(idAccount).get().getHouses().size() == 0) {
-				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
-
-			Set<House> listHouses = new HashSet<House>();
-			listHouses = accountRepository.findById(idAccount).get().getHouses();
-			Set<House> listHousesApprove = new HashSet<House>();
-
-			for (House house : listHouses) {
-				if (house.isDeleted() == false && house.isApproved() == true) {
-					listHousesApprove.add(house);
-				}
-			}
-
-			return ResponseEntity.ok(listHousesApprove);
-
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
+		if (listHouse.size() == 0) {
+			message.setMessage(CommonConstants.LIST_EMPTY);
+			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		return ResponseEntity.ok(listHouse);
 	}
 
 	@Override
-	public List<House> getAll() {
-		List<House> listHouse = new ArrayList<House>();
-
-		try {
-			for (House house : houseRepository.findAll()) {
-				if (!house.isDeleted()) {
-					listHouse.add(house);
-				}
-			}
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-		}
-
-		return houseRepository.findAll();
-	}
-
-	@Override
-	public List<House> getAllApproved() {
+	public ResponseEntity<?> getAllApproved() {
 		List<House> listApproved = new ArrayList<House>();
-		try {
-			for (House house : houseRepository.findAll()) {
-				if (house.isApproved() && !house.isDeleted()) {
-					listApproved.add(house);
-				}
+		MessageModel message = new MessageModel();
+
+		for (House house : houseRepository.findAll()) {
+			if (house.isApproved() && !house.isDeleted()) {
+				listApproved.add(house);
 			}
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
 		}
 
-		return listApproved;
+		if (listApproved.size() == 0) {
+			message.setMessage(CommonConstants.LIST_EMPTY);
+			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		return ResponseEntity.ok(listApproved);
 	}
 
 	@Override
-	public List<House> getAllDeleted() {
+	public ResponseEntity<?> getAllDeleted() {
 		List<House> listDeleted = new ArrayList<House>();
+		MessageModel message = new MessageModel();
 
-		try {
-			for (House house : houseRepository.findAll()) {
-				if (house.isDeleted()) {
-					listDeleted.add(house);
-				}
+		for (House house : houseRepository.findAll()) {
+			if (house.isDeleted()) {
+				listDeleted.add(house);
 			}
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
 		}
-		return listDeleted;
+
+		if (listDeleted.size() == 0) {
+			message.setMessage(CommonConstants.LIST_EMPTY);
+			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		return ResponseEntity.ok(listDeleted);
 	}
 
 	@Override
-	public List<House> getAllUnApproved() {
+	public ResponseEntity<?> getAllUnApproved() {
 		List<House> listNotApproved = new ArrayList<House>();
 
-		try {
-			for (House house : houseRepository.findAll()) {
-				if (!house.isApproved() && !house.isDeleted()) {
-					listNotApproved.add(house);
-				}
+		MessageModel message = new MessageModel();
+
+		for (House house : houseRepository.findAll()) {
+			if (!house.isApproved() && !house.isDeleted()) {
+				listNotApproved.add(house);
 			}
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
 		}
-		return listNotApproved;
+		if (listNotApproved.size() == 0) {
+			message.setMessage(CommonConstants.LIST_EMPTY);
+			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		return ResponseEntity.ok(listNotApproved);
 	}
 
 	@Override
@@ -311,36 +290,28 @@ public class HouseServiceImpl implements HouseService {
 		Integer idCurrent = null;
 		Account account;
 		MessageModel message = new MessageModel();
+		idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		account = accountRepository.findById(idCurrent).get();
 
-
-		try {
-			idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			account = accountRepository.findById(idCurrent).get();
-
-			if (account == null) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
-
-			House house = mapper.map(houseDetail, House.class);
-			byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
-			byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
-			byte ac = ((houseDetail.isAirConditioner() == true)) ? Amenities.AC.getValue() : 0;
-			byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
-			byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
-			String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
-			house.setAmenities(amenities);
-			house.setAccount(account);
-			house.setDeleted(NOT_DELETED);
-			house.setApproved(IS_APPROVED);
-			houseRepository.saveAndFlush(house);
-			return ResponseEntity.status(HttpStatus.CREATED).body(house);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		if (account == null) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
+
+		House house = mapper.map(houseDetail, House.class);
+		byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
+		byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
+		byte ac = ((houseDetail.isAirConditioner() == true)) ? Amenities.AC.getValue() : 0;
+		byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
+		byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
+		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
+		house.setAmenities(amenities);
+		house.setAccount(account);
+		house.setDeleted(NOT_DELETED);
+		house.setApproved(IS_APPROVED);
+		houseRepository.saveAndFlush(house);
+		return ResponseEntity.status(HttpStatus.CREATED).body(house);
+
 	}
 
 	@Override
@@ -357,45 +328,40 @@ public class HouseServiceImpl implements HouseService {
 		byte amenities;
 		List<House> listHouseAmenities = new ArrayList<House>();
 
-		try {
-			byte wifi_binary = (wifi == true) ? Amenities.WIFI.getValue() : 0;
-			byte tivi_binary = (tivi == true) ? Amenities.TIVI.getValue() : 0;
-			byte ac_binary = (airConditioner == true) ? Amenities.AC.getValue() : 0;
-			byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
-			byte swim_pool_binary = (swimPool == true) ? Amenities.SWIM_POOL.getValue() : 0;
-			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
+		byte wifi_binary = (wifi == true) ? Amenities.WIFI.getValue() : 0;
+		byte tivi_binary = (tivi == true) ? Amenities.TIVI.getValue() : 0;
+		byte ac_binary = (airConditioner == true) ? Amenities.AC.getValue() : 0;
+		byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
+		byte swim_pool_binary = (swimPool == true) ? Amenities.SWIM_POOL.getValue() : 0;
+		amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 
-			Pageable paging = PageRequest.of(page, size);
-			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice,
-					lowestGuest, highestGuest);
+		listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice,
+				lowestGuest, highestGuest);
 
-			for (House house : listHouse) {
-				if ((byte) (amenities & Byte.parseByte(house.getAmenities(), 2)) == amenities) {
-					listHouseAmenities.add(house);
-				}
+		for (House house : listHouse) {
+			if ((byte) (amenities & Byte.parseByte(house.getAmenities(), 2)) == amenities) {
+				listHouseAmenities.add(house);
 			}
-
-			if (listHouseAmenities.size() == 0) {
-				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
-
-			for (House house : listHouseAmenities) {
-				HouseModel houseModel = mapper.map(house, HouseModel.class);
-				listHouseModel.add(houseModel);
-			}
-
-			int fromIndex = (page) * size;
-			final int numPages = (int) Math.ceil((double) listHouseModel.size() / (double) size);
-			paginationModel.setListObject(listHouseModel.subList(fromIndex, Math.min(fromIndex + size, listHouseModel.size())));
-			paginationModel.setPageMax(numPages);
-			return ResponseEntity.ok(paginationModel);
-
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.toString());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
+		if (listHouseAmenities.size() == 0) {
+			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+
+		for (House house : listHouseAmenities) {
+			HouseModel houseModel = mapper.map(house, HouseModel.class);
+			listHouseModel.add(houseModel);
+		}
+
+		int fromIndex = (page) * size;
+		final int numPages = (int) Math.ceil((double) listHouseModel.size() / (double) size);
+
+		paginationModel
+				.setListObject(listHouseModel.subList(fromIndex, Math.min(fromIndex + size, listHouseModel.size())));
+		paginationModel.setPageMax(numPages);
+		return ResponseEntity.ok(paginationModel);
+
 	}
 
 	@Override
@@ -404,47 +370,40 @@ public class HouseServiceImpl implements HouseService {
 		
 		MessageModel message = new MessageModel();
 
-		try {
-			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-			if (!houseRepository.findById(houseId).get().getAccount().getAccountId().equals(idCurrent)) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-			}
-
-			if (!houseRepository.findById(houseId).isPresent()) {
-				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
-
-			House house = houseRepository.findById(houseId).get();
-			house.setAddress(houseDetail.getAddress());
-			house.setTitle(houseDetail.getTitle());
-			house.setCountry(houseDetail.getCountry());
-			house.setCity(houseDetail.getCity());
-			house.setContent(houseDetail.getContent());
-			house.setPhoneContact(houseDetail.getPhoneContact());
-			house.setImage(houseDetail.getImage());
-			house.setSize(houseDetail.getSize());
-			house.setPrice(houseDetail.getPrice());
-			byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
-			byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
-			byte ac = ((houseDetail.isAirConditioner() == true)) ? Amenities.AC.getValue() : 0;
-			byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
-			byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
-			String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
-			house.setAmenities(amenities);
-			house.setBedroom(houseDetail.getBedroom());
-			house.setMaxGuest(houseDetail.getMaxGuest());
-			houseRepository.saveAndFlush(house);
-			return ResponseEntity.ok(house);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.toString());
-			System.out.print(e);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		if (!houseRepository.findById(houseId).get().getAccount().getAccountId().equals(idCurrent)) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
+
+		if (!houseRepository.findById(houseId).isPresent()) {
+			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+
+		House house = houseRepository.findById(houseId).get();
+		house.setAddress(houseDetail.getAddress());
+		house.setTitle(houseDetail.getTitle());
+		house.setCountry(houseDetail.getCountry());
+		house.setCity(houseDetail.getCity());
+		house.setContent(houseDetail.getContent());
+		house.setPhoneContact(houseDetail.getPhoneContact());
+		house.setImage(houseDetail.getImage());
+		house.setSize(houseDetail.getSize());
+		house.setPrice(houseDetail.getPrice());
+		byte wifi = ((houseDetail.isWifi() == true)) ? Amenities.WIFI.getValue() : 0;
+		byte tivi = ((houseDetail.isTivi() == true)) ? Amenities.TIVI.getValue() : 0;
+		byte ac = ((houseDetail.isAirConditioner() == true)) ? Amenities.AC.getValue() : 0;
+		byte fridge = ((houseDetail.isFridge() == true)) ? Amenities.FRIDGE.getValue() : 0;
+		byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
+		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
+		house.setAmenities(amenities);
+		house.setBedroom(houseDetail.getBedroom());
+		house.setMaxGuest(houseDetail.getMaxGuest());
+		houseRepository.saveAndFlush(house);
+		return ResponseEntity.ok(house);
+
 	}
 
 }

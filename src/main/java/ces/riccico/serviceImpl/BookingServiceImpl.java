@@ -116,39 +116,33 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		try {
-			Booking booking = bookingRepository.findById(bookingId).get();
-			if (!bookingRepository.findById(bookingId).isPresent()) {
-				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
+		Booking booking = bookingRepository.findById(bookingId).get();
+		if (!bookingRepository.findById(bookingId).isPresent()) {
+			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
 
-			if (!Status.APPROVAL.getStatusName().equals(booking.getStatus())) {
-				message.setMessage(BookingConstants.INVALID_STATUS);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			if (currentDate.compareTo(booking.getCreateEnd()) < 0) {
-				message.setMessage(BookingConstants.INVALID_DATE_COMPLETE);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			booking.setStatus(Status.COMPLETED.getStatusName());
-			bookingRepository.saveAndFlush(booking);
-			message.setMessage(CommonConstants.SUCCESS);
-			return ResponseEntity.ok(message);
-
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
+		if (!Status.APPROVAL.getStatusName().equals(booking.getStatus())) {
+			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
+		if (currentDate.compareTo(booking.getCreateEnd()) < 0) {
+			message.setMessage(BookingConstants.INVALID_DATE_COMPLETE);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		booking.setStatus(Status.COMPLETED.getStatusName());
+		bookingRepository.saveAndFlush(booking);
+		message.setMessage(CommonConstants.SUCCESS);
+		return ResponseEntity.ok(message);
+
 	}
 
 	@Override
 	public ResponseEntity<?> findByAccountId(int accountId) {
 		MessageModel message = new MessageModel();
-		List<Booking> listBookings = new ArrayList<Booking>();
+		List<Booking> listBookings =  bookingRepository.findByAccountId(accountId);
 		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
@@ -157,22 +151,13 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
-		try {
-			listBookings = bookingRepository.findByAccountId(accountId);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
 		if (listBookings.size() == 0) {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		BookingModel bookingModel = new BookingModel();
-
 		for (Booking booking : listBookings) {
+			BookingModel bookingModel = new BookingModel();
 			bookingModel.setBooking(booking);
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
@@ -184,7 +169,7 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public ResponseEntity<?> findByHouseId(int houseId) {
 		MessageModel message = new MessageModel();
-		List<Booking> listBookings = new ArrayList<Booking>();
+		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
 
@@ -194,22 +179,13 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
-		try {
-			listBookings = bookingRepository.findByHouseId(houseId);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
 		if (listBookings.size() == 0) {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		BookingModel bookingModel = new BookingModel();
-
 		for (Booking booking : listBookings) {
+			BookingModel bookingModel = new BookingModel();
 			bookingModel.setBooking(booking);
 			bookingModel.setAccountId(booking.getAccount().getAccountId());
 			bookingModel.setAccountName(booking.getAccount().getUsername());
@@ -219,8 +195,8 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public List<Booking> getAlḷ() {
-		return null;
+	public ResponseEntity<?> getAlḷ() {
+		return ResponseEntity.ok(bookingRepository.findAll());
 	}
 
 	@Override
@@ -228,14 +204,7 @@ public class BookingServiceImpl implements BookingService {
 		MessageModel message = new MessageModel();
 		Booking booking = new Booking();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-
-		try {
-			booking = bookingRepository.findById(bookingId).get();
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
+		booking = bookingRepository.findById(bookingId).get();
 
 		if (idCurrent != booking.getAccount().getAccountId()
 				&& idCurrent != booking.getHouse().getAccount().getAccountId()) {
@@ -250,36 +219,29 @@ public class BookingServiceImpl implements BookingService {
 
 	public ResponseEntity<?> payment(int bookingId) {
 		MessageModel message = new MessageModel();
+		Booking booking = bookingRepository.findById(bookingId).get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-		try {
-			Booking booking = bookingRepository.findById(bookingId).get();
-			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		if (!bookingRepository.findById(bookingId).isPresent()) {
+			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
 
-			if (!bookingRepository.findById(bookingId).isPresent()) {
-				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
+		if (!idCurrent.equals(booking.getAccount().getAccountId())) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
 
-			if (!idCurrent.equals(booking.getAccount().getAccountId())) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-			}
-
-			if (!Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())) {
-				message.setMessage(BookingConstants.INVALID_STATUS);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			booking.setStatus(Status.PENDING_APPROVAL.getStatusName());
-			bookingRepository.saveAndFlush(booking);
-			message.setMessage(CommonConstants.SUCCESS);
-			return ResponseEntity.ok(message);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
+		if (!Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())) {
+			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
+		booking.setStatus(Status.PENDING_APPROVAL.getStatusName());
+		bookingRepository.saveAndFlush(booking);
+		message.setMessage(CommonConstants.SUCCESS);
+		return ResponseEntity.ok(message);
+
 	}
 
 	@Override

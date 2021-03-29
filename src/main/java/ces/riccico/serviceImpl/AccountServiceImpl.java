@@ -75,9 +75,9 @@ public class AccountServiceImpl implements AccountService {
 //	Active account by email
 	@Override
 	public ResponseEntity<?> activeAccount(int codeInput, String email) {
-		
-		Account account = accountRepository.findByEmail(email);
+
 		MessageModel message = new MessageModel();
+		Account account = accountRepository.findByEmail(email);
 
 		if (account == null) {
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
@@ -98,7 +98,6 @@ public class AccountServiceImpl implements AccountService {
 //	Banned account 
 	@Override
 	public ResponseEntity<?> banAccount(int accountId) {
-
 		MessageModel message = new MessageModel();
 		Account account = accountRepository.findById(accountId).get();
 
@@ -348,7 +347,6 @@ public class AccountServiceImpl implements AccountService {
 //	Logout account
 	@Override
 	public ResponseEntity<?> logout() {
-
 		MessageModel message = new MessageModel();
 		String tokenCurrent;
 		tokenCurrent = jwtUtil.getJwtTokenHeader();
@@ -380,7 +378,6 @@ public class AccountServiceImpl implements AccountService {
 //	Register accountby username, email, password	
 	@Override
 	public ResponseEntity<?> register(Account account, User user) {
-
 		MessageModel message = new MessageModel();
 		int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 		CONFIRM_CODE = code;
@@ -404,6 +401,7 @@ public class AccountServiceImpl implements AccountService {
 			message.setMessage(UserConstants.INVALID_USERNAME_FORMAT);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
 
 		if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);

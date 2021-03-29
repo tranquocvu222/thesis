@@ -1,9 +1,4 @@
-
 package ces.riccico.controller;
-
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ces.riccico.entity.House;
 import ces.riccico.model.HouseDetailModel;
 import ces.riccico.service.HouseService;
 import io.swagger.annotations.ApiOperation;
@@ -66,13 +60,13 @@ public class HouseController {
 	@GetMapping("/getAll")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<House> getAll() {
+	public ResponseEntity<?> getAll() {
 		return houseService.getAll();
 	}
 
 	// shows approved houses list
 	@GetMapping("/isApproved")
-	public List<House> getAllApproved() {
+	public ResponseEntity<?> getAllApproved() {
 		return houseService.getAllApproved();
 	}
 
@@ -80,7 +74,7 @@ public class HouseController {
 	@GetMapping("/notApproved")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<House> getAllUnApproved() {
+	public ResponseEntity<?> getAllUnApproved() {
 		return houseService.getAllUnApproved();
 	}
 
@@ -94,7 +88,7 @@ public class HouseController {
 	@GetMapping("/isDeleted")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<House> getHouseDelete() {
+	public ResponseEntity<?> getHouseDelete() {
 		return houseService.getAllDeleted();
 	}
 

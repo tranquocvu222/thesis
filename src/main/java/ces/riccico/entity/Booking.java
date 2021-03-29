@@ -18,7 +18,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import ces.riccico.model.Auditable;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "booking")
+
 public class Booking extends Auditable {
 
 	@Id
