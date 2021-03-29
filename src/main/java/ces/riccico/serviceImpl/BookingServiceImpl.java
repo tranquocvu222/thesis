@@ -18,12 +18,12 @@ import org.springframework.stereotype.Service;
 import ces.riccico.common.constants.BookingConstants;
 import ces.riccico.common.constants.CommonConstants;
 import ces.riccico.common.constants.HouseConstants;
+import ces.riccico.common.constants.RatingConstants;
 import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.enums.Status;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
-import ces.riccico.entity.Rating;
 import ces.riccico.model.BookingModel;
 import ces.riccico.model.MessageModel;
 
@@ -287,6 +287,10 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
 		MessageModel message = new MessageModel();
 
+		if (houseRepository.findById(houseId) == null || houseRepository.findById(houseId).isEmpty()) {
+			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Account account = accountRepository.findById(idCurrent).get();
@@ -296,12 +300,17 @@ public class BookingServiceImpl implements BookingService {
 				message.setMessage(BookingConstants.ACCOUNT_WITHOUT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
-
-			if (!houseRepository.findById(houseId).isPresent() || house.isApproved() == false
-					|| house.isDeleted() == true) {
-				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+			
+			if (house.isApproved() == false || house.isDeleted() == true) {
+				message.setMessage(HouseConstants.HOUSE_DELETED);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
+
+			if (house.isApproved() == false || house.isDeleted() == true) {
+				message.setMessage(HouseConstants.HOUSE_DELETED);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			}
+			
 
 			List<Booking> listBookings = new ArrayList<Booking>();
 			try {

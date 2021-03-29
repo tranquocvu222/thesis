@@ -79,14 +79,25 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> deleteHouse(int houseId) {
-		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		House house = houseRepository.findById(houseId).get();
 		MessageModel message = new MessageModel();
+		Integer idCurrent;
+		House house = houseRepository.findById(houseId).get();
 
-		if (idCurrent != houseRepository.findById(houseId).get().getAccount().getAccountId()) {
+		try {
+			idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getLocalizedMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		if (!accountRepository.findById(idCurrent).get().getRole().equals(Role.ADMIN.getRole())
+				&& !idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-		} else if (!houseRepository.findById(houseId).isPresent()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+
+		if (!houseRepository.findById(houseId).isPresent()) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
@@ -105,7 +116,6 @@ public class HouseServiceImpl implements HouseService {
 		} else {
 			message.setMessage(HouseConstants.BY_USER);
 			return ResponseEntity.ok(message);
-
 		}
 	}
 
@@ -126,7 +136,7 @@ public class HouseServiceImpl implements HouseService {
 				listHouseModel.add(houseModel);
 			}
 
-			paginationModel.setListHouse(listHouseModel);
+			paginationModel.setListObject(listHouseModel);
 			paginationModel.setPageMax(pageMax);
 			return ResponseEntity.ok(paginationModel);
 
@@ -363,7 +373,7 @@ public class HouseServiceImpl implements HouseService {
 					listHouseModel.add(houseModel);
 				}
 
-				paginationModel.setListHouse(listHouseModel);
+				paginationModel.setListObject(listHouseModel);
 				paginationModel.setPageMax(pageMax);
 				return ResponseEntity.ok(paginationModel);
 
