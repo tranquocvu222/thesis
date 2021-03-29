@@ -200,6 +200,7 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Override
 	public ResponseEntity<?> findByPageAndSize(int page, int size) {
+		
 		List<Object> listAccountModel = new ArrayList<Object>();
 		List<Account> listAccount = new ArrayList<Account>();
 		PaginationModel paginationModel = new PaginationModel();

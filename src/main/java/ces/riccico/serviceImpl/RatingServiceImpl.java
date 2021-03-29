@@ -47,49 +47,9 @@ public class RatingServiceImpl implements RatingService {
 	@Autowired
 	private ModelMapper mapper;
 
-//	Find rating by id_house
+//	Find rating by account id
 	@Override
-	public ResponseEntity<?> findRatingByHouseId(int houseId) {
-		MessageModel message = new MessageModel();
-
-		try {
-			List<Rating> listRating = new ArrayList<Rating>();
-
-			if (!houseRepository.findById(houseId).isPresent()) {
-				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-
-			}
-
-			listRating = ratingRepository.findByBookingHouseId(houseId);
-			List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
-
-			if (listRating.size() == 0) {
-				message.setMessage(RatingConstants.NULL_RATING);
-				return ResponseEntity.ok(message);
-			}
-
-			RatingHouseModel ratingModel = new RatingHouseModel();
-			for (Rating rating : listRating) {
-				ratingModel.setRating(rating);
-				ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
-				ratingModel.setCreatedAt(rating.getCreatedAt());
-				listRatingModel.add(ratingModel);
-			}
-
-			return ResponseEntity.ok(listRatingModel);
-
-		} catch (Exception e) {
-
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-	}
-
-//	Find rating by id_account
-	@Override
-	public ResponseEntity<?> findByRatingAccountId(int accountId) {
+	public ResponseEntity<?> findRatingByAccountId(int accountId) {
 		MessageModel message = new MessageModel();
 
 		try {
@@ -110,6 +70,7 @@ public class RatingServiceImpl implements RatingService {
 			}
 
 			RatingAccountModel ratingModel = new RatingAccountModel();
+			
 			for (Rating rating : listRating) {
 				ratingModel.setRating(rating);
 				ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
@@ -124,6 +85,44 @@ public class RatingServiceImpl implements RatingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
+	
+//	Find rating by id_house
+	@Override
+	public ResponseEntity<?> findRatingByHouseId(int houseId) {
+		MessageModel message = new MessageModel();
+		
+		if (houseRepository.findById(houseId) == null || houseRepository.findById(houseId).isEmpty()) {
+			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+		
+		try {
+			List<Rating> listRating = new ArrayList<Rating>();
+
+			listRating = ratingRepository.findByBookingHouseId(houseId);
+			List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
+
+			if (listRating.size() == 0) {
+				message.setMessage(RatingConstants.NULL_RATING);
+				return ResponseEntity.ok(message);
+			}
+
+			RatingHouseModel ratingModel = new RatingHouseModel();
+			for (Rating rating : listRating) {
+				ratingModel.setRating(rating);
+				ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
+				ratingModel.setCreatedAt(rating.getCreatedAt());
+				listRatingModel.add(ratingModel);
+			}
+
+			return ResponseEntity.ok(listRatingModel);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			message.setMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+	}
 
 	@Override
 	public ResponseEntity<?> getRatingDetail(int ratingId) {
@@ -131,13 +130,12 @@ public class RatingServiceImpl implements RatingService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Rating rating = new Rating();
 
-		try {
-			rating = ratingRepository.findById(ratingId).get();
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		if (ratingRepository.findById(ratingId) == null || ratingRepository.findById(ratingId).isEmpty()) {
+			message.setMessage(RatingConstants.RATING_NOT_EXIST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
+
+		rating = ratingRepository.findById(ratingId).get();
 
 		if (!idCurrent.equals(rating.getBooking().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
@@ -192,7 +190,12 @@ public class RatingServiceImpl implements RatingService {
 	public ResponseEntity<?> updateRating(int ratingId, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
-		
+
+		if (ratingRepository.findById(ratingId) == null || ratingRepository.findById(ratingId).isEmpty()) {
+			message.setMessage(RatingConstants.RATING_NOT_EXIST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+
 		if (!idCurrent.equals(ratingRepository.findById(ratingId).get().getBooking().getAccount().getAccountId())) {
 
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);

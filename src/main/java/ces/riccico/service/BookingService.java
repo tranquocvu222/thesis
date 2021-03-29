@@ -16,7 +16,7 @@ public interface BookingService {
 
 	ResponseEntity<?> findByAccountId(int accountId);
 
-	ResponseEntity<?> findByHouseId(int houseId);
+	ResponseEntity<?> findByHouseId(int houseId) ;
 
 	List<Booking> getAlḷ();
 
