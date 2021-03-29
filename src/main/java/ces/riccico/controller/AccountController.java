@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,7 +37,7 @@ public class AccountController {
 	UserService userService;
 
 	// this is the account authentication feature.
-	@RequestMapping(value = "/register/activeEmail/{codeInput}/{email}", method = RequestMethod.POST)
+	@RequestMapping(value = "/register/activeEmail/{codeInput}/{email}", method = RequestMethod.PUT)
 	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String email) {
 		return accountService.activeAccount(codeInput, email);
 	}
@@ -62,7 +61,7 @@ public class AccountController {
 	// find house with pagination
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-//	@PreAuthorize("hasAnyAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
 		return accountService.findByPageAndSize(page, size);
@@ -76,7 +75,7 @@ public class AccountController {
 	}
 
 	// prevent users from using the system
-	@RequestMapping(value = "/banned/{accountId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/banned/{accountId}", method = RequestMethod.PUT)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> isBanneed(@PathVariable int accountId) {
@@ -106,7 +105,7 @@ public class AccountController {
 	}
 
 	// this is reset password feature
-	@RequestMapping(value = "/resetPassword/{email}/{password}", method = RequestMethod.POST)
+	@RequestMapping(value = "/resetPassword/{email}/{password}", method = RequestMethod.PUT)
 	public ResponseEntity<?> resetPassword(@PathVariable String email, @PathVariable String password) {
 		return accountService.resetPassword(email, password);
 	}
