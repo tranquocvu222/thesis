@@ -1,4 +1,5 @@
 
+
 package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
@@ -496,21 +497,20 @@ public class AccountServiceImpl implements AccountService {
 					return ResponseEntity.ok(message);
 
 				} catch (Exception e) {
-
-					System.out.println("createNewServices: " + e);
+					logger.error("===== " + e.getMessage());
+					message.setMessage(e.getMessage());
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				}
 
-				message.setMessage(CommonConstants.FAIL);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-
 			} else {
+				
 				message.setMessage(UserConstants.USERNAME_EXISTS);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 		} catch (Exception e) {
-
-			message.setMessage(CommonConstants.FAIL);
+			logger.error("------- " + e.getMessage());
+			message.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
