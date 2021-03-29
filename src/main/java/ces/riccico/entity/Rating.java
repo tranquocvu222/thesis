@@ -19,7 +19,7 @@ import ces.riccico.model.Auditable;
 @Entity
 @Table(name = "ratings")
 public class Rating extends Auditable {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ratingId")
@@ -31,7 +31,6 @@ public class Rating extends Auditable {
 
 	@Column(name = "content", length = 600)
 	private String content;
-
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "idBooking", nullable = false)

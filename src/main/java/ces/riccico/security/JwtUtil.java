@@ -23,18 +23,17 @@ import com.nimbusds.jwt.SignedJWT;
 
 import ces.riccico.entity.Account;
 
-
 @Component
 public class JwtUtil {
 
 	private static Logger logger = LoggerFactory.getLogger(JwtUtil.class);
-	
+
 	private static final long JWT_TOKEN_VALIDITY = 1728000000;
-	
+
 	private static final String SECRET = "thisisasecretkeythisisasecretkey";
-	
+
 	private static final String USER = "user";
-	
+
 	// generate token for user
 	public String generateToken(AccountDetail user) {
 		String token = null;

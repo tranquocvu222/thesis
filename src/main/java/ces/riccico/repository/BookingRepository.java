@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import ces.riccico.entity.Booking;
 
-
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
-	
+
 	List<Booking> findByAccountId(int accountId);
+
 	List<Booking> findByHouseId(int houseId);
 }

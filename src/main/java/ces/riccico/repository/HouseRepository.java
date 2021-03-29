@@ -20,7 +20,7 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 	@Query("Select h from House h where h.country like %?1% and h.city like %?2% and h.size >= ?3 and h.size <= ?4 "
 			+ "and h.price >= ?5 and h.price <= ?6  and h.maxGuest >= ?7 and h.maxGuest <= ?8 "
 			+ "and h.isApproved = true and h.isDeleted = false")
-	Page<House> searchFilter(String country, String city, Double lowestSize, Double highestSize,
-			Double lowestPrice, Double highestPrice, byte lowestGuest, byte highestGuest, Pageable pageable);
+	Page<House> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
+			Double highestPrice, byte lowestGuest, byte highestGuest, Pageable pageable);
 
 }

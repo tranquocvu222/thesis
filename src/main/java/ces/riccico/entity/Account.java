@@ -38,10 +38,10 @@ public class Account {
 
 	@Column(name = "role")
 	private String role;
-	
+
 	@Column(name = "isBanned")
 	private boolean isBanned;
-	
+
 	@OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<House> houses = new HashSet<>();

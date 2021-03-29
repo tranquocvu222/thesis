@@ -6,31 +6,32 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
-
 public class AccountDetail implements UserDetails {
-	
+
 	private Integer idUser;
-	
+
 	private String email;
-	
+
 	private String password;
-	
+
 	private String username;
-	
+
 	private String role;
-	
+
 	private Collection authorities;
 
 	public Integer getIdUser() {
 		return idUser;
 	}
+
 	public void setIdUser(Integer idUser) {
 		this.idUser = idUser;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	@Override
 	public String getPassword() {
 		return password;
@@ -44,7 +45,7 @@ public class AccountDetail implements UserDetails {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
@@ -64,6 +65,7 @@ public class AccountDetail implements UserDetails {
 	public Collection getAuthorities() {
 		return authorities;
 	}
+
 	public void setAuthorities(Collection authorities) {
 		this.authorities = authorities;
 	}

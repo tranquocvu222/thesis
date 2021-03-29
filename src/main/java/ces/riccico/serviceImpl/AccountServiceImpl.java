@@ -333,11 +333,9 @@ public class AccountServiceImpl implements AccountService {
 //	Login by username or email and password
 	@Override
 	public ResponseEntity<?> login(LoginModel account) {
-
 		MessageModel message = new MessageModel();
 
 		try {
-
 			String usernameOrEmail = account.getUsernameOrEmail();
 			String password = account.getPassword();
 
@@ -349,46 +347,44 @@ public class AccountServiceImpl implements AccountService {
 			if (password == null || password.isEmpty()) {
 				message.setMessage(UserConstants.PASSWORD_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else {
-				if (usernameOrEmail.matches(Validation.EMAIL_PATTERN)) {
-					if (accountRepository.findByEmail(usernameOrEmail) == null) {
-						message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
-						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-					}
-					usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUsername();
-				}
-
-				AccountDetail accountDetail = loadUserByUsername(usernameOrEmail);
-
-				BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-				if (accountRepository.findByUsername(usernameOrEmail) == null) {
-					message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-				} else {
-					if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
-						message.setMessage(UserConstants.INVALID_ACCOUNT);
-						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-					}
-
-					if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
-						message.setMessage(UserConstants.ACCOUNT_BANNED);
-						return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-					}
-
-					if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
-						message.setMessage(UserConstants.NOT_ACTIVATED);
-						return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-					} else {
-						Token token = new Token();
-						token.setToken(jwtUtil.generateToken(accountDetail));
-						token.setTokenExpDate(jwtUtil.generateExpirationDate());
-						tokenRepository.saveAndFlush(token);
-						return ResponseEntity.ok(token.getToken());
-					}
-				}
 			}
 
+			if (usernameOrEmail.matches(Validation.EMAIL_PATTERN)) {
+				if (accountRepository.findByEmail(usernameOrEmail) == null) {
+					message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+				}
+				usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUsername();
+			}
+
+			AccountDetail accountDetail = loadUserByUsername(usernameOrEmail);
+			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+			if (accountRepository.findByUsername(usernameOrEmail) == null) {
+				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			} else {
+				if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
+					message.setMessage(UserConstants.INVALID_ACCOUNT);
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+				}
+
+				if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
+					message.setMessage(UserConstants.ACCOUNT_BANNED);
+					return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+				}
+
+				if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
+					message.setMessage(UserConstants.NOT_ACTIVATED);
+					return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+				} else {
+					Token token = new Token();
+					token.setToken(jwtUtil.generateToken(accountDetail));
+					token.setTokenExpDate(jwtUtil.generateExpirationDate());
+					tokenRepository.saveAndFlush(token);
+					return ResponseEntity.ok(token.getToken());
+				}
+			}
 		} catch (Exception e) {
 			message.setMessage(CommonConstants.FAIL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);

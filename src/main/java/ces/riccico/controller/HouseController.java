@@ -115,7 +115,8 @@ public class HouseController {
 	@GetMapping("/filter")
 	public ResponseEntity<?> searchFilter(@RequestParam(defaultValue = "") String country,
 			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "0") Double lowestSize,
-			@RequestParam(defaultValue = "50000") Double highestSize, @RequestParam(defaultValue = "0") Double lowestPrice,
+			@RequestParam(defaultValue = "50000") Double highestSize,
+			@RequestParam(defaultValue = "0") Double lowestPrice,
 			@RequestParam(defaultValue = "50000000") Double highestPrice,
 			@RequestParam(defaultValue = "false") boolean tivi, @RequestParam(defaultValue = "false") boolean wifi,
 			@RequestParam(defaultValue = "false") boolean airConditioner,
@@ -125,7 +126,7 @@ public class HouseController {
 			@RequestParam(defaultValue = "20") int size) {
 
 		return houseService.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice, tivi, wifi,
-				airConditioner, fridge, swimPool,  lowestGuest, highestGuest, page, size);
+				airConditioner, fridge, swimPool, lowestGuest, highestGuest, page, size);
 
 	}
 

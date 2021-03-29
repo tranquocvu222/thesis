@@ -14,16 +14,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "images")
 public class Image {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "imageId")
 	@JsonIgnore
 	private Integer id;
-	
+
 	@Column(name = "image", length = 300)
 	private String image;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "idHouse")
 	@JsonIgnore
@@ -52,5 +52,5 @@ public class Image {
 	public void setHouse(House house) {
 		this.house = house;
 	}
-	
+
 }

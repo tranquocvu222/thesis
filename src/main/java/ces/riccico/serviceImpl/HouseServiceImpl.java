@@ -58,10 +58,7 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 
 	public ResponseEntity<?> approveHouse(int houseId) {
-
 		MessageModel message = new MessageModel();
-
-
 		try {
 			House house = houseRepository.findById(houseId).get();
 			if (house.isApproved()) {
@@ -81,17 +78,15 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-
 	public ResponseEntity<?> deleteHouse(int houseId) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		House house = houseRepository.findById(houseId).get();
 		MessageModel message = new MessageModel();
-	
+
 		if (idCurrent != houseRepository.findById(houseId).get().getAccount().getAccountId()) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else if (!houseRepository.findById(houseId).isPresent()) {
-
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
@@ -168,9 +163,8 @@ public class HouseServiceImpl implements HouseService {
 		MessageModel message = new MessageModel();
 
 		try {
-
 			Integer idAccount = accountRepository.findByUsername(username).getAccountId();
-			
+
 			if (!accountRepository.findById(idAccount).isPresent()) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -203,6 +197,7 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public List<House> getAll() {
 		List<House> listHouse = new ArrayList<House>();
+
 		try {
 			for (House house : houseRepository.findAll()) {
 				if (!house.isDeleted()) {
@@ -235,6 +230,7 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public List<House> getAllDeleted() {
 		List<House> listDeleted = new ArrayList<House>();
+
 		try {
 			for (House house : houseRepository.findAll()) {
 				if (house.isDeleted()) {
@@ -250,6 +246,7 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public List<House> getAllUnApproved() {
 		List<House> listNotApproved = new ArrayList<House>();
+
 		try {
 			for (House house : houseRepository.findAll()) {
 				if (!house.isApproved() && !house.isDeleted()) {
@@ -265,7 +262,6 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 
 	public ResponseEntity<?> getHouseDetail(Integer houseId) {
-	
 		House house = houseRepository.findById(houseId).get();
 		MessageModel message = new MessageModel();
 		HouseDetailModel houseDetail;
@@ -329,9 +325,8 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
-			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner,
-			boolean fridge, boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
-
+			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner, boolean fridge,
+			boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
 		List<Object> listHouseModel = new ArrayList<Object>();
 		MessageModel message = new MessageModel();
 		PaginationModel paginationModel = new PaginationModel();
@@ -347,8 +342,8 @@ public class HouseServiceImpl implements HouseService {
 			byte swim_pool_binary = (swimPool == true) ? Amenities.SWIM_POOL.getValue() : 0;
 			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 			Pageable paging = PageRequest.of(page, size);
-			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice,
-					highestPrice, lowestGuest, highestGuest, paging).getContent();
+			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice,
+					lowestGuest, highestGuest, paging).getContent();
 
 			if (listHouse.size() == 0) {
 				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
@@ -396,7 +391,6 @@ public class HouseServiceImpl implements HouseService {
 			if (!houseRepository.findById(houseId).isPresent()) {
 				message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-
 			}
 
 			House house = houseRepository.findById(houseId).get();

@@ -8,12 +8,12 @@ import org.springframework.stereotype.Repository;
 import ces.riccico.entity.Rating;
 
 @Repository
-public interface RatingRepository extends JpaRepository<Rating, Integer>{
-	
+public interface RatingRepository extends JpaRepository<Rating, Integer> {
+
 	List<Rating> findByBookingAccountId(int accountId);
-	
+
 	Rating findByBookingId(int bookingId);
-	
+
 	List<Rating> findByBookingHouseId(int houseId);
-	
+
 }
