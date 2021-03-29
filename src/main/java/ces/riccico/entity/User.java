@@ -45,10 +45,9 @@ public class User {
 	@Column(name = "address", length = 100)
 	private String address;
 
-
 	@OneToOne
 	@JsonIgnore
-	@JoinColumn(name = "accountId",nullable = false)
+	@JoinColumn(name = "accountId", nullable = false)
 	private Account account;
 
 	public User() {
@@ -122,10 +121,8 @@ public class User {
 	@Override
 	public String toString() {
 
-		return "Users [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", birthDay=" + birthDay + ", city=" + city + ", country=" + country + ", address=" + address
-				+ ", account=" + account + "]";
+		return "Users [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", birthDay=" + birthDay
+				+ ", city=" + city + ", country=" + country + ", address=" + address + ", account=" + account + "]";
 	}
 
-	
 }

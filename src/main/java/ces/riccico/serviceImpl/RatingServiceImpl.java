@@ -50,7 +50,6 @@ public class RatingServiceImpl implements RatingService {
 //	Find rating by id_house
 	@Override
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
-
 		MessageModel message = new MessageModel();
 
 		try {
@@ -91,17 +90,16 @@ public class RatingServiceImpl implements RatingService {
 //	Find rating by id_account
 	@Override
 	public ResponseEntity<?> findByRatingAccountId(int accountId) {
-
 		MessageModel message = new MessageModel();
-		
+
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-			
-			if(idCurrent != accountId) {
+
+			if (idCurrent != accountId) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
-			
+
 			List<Rating> listRating = new ArrayList<Rating>();
 			listRating = ratingRepository.findByBookingAccountId(idCurrent);
 			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
@@ -126,27 +124,26 @@ public class RatingServiceImpl implements RatingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}
-	
+
 	@Override
 	public ResponseEntity<?> getRatingDetail(int ratingId) {
 		MessageModel message = new MessageModel();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Rating rating = new Rating();
-		
+
 		try {
 			rating = ratingRepository.findById(ratingId).get();
-		}catch(Exception e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 			message.setMessage(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
 
-		if(idCurrent != rating.getBooking().getAccount().getAccountId()) {
+		if (!idCurrent.equals(rating.getBooking().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
-		
+
 		return ResponseEntity.ok(rating);
 	}
 
@@ -157,13 +154,12 @@ public class RatingServiceImpl implements RatingService {
 		Booking booking = bookingRepository.findById(bookingId).get();
 		MessageModel message = new MessageModel();
 
-
 		try {
 			if (!idCurrent.equals(booking.getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 			}
-			
+
 			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -197,20 +193,18 @@ public class RatingServiceImpl implements RatingService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
 		
+		if (!idCurrent.equals(ratingRepository.findById(ratingId).get().getBooking().getAccount().getAccountId())) {
 
-		if(idCurrent != rating.getBooking().getAccount().getAccountId()) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
-		
+
 		Rating ratingUpdate = ratingRepository.findById(ratingId).get();
 		logger.error(ratingUpdate.toString());
 		ratingUpdate.setStar(rating.getStar());
 		ratingUpdate.setContent(rating.getContent());
 		ratingRepository.saveAndFlush(ratingUpdate);
-		
 		return ResponseEntity.ok(ratingUpdate);
 	}
-
 
 }

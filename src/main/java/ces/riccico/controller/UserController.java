@@ -32,7 +32,6 @@ public class UserController {
 		return userService.editUser(model, userId);
 	}
 
-	
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
@@ -40,7 +39,6 @@ public class UserController {
 		return userService.findAll();
 	}
 
-	
 	@RequestMapping(value = "/userDetail", method = RequestMethod.GET)
 	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> userDetail() {

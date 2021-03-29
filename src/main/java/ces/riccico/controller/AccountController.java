@@ -41,7 +41,7 @@ public class AccountController {
 		return accountService.activeAccount(codeInput, email);
 	}
 
-	// this is change password feature,  can change the password
+	// this is change password feature, can change the password
 	@PutMapping("/changePassword")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin','user')")
@@ -63,7 +63,7 @@ public class AccountController {
 	public ResponseEntity<?> findAllIsBanned() {
 		return accountService.findAllIsBanned();
 	}
-	
+
 	// find house with pagination
 	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
@@ -73,7 +73,8 @@ public class AccountController {
 		return accountService.findByPageAndSize(page, size);
 	}
 
-	// this is a forgotten password feature, which helps you recover your password when you forget it
+	// this is a forgotten password feature, which helps you recover your password
+	// when you forget it
 	@RequestMapping(value = "/forgetPassword/{email}", method = RequestMethod.POST)
 	public ResponseEntity<?> forgetPassword(@PathVariable String email) {
 		return accountService.forgetPassword(email);
@@ -101,7 +102,8 @@ public class AccountController {
 		return accountService.logout();
 	}
 
-	// this is the registration feature,you can create an account to use system's feature
+	// this is the registration feature,you can create an account to use system's
+	// feature
 	@ResponseBody
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<?> register(@RequestBody Account account, User user) {

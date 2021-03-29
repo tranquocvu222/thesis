@@ -289,7 +289,7 @@ public class AccountServiceImpl implements AccountService {
 //	Login by username or email and password
 	@Override
 	public ResponseEntity<?> login(LoginModel account) {
-		
+
 		MessageModel message = new MessageModel();
 		String usernameOrEmail = account.getUsernameOrEmail();
 		String password = account.getPassword();

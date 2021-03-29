@@ -1,6 +1,5 @@
 package ces.riccico.common.constants;
 
-
 public class CommonConstants {
 
 	public static final String LOGIN_REQUIRED = "you must login";
@@ -11,5 +10,6 @@ public class CommonConstants {
 	
 	public static final String MESSAGE = "message";
 	
+
 
 }

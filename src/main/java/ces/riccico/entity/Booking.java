@@ -18,34 +18,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import ces.riccico.model.Auditable;
 
 @Entity
-@Table(name ="booking")
+@Table(name = "booking")
 public class Booking extends Auditable {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "bookingId")
 	private Integer id;
-	
+
 	@Column(name = "bill")
 	private double bill;
-	
-	
+
 	@Column(name = "createCheckIn")
 	private Date createCheckIn;
 
 	@Column(name = "createEnd")
 	private Date createEnd;
-	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name ="account_id", nullable = false)
+	@JoinColumn(name = "accountId", nullable = false)
 	@JsonIgnore
 	private Account account;
-	
+
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "houseId", nullable = false)
 	@JsonIgnore
 	private House house;
-	
+
 	private String status;
 
 	public Integer getId() {
@@ -104,5 +103,4 @@ public class Booking extends Auditable {
 		this.status = status;
 	}
 
-	
 }

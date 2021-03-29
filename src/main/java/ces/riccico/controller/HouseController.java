@@ -126,7 +126,8 @@ public class HouseController {
 			@RequestParam(defaultValue = "100") byte highestGuest, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
 		return houseService.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice, tivi, wifi,
-				airConditioner, fridge, swimPool,  lowestGuest, highestGuest, page, size);
+				airConditioner, fridge, swimPool, lowestGuest, highestGuest, page, size);
+
 	}
 
 	// this is the house update feature

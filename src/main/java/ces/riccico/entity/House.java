@@ -56,8 +56,8 @@ public class House extends Auditable {
 	@Column(name = "phoneContact")
 	private String phoneContact;
 
-	@Column(name  = "amenities")
-	private  String amenities;
+	@Column(name = "amenities")
+	private String amenities;
 
 	@Column(name = "bedroom")
 	private byte bedroom;
@@ -72,7 +72,7 @@ public class House extends Auditable {
 	private boolean isDeleted;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_account", nullable = false)
+	@JoinColumn(name = "accountId", nullable = false)
 	@JsonIgnore
 	private Account account;
 
@@ -82,9 +82,9 @@ public class House extends Auditable {
 
 	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private Set<Image> images = new HashSet<>();
-	
+
 //	private Set<String> image_url = new HashSet<>();
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -237,6 +237,5 @@ public class House extends Auditable {
 //		this.image_url = image_url;
 //	}
 //	
-	
 
 }

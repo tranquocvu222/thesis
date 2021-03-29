@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import ces.riccico.entity.Booking;
 
 public interface BookingService {
-	
+
 	ResponseEntity<?> acceptBooking(int bookingId);
 
 	ResponseEntity<?> cancelBooking(int bookingId);
@@ -15,13 +15,13 @@ public interface BookingService {
 	ResponseEntity<?> completeBooking̣̣̣(int bookingId);
 
 	ResponseEntity<?> findByAccountId(int accountId);
-	
+
 	ResponseEntity<?> findByHouseId(int houseId);
 
 	List<Booking> getAlḷ();
-	
+
 	ResponseEntity<?> getBookingDetail(int bookingId);
-	
+
 	ResponseEntity<?> payment(int bookingId);
 
 	ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop);

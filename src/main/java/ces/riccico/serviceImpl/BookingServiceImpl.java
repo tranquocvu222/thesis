@@ -51,7 +51,6 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> acceptBooking(int bookingId) {
-
 		MessageModel message = new MessageModel();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
@@ -74,7 +73,6 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> cancelBooking(int bookingId) {
-
 		MessageModel message = new MessageModel();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(bookingId).get();
@@ -105,7 +103,6 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> completeBooking̣̣̣(int bookingId) {
-
 		MessageModel message = new MessageModel();
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
@@ -121,7 +118,6 @@ public class BookingServiceImpl implements BookingService {
 
 		try {
 			Booking booking = bookingRepository.findById(bookingId).get();
-
 			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -173,14 +169,15 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
 		BookingModel bookingModel = new BookingModel();
+
 		for (Booking booking : listBookings) {
 			bookingModel.setBooking(booking);
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
 			listBookingModels.add(bookingModel);
 		}
-
 		return ResponseEntity.ok(listBookingModels);
 	}
 
@@ -189,6 +186,7 @@ public class BookingServiceImpl implements BookingService {
 		MessageModel message = new MessageModel();
 		List<Booking> listBookings = new ArrayList<Booking>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
 
 		if (!idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getAccountId())) {
 
@@ -210,13 +208,13 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		BookingModel bookingModel = new BookingModel();
+
 		for (Booking booking : listBookings) {
 			bookingModel.setBooking(booking);
 			bookingModel.setAccountId(booking.getAccount().getAccountId());
 			bookingModel.setAccountName(booking.getAccount().getUsername());
 			listBookingModels.add(bookingModel);
 		}
-
 		return ResponseEntity.ok(listBookingModels);
 	}
 
@@ -251,7 +249,6 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 
 	public ResponseEntity<?> payment(int bookingId) {
-
 		MessageModel message = new MessageModel();
 
 		try {
@@ -287,7 +284,6 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
-
 		MessageModel message = new MessageModel();
 
 		if (houseRepository.findById(houseId) == null) {

@@ -19,7 +19,7 @@ public interface HouseService {
 	ResponseEntity<?> findHouseByUsername(String username);
 
 	List<House> getAll();
-	
+
 	List<House> getAllApproved();
 
 	List<House> getAllDeleted();
