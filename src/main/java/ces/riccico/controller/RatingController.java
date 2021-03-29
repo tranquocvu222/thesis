@@ -28,8 +28,8 @@ public class RatingController {
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@GetMapping("/account/{accountId}")
 	@PreAuthorize("hasAnyAuthority('user')")
-	public ResponseEntity<?> findByRatingAccountId(@PathVariable int accountId) {
-		return ratingService.findByRatingAccountId(accountId);
+	public ResponseEntity<?> findRatingByAccountId(@PathVariable int accountId) {
+		return ratingService.findRatingByAccountId(accountId);
 	}
 
 	@GetMapping("/houses/{houseId}")

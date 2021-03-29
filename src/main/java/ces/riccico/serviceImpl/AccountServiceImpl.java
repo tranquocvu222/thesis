@@ -254,7 +254,7 @@ public class AccountServiceImpl implements AccountService {
 				listAccountModel.add(accountModel);
 			}
 
-			paginationModel.setListHouse(listAccountModel);
+			paginationModel.setListObject(listAccountModel);
 			paginationModel.setPageMax(pageMax);
 			return ResponseEntity.ok(paginationModel);
 

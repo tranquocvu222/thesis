@@ -81,7 +81,6 @@ public class BookingController {
 
 	// this is home booking feature
 	@PostMapping
-
 	public ResponseEntity<?> receiveBooking(@RequestParam int houseId, @RequestParam String dateStart,
 			@RequestParam String dateStop) {
 		return bookingService.receiveBooking(houseId, dateStart, dateStop);

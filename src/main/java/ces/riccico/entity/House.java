@@ -62,7 +62,7 @@ public class House extends Auditable {
 	@Column(name = "bedroom")
 	private byte bedroom;
 
-	@Column(name = "max_guest")
+	@Column(name = "maxGuest")
 	private byte maxGuest;
 
 	@Column(name = "isApproved")
