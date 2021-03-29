@@ -136,6 +136,10 @@ public class HouseServiceImpl implements HouseService {
 				listHouseModel.add(houseModel);
 			}
 
+			if (page >= pageMax) {
+				message.setMessage(CommonConstants.INVALID_PAGE);
+			}
+
 			paginationModel.setListObject(listHouseModel);
 			paginationModel.setPageMax(pageMax);
 			return ResponseEntity.ok(paginationModel);
@@ -337,8 +341,10 @@ public class HouseServiceImpl implements HouseService {
 	public ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner, boolean fridge,
 			boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
-		List<Object> listHouseModel = new ArrayList<Object>();
+
 		MessageModel message = new MessageModel();
+
+		List<Object> listHouseModel = new ArrayList<Object>();
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
 		byte amenities;
@@ -351,33 +357,33 @@ public class HouseServiceImpl implements HouseService {
 			byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
 			byte swim_pool_binary = (swimPool == true) ? Amenities.SWIM_POOL.getValue() : 0;
 			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
-			Pageable paging = PageRequest.of(page, size);
-			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice,
-					lowestGuest, highestGuest, paging).getContent();
 
-			if (listHouse.size() == 0) {
+			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice,
+					lowestGuest, highestGuest);
+
+			for (House house : listHouse) {
+				if ((byte) (amenities & Byte.parseByte(house.getAmenities(), 2)) == amenities) {
+					listHouseAmenities.add(house);
+				}
+			}
+
+			if (listHouseAmenities.size() == 0) {
 				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			} else {
-				int pageMax = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice,
-						highestPrice, lowestGuest, highestGuest, paging).getTotalPages();
-
-				for (House house : listHouse) {
-					if ((byte) (amenities & Byte.parseByte(house.getAmenities(), 2)) == amenities) {
-						listHouseAmenities.add(house);
-					}
-				}
-
-				for (House house : listHouseAmenities) {
-					HouseModel houseModel = mapper.map(house, HouseModel.class);
-					listHouseModel.add(houseModel);
-				}
-
-				paginationModel.setListObject(listHouseModel);
-				paginationModel.setPageMax(pageMax);
-				return ResponseEntity.ok(paginationModel);
-
 			}
+
+			for (House house : listHouseAmenities) {
+				HouseModel houseModel = mapper.map(house, HouseModel.class);
+				listHouseModel.add(houseModel);
+			}
+
+			int fromIndex = (page) * size;
+			final int numPages = (int) Math.ceil((double) listHouseModel.size() / (double) size);
+
+			paginationModel.setListObject(listHouseModel.subList(fromIndex, Math.min(fromIndex + size, listHouseModel.size())));
+			paginationModel.setPageMax(numPages);
+			return ResponseEntity.ok(paginationModel);
+
 		} catch (NullPointerException e) {
 			logger.error(e.getMessage());
 			message.setMessage(e.toString());
