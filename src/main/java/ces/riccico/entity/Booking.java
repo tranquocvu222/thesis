@@ -36,7 +36,7 @@ public class Booking extends Auditable {
 	private Date createEnd;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "account_id", nullable = false)
+	@JoinColumn(name = "accountId", nullable = false)
 	@JsonIgnore
 	private Account account;
 
