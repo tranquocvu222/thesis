@@ -2,9 +2,9 @@
 package ces.riccico.model;
 
 public class LoginModel {
-	
+
 	private String usernameOrEmail;
-	
+
 	private String password;
 
 	public String getUsernameOrEmail() {
@@ -22,5 +22,5 @@ public class LoginModel {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 }

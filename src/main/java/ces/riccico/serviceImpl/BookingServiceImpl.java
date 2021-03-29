@@ -54,7 +54,6 @@ public class BookingServiceImpl implements BookingService {
 
 	public ResponseEntity<?> acceptBooking(int bookingId) {
 		MessageModel message = new MessageModel();
-
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (!bookingRepository.findById(bookingId).isPresent()) {
@@ -77,9 +76,7 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 
 	public ResponseEntity<?> cancelBooking(int bookingId) {
-
 		MessageModel message = new MessageModel();
-
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(bookingId).get();
 
@@ -87,6 +84,7 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
+
 		if (!idCurrent.equals(booking.getHouse().getAccount().getAccountId())
 				|| !idCurrent.equals(booking.getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
@@ -107,9 +105,7 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 
 	public ResponseEntity<?> completeBooking̣̣̣(int bookingId) {
-
 		MessageModel message = new MessageModel();
-
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
 		String dateNow = sdf.format(currentDate);
@@ -124,7 +120,6 @@ public class BookingServiceImpl implements BookingService {
 
 		try {
 			Booking booking = bookingRepository.findById(bookingId).get();
-
 			if (!bookingRepository.findById(bookingId).isPresent()) {
 				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -175,14 +170,15 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
 		BookingModel bookingModel = new BookingModel();
+
 		for (Booking booking : listBookings) {
 			bookingModel.setBooking(booking);
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
 			listBookingModels.add(bookingModel);
 		}
-
 		return ResponseEntity.ok(listBookingModels);
 	}
 
@@ -192,6 +188,7 @@ public class BookingServiceImpl implements BookingService {
 		List<Booking> listBookings = new ArrayList<Booking>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
+
 		if (!idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
@@ -211,13 +208,13 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		BookingModel bookingModel = new BookingModel();
+
 		for (Booking booking : listBookings) {
 			bookingModel.setBooking(booking);
 			bookingModel.setAccountId(booking.getAccount().getAccountId());
 			bookingModel.setAccountName(booking.getAccount().getUsername());
 			listBookingModels.add(bookingModel);
 		}
-
 		return ResponseEntity.ok(listBookingModels);
 	}
 
@@ -252,7 +249,6 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 
 	public ResponseEntity<?> payment(int bookingId) {
-
 		MessageModel message = new MessageModel();
 
 		try {
@@ -289,13 +285,11 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 
 	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
-
 		MessageModel message = new MessageModel();
 
 		try {
 			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 			Account account = accountRepository.findById(idCurrent).get();
-
 			House house = houseRepository.findById(houseId).get();
 
 			if (idCurrent.equals(house.getAccount().getAccountId())) {
@@ -318,7 +312,6 @@ public class BookingServiceImpl implements BookingService {
 			}
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-
 			Date dateIn = null;
 			Date dateOut = null;
 			Date currentDate = new Date();

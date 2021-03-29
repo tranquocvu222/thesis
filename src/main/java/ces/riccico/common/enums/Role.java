@@ -1,16 +1,16 @@
 package ces.riccico.common.enums;
 
 public enum Role {
-	
+
 	ADMIN("admin"),
-	
+
 	USER("user");
-	
+
 	private String role;
-	 
+
 	Role(String role) {
-        this.role = role;
-    }
+		this.role = role;
+	}
 
 	public String getRole() {
 		return role;
@@ -19,5 +19,5 @@ public enum Role {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
+
 }

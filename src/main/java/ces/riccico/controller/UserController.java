@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import ces.riccico.entity.User;
 import ces.riccico.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -25,8 +24,6 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
-	
-	
 
 	@RequestMapping(value = "/editUser/{userId}", method = RequestMethod.PUT)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
@@ -36,7 +33,6 @@ public class UserController {
 
 	}
 
-	
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
@@ -44,7 +40,6 @@ public class UserController {
 		return userService.findAll();
 	}
 
-	
 	@RequestMapping(value = "/userDetail", method = RequestMethod.GET)
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin','user')")

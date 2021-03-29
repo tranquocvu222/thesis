@@ -8,11 +8,11 @@ public class BookingModel {
 	private int houseId;
 
 	private String houseName;
-	
+
 	private int accountId;
-	
+
 	private String accountName;
-	
+
 	public Booking getBooking() {
 		return booking;
 	}
@@ -52,7 +52,5 @@ public class BookingModel {
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
 	}
-	
-	
 
 }

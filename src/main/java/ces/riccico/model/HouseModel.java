@@ -1,6 +1,5 @@
 package ces.riccico.model;
 
-
 public class HouseModel {
 
 	private Integer id;

@@ -25,7 +25,7 @@ import ces.riccico.repository.TokenRepository;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-	
+
 	public static final String AUTHORIZATION = "Authorization";
 
 	public static final String START_TOKEN = "Token";
@@ -46,25 +46,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			final String authorizationHeader = request.getHeader(AUTHORIZATION);
 			AccountDetail account = null;
 			Token token = null;
-			
+
 			// validate the header and check the prefix
 			if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(START_TOKEN)) {
 				String jwt = authorizationHeader.substring(6);
 				account = jwtUtil.getUserFromToken(jwt);
 				token = verificationTokenService.findByToken(jwt);
 			}
-			
+
 			if (null != account && null != token && token.getTokenExpDate().after(new Date())) {
 				Set<GrantedAuthority> authorities = new HashSet<>();
 				account.getAuthorities().forEach(p -> authorities.add(new SimpleGrantedAuthority((String) p)));
-				
+
 				// list of authorities, which has type of GrantedAuthority
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(account,
 						null, authorities);
-				
+
 				// setting the Authentication in the context
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				
+
 				// Authenticate the account
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}

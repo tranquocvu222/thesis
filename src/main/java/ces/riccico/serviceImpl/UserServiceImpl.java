@@ -39,14 +39,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 
 	public ResponseEntity<?> editUser(User model, Integer userId) {
-
-
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-
 		MessageModel message = new MessageModel();
-
 		User user = new User();
-		logger.error("=====" + user.toString());
 
 		try {
 			user = userRepository.findById(userId).get();
@@ -56,7 +51,6 @@ public class UserServiceImpl implements UserService {
 		}
 
 		try {
-
 			if (!userRepository.findByAccountId(idCurrent).get().getAccount().getRole().equals(Role.ADMIN.getRole())
 					&& !idCurrent.equals(userRepository.findById(userId).get().getAccount().getAccountId())) {
 				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
@@ -91,7 +85,6 @@ public class UserServiceImpl implements UserService {
 			if (model.getCountry().equals("")) {
 				message.setMessage(UserConstants.COUNTRY_NULL);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-
 			} else {
 				user.setFirstName(model.getFirstName());
 				user.setLastName(model.getLastName());
@@ -123,22 +116,16 @@ public class UserServiceImpl implements UserService {
 //	Find user by id_account was login
 	@Override
 	public ResponseEntity<?> findById() {
-
-		
 		MessageModel message = new MessageModel();
-		
+
 		try {
 			Integer accountId = securityAuditorAware.getCurrentAuditor().get();
 			User user = userRepository.findByAccountId(accountId).get();
-
 			message.setMessage(CommonConstants.SUCCESS);
-
 			return ResponseEntity.ok(user);
 
 		} catch (Exception e) {
-
 			message.setMessage(e.getLocalizedMessage());
-
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 	}

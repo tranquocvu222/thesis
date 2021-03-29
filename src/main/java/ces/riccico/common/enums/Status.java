@@ -5,7 +5,7 @@ public enum Status {
 	APPROVAL("approval"),
 
 	CANCELED("canceled"),
-	
+
 	COMPLETED("completed"),
 
 	PENDING_APPROVAL("pendingApproval"),
@@ -13,7 +13,6 @@ public enum Status {
 	PENDING_PAYMENT("pending payment"),
 
 	REFUNDED("refunded");
-
 
 	private String statusName;
 
