@@ -25,7 +25,7 @@ public class Image {
 	private String image;
 
 	@ManyToOne
-	@JoinColumn(name = "idHouse")
+	@JoinColumn(name = "houseId")
 	@JsonIgnore
 	private House house;
 

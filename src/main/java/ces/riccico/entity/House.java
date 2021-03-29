@@ -72,7 +72,7 @@ public class House extends Auditable {
 	private boolean isDeleted;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_account", nullable = false)
+	@JoinColumn(name = "accountId", nullable = false)
 	@JsonIgnore
 	private Account account;
 
