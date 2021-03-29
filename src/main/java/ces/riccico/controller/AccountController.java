@@ -36,7 +36,6 @@ public class AccountController {
 	UserService userService;
 
 	// this is the account authentication feature.
-
 	@PutMapping("/register/activeEmail/{codeInput}/{email}")
 	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String email) {
 		return accountService.activeAccount(codeInput, email);
@@ -83,7 +82,6 @@ public class AccountController {
 	}
 
 	// prevent users from using the system
-
 	@PutMapping("/banned/{accountId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")

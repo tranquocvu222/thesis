@@ -80,6 +80,7 @@ public class RatingServiceImpl implements RatingService {
 
 	}
 
+
 //	Find rating by id_house
 	@Override
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
@@ -108,6 +109,7 @@ public class RatingServiceImpl implements RatingService {
 
 		return ResponseEntity.ok(listRatingModel);
 	}
+
 
 	@Override
 	public ResponseEntity<?> getRatingDetail(int ratingId) {
@@ -168,6 +170,10 @@ public class RatingServiceImpl implements RatingService {
 	public ResponseEntity<?> updateRating(int ratingId, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
+		if (ratingRepository.findById(ratingId) == null || ratingRepository.findById(ratingId).isEmpty()) {
+			message.setMessage(RatingConstants.RATING_NOT_EXIST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
 
 		if (ratingRepository.findById(ratingId) == null) {
 			message.setMessage(RatingConstants.RATING_NOT_EXIST);

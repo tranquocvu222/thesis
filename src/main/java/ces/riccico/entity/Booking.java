@@ -19,7 +19,6 @@ import ces.riccico.model.Auditable;
 
 @Entity
 @Table(name = "booking")
-
 public class Booking extends Auditable {
 
 	@Id

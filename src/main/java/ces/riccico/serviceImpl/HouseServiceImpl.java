@@ -137,6 +137,7 @@ public class HouseServiceImpl implements HouseService {
 
 	}
 
+
 	@Override
 	public ResponseEntity<?> findByTitle(String title, int page, int size) {
 		Pageable paging = PageRequest.of(page, size);
@@ -365,7 +366,6 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-
 	public ResponseEntity<?> updateHouse(int houseId, HouseDetailModel houseDetail) {
 		
 		MessageModel message = new MessageModel();

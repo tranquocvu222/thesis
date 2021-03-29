@@ -24,5 +24,4 @@ public class PaginationModel {
 		this.listObject = listObject;
 	}
 
-
 }
