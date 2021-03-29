@@ -8,7 +8,7 @@ public class BookingModel {
 	private int houseId;
 
 	private String houseName;
-
+	
 	private int accountId;
 
 	private String accountName;

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "token")
+@Table(name = "tokens")
 public class Token {
 
 	@Id

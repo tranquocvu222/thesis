@@ -6,7 +6,7 @@ public class PaginationModel {
 
 	private int pageMax;
 
-	private List<Object> listHouse;
+	private List<Object> listObject;
 
 	public int getPageMax() {
 		return pageMax;
@@ -16,20 +16,14 @@ public class PaginationModel {
 		this.pageMax = pageMax;
 	}
 
-	public List<Object> getListHouse() {
-		return listHouse;
+	public List<Object> getListObject() {
+		return listObject;
 	}
 
-	public void setListHouse(List<Object> listHouse) {
-		this.listHouse = listHouse;
+	public void setListObject(List<Object> listObject) {
+		this.listObject = listObject;
 	}
 
-//	public List<HouseModel> getListHouse() {
-//		return listHouse;
-//	}
-//
-//	public void setListHouse(List<HouseModel> listHouse) {
-//		this.listHouse = listHouse;
-//	}
+	
 
 }
