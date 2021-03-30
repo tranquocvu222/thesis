@@ -285,7 +285,7 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
 		MessageModel message = new MessageModel();
 
-		if (houseRepository.findById(houseId) == null || houseRepository.findById(houseId).isEmpty()) {
+		if (houseRepository.findById(houseId) == null ) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
