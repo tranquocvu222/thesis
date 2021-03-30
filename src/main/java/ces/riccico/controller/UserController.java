@@ -1,16 +1,13 @@
-
 package ces.riccico.controller;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ces.riccico.entity.User;
@@ -24,23 +21,23 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
-
-	@RequestMapping(value = "/editUser/{userId}", method = RequestMethod.PUT)
+	
+	@PutMapping("/editUser/{userId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> editUser(@RequestBody User model, @PathVariable Integer userId) {
 		return userService.editUser(model, userId);
 
 	}
-
-	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	
+	@GetMapping("/users")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<User> findAll() {
+	public ResponseEntity<?> findAll() {
 		return userService.findAll();
 	}
-
-	@RequestMapping(value = "/userDetail", method = RequestMethod.GET)
+	
+	@GetMapping("/userDetail")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> userDetail() {

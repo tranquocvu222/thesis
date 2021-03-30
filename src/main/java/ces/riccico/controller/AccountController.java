@@ -1,19 +1,15 @@
-
-
 package ces.riccico.controller;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +34,7 @@ public class AccountController {
 	UserService userService;
 
 	// this is the account authentication feature.
-	@RequestMapping(value = "/register/activeEmail/{codeInput}/{email}", method = RequestMethod.PUT)
+	@PutMapping("/register/activeEmail/{codeInput}/{email}")
 	public ResponseEntity<?> activeAccount(@PathVariable int codeInput, @PathVariable String email) {
 		return accountService.activeAccount(codeInput, email);
 	}
@@ -52,15 +48,15 @@ public class AccountController {
 	}
 
 	// shows banned accounts list
-	@RequestMapping(value = "/accounts/isbanned", method = RequestMethod.GET)
+	@GetMapping("/accounts/isbanned")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<Account> findAllIsBanned() {
+	public ResponseEntity<?> findAllIsBanned() {
 		return accountService.findAllIsBanned();
 	}
 
 	// find house with pagination
-	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+	@GetMapping("/accounts")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
@@ -70,13 +66,13 @@ public class AccountController {
 
 	// this is a forgotten password feature, which helps you recover your password
 	// when you forget it
-	@RequestMapping(value = "/forgetPassword/{email}", method = RequestMethod.POST)
+	@PostMapping("/forgetPassword/{email}")
 	public ResponseEntity<?> forgetPassword(@PathVariable String email) {
 		return accountService.forgetPassword(email);
 	}
 
 	// prevent users from using the system
-	@RequestMapping(value = "/banned/{accountId}", method = RequestMethod.PUT)
+	@PutMapping("/banned/{accountId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> isBanneed(@PathVariable int accountId) {
@@ -100,13 +96,13 @@ public class AccountController {
 	// this is the registration feature,you can create an account to use system's
 	// feature
 	@ResponseBody
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody Account account, User user) {
 		return accountService.register(account, user);
 	}
 
 	// this is reset password feature
-	@RequestMapping(value = "/resetPassword/{email}/{password}", method = RequestMethod.PUT)
+	@PutMapping("/resetPassword/{email}/{password}")
 	public ResponseEntity<?> resetPassword(@PathVariable String email, @PathVariable String password) {
 		return accountService.resetPassword(email, password);
 	}

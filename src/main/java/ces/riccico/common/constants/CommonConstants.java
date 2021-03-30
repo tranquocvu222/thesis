@@ -7,6 +7,8 @@ public class CommonConstants {
 	public static final String FAIL = "fail";
 
 	public static final String LOGIN_REQUIRED = "you must login";
+	
+	public static final String LIST_EMPTY = "list is empty";
 
 	public static final String MESSAGE = "message";
 

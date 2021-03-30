@@ -1,7 +1,4 @@
-
 package ces.riccico.controller;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -65,13 +62,13 @@ public class HouseController {
 	@GetMapping("/getAll")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<House> getAll() {
+	public ResponseEntity<?> getAll() {
 		return houseService.getAll();
 	}
 
 	// shows approved houses list
 	@GetMapping("/isApproved")
-	public List<House> getAllApproved() {
+	public ResponseEntity<?> getAllApproved() {
 		return houseService.getAllApproved();
 	}
 
@@ -79,7 +76,7 @@ public class HouseController {
 	@GetMapping("/notApproved")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<House> getAllUnApproved() {
+	public ResponseEntity<?> getAllUnApproved() {
 		return houseService.getAllUnApproved();
 	}
 
@@ -93,7 +90,7 @@ public class HouseController {
 	@GetMapping("/isDeleted")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")
-	public List<House> getHouseDelete() {
+	public ResponseEntity<?> getHouseDelete() {
 		return houseService.getAllDeleted();
 	}
 

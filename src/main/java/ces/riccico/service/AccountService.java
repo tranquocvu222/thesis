@@ -1,7 +1,5 @@
 package ces.riccico.service;
 
-import java.util.List;
-import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 
 import ces.riccico.entity.Account;
@@ -17,11 +15,9 @@ public interface AccountService {
 
 	ResponseEntity<?> changePassword(String oldPassword, String newPassword);
 
-	List<Account> findAll();
+	ResponseEntity<?> findAll();
 
-	List<Account> findAllIsBanned();
-
-	Optional<Account> findById(int id);
+	ResponseEntity<?> findAllIsBanned();
 
 	ResponseEntity<?> forgetPassword(String email);
 

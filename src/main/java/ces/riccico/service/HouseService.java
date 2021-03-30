@@ -1,9 +1,6 @@
 package ces.riccico.service;
 
-import java.util.List;
 import org.springframework.http.ResponseEntity;
-
-import ces.riccico.entity.House;
 import ces.riccico.model.HouseDetailModel;
 
 public interface HouseService {
@@ -18,13 +15,13 @@ public interface HouseService {
 
 	ResponseEntity<?> findHouseByUsername(String username);
 
-	List<House> getAll();
+	ResponseEntity<?> getAll();
 
-	List<House> getAllApproved();
+	ResponseEntity<?> getAllApproved();
 
-	List<House> getAllDeleted();
+	ResponseEntity<?> getAllDeleted();
 
-	List<House> getAllUnApproved();
+	ResponseEntity<?> getAllUnApproved();
 
 	ResponseEntity<?> getHouseDetail(Integer houseId);
 

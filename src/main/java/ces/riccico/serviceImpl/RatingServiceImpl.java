@@ -32,10 +32,7 @@ import ces.riccico.service.RatingService;
 public class RatingServiceImpl implements RatingService {
 
 	private static Logger logger = LoggerFactory.getLogger(RatingServiceImpl.class);
-	
-	@Autowired
-	private AccountRepository accountRepository;
-	
+
 	@Autowired
 	private BookingRepository bookingRepository;
 
@@ -44,7 +41,7 @@ public class RatingServiceImpl implements RatingService {
 
 	@Autowired
 	private RatingRepository ratingRepository;
-	
+
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
 
@@ -56,75 +53,60 @@ public class RatingServiceImpl implements RatingService {
 	public ResponseEntity<?> findRatingByAccountId(int accountId) {
 		MessageModel message = new MessageModel();
 
-		try {
-			Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-			if (idCurrent != accountId) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-			}
-
-			List<Rating> listRating = new ArrayList<Rating>();
-			listRating = ratingRepository.findByBookingAccountId(idCurrent);
-			List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
-
-			if (listRating.size() == 0) {
-				message.setMessage(RatingConstants.NULL_RATING);
-				return ResponseEntity.ok(message);
-			}
-
-			for (Rating rating : listRating) {
-				RatingAccountModel ratingModel = new RatingAccountModel();
-				ratingModel.setRating(rating);
-				ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
-				ratingModel.setCreatedAt(rating.getCreatedAt());
-				listRatingModel.add(ratingModel);
-			}
-			return ResponseEntity.ok(listRatingModel);
-
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		if (idCurrent != accountId) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
+
+		List<Rating> listRating = ratingRepository.findByBookingAccountId(idCurrent);
+		List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
+
+		if (listRating.size() == 0) {
+			message.setMessage(RatingConstants.NULL_RATING);
+			return ResponseEntity.ok(message);
+		}
+
+		for (Rating rating : listRating) {
+			RatingAccountModel ratingModel = new RatingAccountModel();
+			ratingModel.setRating(rating);
+			ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
+			ratingModel.setCreatedAt(rating.getCreatedAt());
+			listRatingModel.add(ratingModel);
+		}
+
+		return ResponseEntity.ok(listRatingModel);
+
 	}
-	
+
 //	Find rating by id_house
 	@Override
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
 		MessageModel message = new MessageModel();
-		
+
 		if (houseRepository.findById(houseId) == null) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
-		
-		try {
-			List<Rating> listRating = new ArrayList<Rating>();
 
-			listRating = ratingRepository.findByBookingHouseId(houseId);
-			List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
+		List<Rating> listRating = ratingRepository.findByBookingHouseId(houseId);
+		List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
 
-			if (listRating.size() == 0) {
-				message.setMessage(RatingConstants.NULL_RATING);
-				return ResponseEntity.ok(message);
-			}
-
-			for (Rating rating : listRating) {
-				RatingHouseModel ratingModel = new RatingHouseModel();
-				ratingModel.setRating(rating);
-				ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
-				ratingModel.setCreatedAt(rating.getCreatedAt());
-				listRatingModel.add(ratingModel);
-			}
-
-			return ResponseEntity.ok(listRatingModel);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		if (listRating.size() == 0) {
+			message.setMessage(RatingConstants.NULL_RATING);
+			return ResponseEntity.ok(message);
 		}
+
+		for (Rating rating : listRating) {
+			RatingHouseModel ratingModel = new RatingHouseModel();
+			ratingModel.setRating(rating);
+			ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
+			ratingModel.setCreatedAt(rating.getCreatedAt());
+			listRatingModel.add(ratingModel);
+		}
+
+		return ResponseEntity.ok(listRatingModel);
 	}
 
 	@Override
@@ -155,37 +137,30 @@ public class RatingServiceImpl implements RatingService {
 		Booking booking = bookingRepository.findById(bookingId).get();
 		MessageModel message = new MessageModel();
 
-		try {
-			if (!idCurrent.equals(booking.getAccount().getAccountId())) {
-				message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-			}
+		if (!idCurrent.equals(booking.getAccount().getAccountId())) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
 
-			if (!bookingRepository.findById(bookingId).isPresent()) {
-				message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
+		if (!bookingRepository.findById(bookingId).isPresent()) {
+			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
 
-			if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
-				message.setMessage(BookingConstants.INVALID_STATUS);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			if (ratingRepository.findByBookingId(bookingId) != null) {
-				message.setMessage(RatingConstants.IS_RATED);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			Rating ratingNew = mapper.map(rating, Rating.class);
-			ratingNew.setBooking(booking);
-			ratingRepository.saveAndFlush(ratingNew);
-			return ResponseEntity.ok(ratingNew);
-
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
+		if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
+			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+
+		if (ratingRepository.findByBookingId(bookingId) != null) {
+			message.setMessage(RatingConstants.IS_RATED);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		Rating ratingNew = mapper.map(rating, Rating.class);
+		ratingNew.setBooking(booking);
+		ratingRepository.saveAndFlush(ratingNew);
+		return ResponseEntity.ok(ratingNew);
 
 	}
 
@@ -204,7 +179,6 @@ public class RatingServiceImpl implements RatingService {
 		}
 
 		Rating ratingUpdate = ratingRepository.findById(ratingId).get();
-		logger.error(ratingUpdate.toString());
 		ratingUpdate.setStar(rating.getStar());
 		ratingUpdate.setContent(rating.getContent());
 		ratingRepository.saveAndFlush(ratingUpdate);
