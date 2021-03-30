@@ -32,7 +32,10 @@ import ces.riccico.service.RatingService;
 public class RatingServiceImpl implements RatingService {
 
 	private static Logger logger = LoggerFactory.getLogger(RatingServiceImpl.class);
-
+	
+	@Autowired
+	private AccountRepository accountRepository;
+	
 	@Autowired
 	private BookingRepository bookingRepository;
 
@@ -41,7 +44,7 @@ public class RatingServiceImpl implements RatingService {
 
 	@Autowired
 	private RatingRepository ratingRepository;
-
+	
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
 
