@@ -171,9 +171,8 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		BookingModel bookingModel = new BookingModel();
-
 		for (Booking booking : listBookings) {
+			BookingModel bookingModel = new BookingModel();
 			bookingModel.setBooking(booking);
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
@@ -207,9 +206,8 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		BookingModel bookingModel = new BookingModel();
-
 		for (Booking booking : listBookings) {
+			BookingModel bookingModel = new BookingModel();
 			bookingModel.setBooking(booking);
 			bookingModel.setAccountId(booking.getAccount().getAccountId());
 			bookingModel.setAccountName(booking.getAccount().getUsername());

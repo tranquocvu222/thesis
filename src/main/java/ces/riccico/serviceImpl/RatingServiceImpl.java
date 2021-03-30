@@ -21,6 +21,7 @@ import ces.riccico.entity.Rating;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.RatingAccountModel;
 import ces.riccico.model.RatingHouseModel;
+import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.repository.RatingRepository;
@@ -31,7 +32,10 @@ import ces.riccico.service.RatingService;
 public class RatingServiceImpl implements RatingService {
 
 	private static Logger logger = LoggerFactory.getLogger(RatingServiceImpl.class);
-
+	
+	@Autowired
+	private AccountRepository accountRepository;
+	
 	@Autowired
 	private BookingRepository bookingRepository;
 
@@ -40,7 +44,7 @@ public class RatingServiceImpl implements RatingService {
 
 	@Autowired
 	private RatingRepository ratingRepository;
-
+	
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
 
@@ -69,8 +73,8 @@ public class RatingServiceImpl implements RatingService {
 				return ResponseEntity.ok(message);
 			}
 
-			RatingAccountModel ratingModel = new RatingAccountModel();
 			for (Rating rating : listRating) {
+				RatingAccountModel ratingModel = new RatingAccountModel();
 				ratingModel.setRating(rating);
 				ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
 				ratingModel.setCreatedAt(rating.getCreatedAt());
@@ -106,8 +110,8 @@ public class RatingServiceImpl implements RatingService {
 				return ResponseEntity.ok(message);
 			}
 
-			RatingHouseModel ratingModel = new RatingHouseModel();
 			for (Rating rating : listRating) {
+				RatingHouseModel ratingModel = new RatingHouseModel();
 				ratingModel.setRating(rating);
 				ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
 				ratingModel.setCreatedAt(rating.getCreatedAt());
