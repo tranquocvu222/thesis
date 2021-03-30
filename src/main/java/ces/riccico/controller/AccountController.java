@@ -49,13 +49,6 @@ public class AccountController {
 		return accountService.changePassword(oldPassword, newPassword);
 	}
 
-	// shows the list of accounts 
-	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	@PreAuthorize("hasAnyAuthority('admin')")
-	public ResponseEntity<?> findAll() {
-		return accountService.findAll();
-	}
-
 	// shows banned accounts list
 	@GetMapping("/accounts/isbanned")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
@@ -75,7 +68,6 @@ public class AccountController {
 
 	// this is a forgotten password feature, which helps you recover your password
 	// when you forget it
-
 	@PostMapping("/forgetPassword/{email}")
 	public ResponseEntity<?> forgetPassword(@PathVariable String email) {
 		return accountService.forgetPassword(email);

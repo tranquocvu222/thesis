@@ -28,7 +28,7 @@ public class UserController {
 	public ResponseEntity<?> editUser(@RequestBody User model, @PathVariable Integer userId) {
 		return userService.editUser(model, userId);
 	}
-
+	
 	@GetMapping("/users")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@PreAuthorize("hasAnyAuthority('admin')")

@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 		User user = new User();
 		user = userRepository.findById(userId).get();
 
-		if (!userRepository.findByIdAccount(idCurrent).get().getAccount().getRole().equals(Role.ADMIN.getRole())
+		if (!userRepository.findByAccountId(idCurrent).get().getAccount().getRole().equals(Role.ADMIN.getRole())
 				&& !idCurrent.equals(userRepository.findById(userId).get().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			
 			Integer accountId = securityAuditorAware.getCurrentAuditor().get();
-			User user = userRepository.findByIdAccount(accountId).get();
+			User user = userRepository.findByAccountId(accountId).get();
 			message.setMessage(CommonConstants.SUCCESS);
 			return ResponseEntity.ok(user);
 

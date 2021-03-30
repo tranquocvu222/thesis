@@ -79,6 +79,7 @@ public class HouseServiceImpl implements HouseService {
 		MessageModel message = new MessageModel();
 		Integer idCurrent;
 		House house = houseRepository.findById(houseId).get();
+
 		idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (!accountRepository.findById(idCurrent).get().getRole().equals(Role.ADMIN.getRole())
@@ -241,7 +242,6 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public ResponseEntity<?> getAllUnApproved() {
 		List<House> listNotApproved = new ArrayList<House>();
-
 		MessageModel message = new MessageModel();
 
 		for (House house : houseRepository.findAll()) {

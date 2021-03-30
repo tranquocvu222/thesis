@@ -246,6 +246,7 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
+		
 		MessageModel message = new MessageModel();
 
 		if (houseRepository.findById(houseId) == null) {

@@ -420,7 +420,6 @@ public class AccountServiceImpl implements AccountService {
 
 		if (accountRepository.findByUsername(account.getUsername()) != null) {
 			message.setMessage(UserConstants.USERNAME_EXISTS);
-
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 		SimpleMailMessage messageEmail = new SimpleMailMessage();
