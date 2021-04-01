@@ -29,7 +29,6 @@ public class HouseController {
 	// confirm post to home page from user
 	@PutMapping("/approve/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> approveHouse(@PathVariable int houseId) {
 		return houseService.approveHouse(houseId);
 	}
@@ -37,7 +36,6 @@ public class HouseController {
 	// delete house
 	@DeleteMapping("/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> deleteHouse(@PathVariable int houseId) {
 		return houseService.deleteHouse(houseId);
 	}
@@ -59,7 +57,6 @@ public class HouseController {
 	// this is the all-post feature
 	@GetMapping("/getAll")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> getAll() {
 		return houseService.getAll();
 	}
@@ -73,7 +70,6 @@ public class HouseController {
 	// shows unapproved home lists
 	@GetMapping("/notApproved")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> getAllUnApproved() {
 		return houseService.getAllUnApproved();
 	}
@@ -87,7 +83,6 @@ public class HouseController {
 	// show list house has been deleted
 	@GetMapping("/isDeleted")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> getHouseDelete() {
 		return houseService.getAllDeleted();
 	}
@@ -101,7 +96,6 @@ public class HouseController {
 	// post your house on the website
 	@PostMapping("/create")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> postNewHouse(@RequestBody HouseDetailModel houseDetail) {
 		return houseService.postNewHouse(houseDetail);
 	}
@@ -127,7 +121,6 @@ public class HouseController {
 	// this is the house update feature
 	@PutMapping("/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> updateHouse(@PathVariable int houseId, @RequestBody HouseDetailModel houseDetail) {
 		return houseService.updateHouse(houseId, houseDetail);
 	}

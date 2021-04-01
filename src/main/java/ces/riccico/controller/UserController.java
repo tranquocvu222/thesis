@@ -24,14 +24,12 @@ public class UserController {
 	
 	@PutMapping("/editUser/{userId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> editUser(@RequestBody User model, @PathVariable Integer userId) {
 		return userService.editUser(model, userId);
 	}
 	
 	@GetMapping("/users")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> findAll() {
 		return userService.findAll();
 	}
@@ -39,7 +37,6 @@ public class UserController {
 	
 	@GetMapping("/userDetail")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> userDetail() {
 		return userService.findById();
 	}

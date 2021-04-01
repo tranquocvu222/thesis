@@ -27,7 +27,6 @@ public class BookingController {
 	// this is the feature of accepting guests' booking
 	@PutMapping("/acceptBooking/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> acceptBooking(@PathVariable int bookingId){
 		return bookingService.acceptBooking(bookingId);
 	}
@@ -35,7 +34,6 @@ public class BookingController {
 	// this is the cancellation feature
 	@PutMapping("/cancelBooking/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> cancelBooking(@PathVariable int bookingId){
 		return bookingService.cancelBooking(bookingId);
 	}
@@ -43,28 +41,24 @@ public class BookingController {
 	// this is the feature to confirm the booking has been completed
 	@PutMapping("/completeBooking/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> completeBooking(@PathVariable int bookingId){
 		return bookingService.completeBooking̣̣̣(bookingId);
 	}
 
 	// get list booking of account
 	@GetMapping("/account/{accountId}")
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> getBookingByAccountId(@PathVariable int accountId) {
 		return bookingService.findByAccountId(accountId);
 	}
 
 	// get list booking of house
 	@GetMapping("/house/{houseId}")
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> getBookingByHouseId(@PathVariable int houseId) {
 		return bookingService.findByHouseId(houseId);
 	}
 
 	// get booking detail
 	@GetMapping("/{bookingId}")
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> getBookingDetail(@PathVariable int bookingId){
 		return bookingService.getBookingDetail(bookingId);
 	}
@@ -73,7 +67,6 @@ public class BookingController {
 	// this is the booking payment feature
 	@PutMapping("/payment/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> payment(@PathVariable int bookingId){
 		return bookingService.payment(bookingId);
 	}
