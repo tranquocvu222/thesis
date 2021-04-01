@@ -27,7 +27,6 @@ public class RatingController {
 
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	@GetMapping("/account/{accountId}")
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> findRatingByAccountId(@PathVariable int accountId) {
 		return ratingService.findRatingByAccountId(accountId);
 	}
@@ -38,20 +37,17 @@ public class RatingController {
 	}
 
 	@GetMapping("/detail/{ratingId}")
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> getRatingDetail(@PathVariable int ratingId) {
 		return ratingService.getRatingDetail(ratingId);
 	}
 
 	@PostMapping("/write/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> writeRating(@PathVariable int bookingId, @RequestBody Rating rating) {
 		return ratingService.writeRating(bookingId, rating);
 	}
 
 	@PutMapping("/{ratingId}")
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> updateRating(@PathVariable int ratingId, @RequestBody Rating rating) {
 		return ratingService.updateRating(ratingId, rating);
 	}
