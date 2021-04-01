@@ -1,7 +1,6 @@
 
 package ces.riccico.serviceImpl;
 
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +39,16 @@ public class UserServiceImpl implements UserService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
 		User user = new User();
-		user = userRepository.findById(userId).get();
-
-		if (!userRepository.findByAccountId(idCurrent).get().getAccount().getRole().equals(Role.ADMIN.getRole())
-				&& !idCurrent.equals(userRepository.findById(userId).get().getAccount().getAccountId())) {
+		
+		if(!userRepository.findById(userId).isPresent()) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+		
+		 user = userRepository.findById(userId).get();
+		
+		if (!userRepository.findByAccountId(idCurrent).getAccount().getRole().equals(Role.ADMIN.getRole())
+				&& !idCurrent.equals(user.getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
@@ -77,6 +82,7 @@ public class UserServiceImpl implements UserService {
 			message.setMessage(UserConstants.COUNTRY_NULL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+		
 		user.setFirstName(model.getFirstName());
 		user.setLastName(model.getLastName());
 		user.setBirthDay(model.getBirthDay());
@@ -104,7 +110,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			
 			Integer accountId = securityAuditorAware.getCurrentAuditor().get();
-			User user = userRepository.findByAccountId(accountId).get();
+			User user = userRepository.findByAccountId(accountId);
 			message.setMessage(CommonConstants.SUCCESS);
 			return ResponseEntity.ok(user);
 

@@ -3,7 +3,6 @@ package ces.riccico.serviceImpl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
@@ -81,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
 
 		if (account == null) {
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (codeInput != CONFIRM_CODE) {
@@ -231,19 +230,14 @@ public class AccountServiceImpl implements AccountService {
 		
 		MessageModel message = new MessageModel();
 		Account account = accountRepository.findByEmail(email);
+		
+		if (account == null) {
+			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
 
 		if (account.isActive() == false) {
 			message.setMessage(UserConstants.NOT_ACTIVATED);
-		}
-
-		if (email == null) {
-			message.setMessage(UserConstants.EMAIL_NULL);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		if (accountRepository.findByEmail(email) == null) {
-			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (!email.matches(Validation.EMAIL_PATTERN)) {
@@ -448,20 +442,16 @@ public class AccountServiceImpl implements AccountService {
 
 		MessageModel message = new MessageModel();
 		Account account = accountRepository.findByEmail(email);
+		
+		if (accountRepository.findByEmail(email) == null) {
+			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
 
 		if (account.isActive() == false) {
 			message.setMessage(UserConstants.NOT_ACTIVATED);
 		}
 
-		if (email == null) {
-			message.setMessage(UserConstants.EMAIL_NULL);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		if (accountRepository.findByEmail(email) == null) {
-			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
 
 		if (!email.matches(Validation.EMAIL_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);

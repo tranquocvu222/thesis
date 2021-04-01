@@ -45,7 +45,7 @@ public class AccountController {
 	}
 
 	// shows banned accounts list
-	@GetMapping("/accounts/isbanned")
+	@GetMapping("/accounts/isBanned")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> findAllIsBanned() {
 		return accountService.findAllIsBanned();
@@ -67,7 +67,7 @@ public class AccountController {
 	}
 
 	// prevent users from using the system
-	@PutMapping("/banned/{accountId}")
+	@PutMapping("/ban/{accountId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> isBanneed(@PathVariable int accountId) {
 		return accountService.banAccount(accountId);
