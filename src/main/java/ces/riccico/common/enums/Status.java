@@ -8,7 +8,7 @@ public enum Status {
 
 	COMPLETED("completed"),
 
-	PENDING_APPROVAL("pendingApproval"),
+	PAID("paid"),
 
 	PENDING_PAYMENT("pending payment"),
 

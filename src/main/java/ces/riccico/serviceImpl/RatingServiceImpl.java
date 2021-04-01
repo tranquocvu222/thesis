@@ -85,7 +85,7 @@ public class RatingServiceImpl implements RatingService {
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
 		MessageModel message = new MessageModel();
 
-		if (houseRepository.findById(houseId) == null) {
+		if (!houseRepository.findById(houseId).isPresent()) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
@@ -116,7 +116,7 @@ public class RatingServiceImpl implements RatingService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Rating rating = new Rating();
 
-		if (ratingRepository.findById(ratingId) == null) {
+		if (!ratingRepository.findById(ratingId).isPresent()) {
 			message.setMessage(RatingConstants.RATING_NOT_EXIST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
@@ -169,7 +169,7 @@ public class RatingServiceImpl implements RatingService {
 	public ResponseEntity<?> updateRating(int ratingId, Rating rating) {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
-		if (ratingRepository.findById(ratingId) == null) {
+		if (!ratingRepository.findById(ratingId).isPresent()) {
 			message.setMessage(RatingConstants.RATING_NOT_EXIST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}

@@ -53,7 +53,8 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> acceptBooking(int bookingId) {
 		MessageModel message = new MessageModel();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-
+		Booking booking = bookingRepository.findById(bookingId).get();
+		
 		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -63,8 +64,12 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
+		
+		if (!Status.PAID.getStatusName().equals(booking.getStatus())) {
+			message.setMessage(BookingConstants.INVALID_STATUS);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
 
-		Booking booking = bookingRepository.findById(bookingId).get();
 		booking.setStatus(Status.APPROVAL.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 		message.setMessage(CommonConstants.SUCCESS);
@@ -83,9 +88,14 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		if (!idCurrent.equals(booking.getHouse().getAccount().getAccountId())
-				|| !idCurrent.equals(booking.getAccount().getAccountId())) {
+				&& !idCurrent.equals(booking.getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+		
+		if (Status.COMPLETED.getStatusName().equals(booking.getStatus()) || Status.APPROVAL.getStatusName().equals(booking.getStatus())) {
+			message.setMessage(BookingConstants.INVALID_STATUS);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		booking.setStatus(Status.CANCELED.getStatusName());
@@ -237,7 +247,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		booking.setStatus(Status.PENDING_APPROVAL.getStatusName());
+		booking.setStatus(Status.PAID.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
@@ -290,7 +300,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		if (dateIn.compareTo(dateOut) > 0) {
+		if (dateIn.compareTo(dateOut) >= 0) {
 			message.setMessage(BookingConstants.INVALID_CHECKOUT);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
