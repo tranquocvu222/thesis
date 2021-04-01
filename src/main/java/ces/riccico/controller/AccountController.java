@@ -2,7 +2,6 @@ package ces.riccico.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,15 +41,13 @@ public class AccountController {
 	// this is change password feature, can change the password
 	@PutMapping("/changePassword")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
 		return accountService.changePassword(oldPassword, newPassword);
 	}
 
 	// shows banned accounts list
-	@GetMapping("/accounts/isbanned")
+	@GetMapping("/accounts/isBanned")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> findAllIsBanned() {
 		return accountService.findAllIsBanned();
 	}
@@ -58,7 +55,6 @@ public class AccountController {
 	// find house with pagination
 	@GetMapping("/accounts")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
 		return accountService.findByPageAndSize(page, size);
@@ -72,9 +68,8 @@ public class AccountController {
 	}
 
 	// prevent users from using the system
-	@PutMapping("/banned/{accountId}")
+	@PutMapping("/ban/{accountId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> isBanneed(@PathVariable int accountId) {
 		return accountService.banAccount(accountId);
 	}
@@ -88,13 +83,11 @@ public class AccountController {
 	// this is logout feature
 	@DeleteMapping("/log-out")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> logout() {
 		return accountService.logout();
 	}
 
-	// this is the registration feature,you can create an account to use system's
-	// feature
+	// this is the registration feature,you can create an account to use system's feature
 	@ResponseBody
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody Account account, User user) {

@@ -114,8 +114,6 @@ public class BookingServiceImpl implements BookingService {
 			currentDate = sdf.parse(dateNow);
 		} catch (ParseException e) {
 			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		Booking booking = bookingRepository.findById(bookingId).get();
@@ -287,8 +285,6 @@ public class BookingServiceImpl implements BookingService {
 			currentDate = dateFormat.parse(dateNow);
 		} catch (ParseException e) {
 			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (TimeUnit.MILLISECONDS.toDays(dateIn.getTime() - currentDate.getTime()) < 0) {

@@ -2,7 +2,6 @@ package ces.riccico.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ces.riccico.entity.House;
 import ces.riccico.model.HouseDetailModel;
 import ces.riccico.service.HouseService;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +29,6 @@ public class HouseController {
 	// confirm post to home page from user
 	@PutMapping("/approve/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> approveHouse(@PathVariable int houseId) {
 		return houseService.approveHouse(houseId);
 	}
@@ -39,7 +36,7 @@ public class HouseController {
 	// delete house
 	@DeleteMapping("/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user','admin')")
+//	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> deleteHouse(@PathVariable int houseId) {
 		return houseService.deleteHouse(houseId);
 	}
@@ -61,7 +58,6 @@ public class HouseController {
 	// this is the all-post feature
 	@GetMapping("/getAll")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> getAll() {
 		return houseService.getAll();
 	}
@@ -75,7 +71,6 @@ public class HouseController {
 	// shows unapproved home lists
 	@GetMapping("/notApproved")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> getAllUnApproved() {
 		return houseService.getAllUnApproved();
 	}
@@ -89,7 +84,6 @@ public class HouseController {
 	// show list house has been deleted
 	@GetMapping("/isDeleted")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> getHouseDelete() {
 		return houseService.getAllDeleted();
 	}
@@ -103,7 +97,6 @@ public class HouseController {
 	// post your house on the website
 	@PostMapping("/create")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> postNewHouse(@RequestBody HouseDetailModel houseDetail) {
 		return houseService.postNewHouse(houseDetail);
 	}
@@ -130,7 +123,6 @@ public class HouseController {
 	// this is the house update feature
 	@PutMapping("/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> updateHouse(@PathVariable int houseId, @RequestBody HouseDetailModel houseDetail) {
 		return houseService.updateHouse(houseId, houseDetail);
 

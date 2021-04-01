@@ -2,7 +2,6 @@ package ces.riccico.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,6 @@ public class UserController {
 	
 	@PutMapping("/editUser/{userId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user','admin')")
 	public ResponseEntity<?> editUser(@RequestBody User model, @PathVariable Integer userId) {
 		return userService.editUser(model, userId);
 
@@ -32,14 +30,12 @@ public class UserController {
 	
 	@GetMapping("/users")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin')")
 	public ResponseEntity<?> findAll() {
 		return userService.findAll();
 	}
 	
 	@GetMapping("/userDetail")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('admin','user')")
 	public ResponseEntity<?> userDetail() {
 		return userService.findById();
 	}

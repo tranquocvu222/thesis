@@ -27,7 +27,7 @@ public class BookingController {
 	// this is the feature of accepting guests' booking
 	@PutMapping("/acceptBooking/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@PreAuthorize("hasAnyAuthority('user')")
+//	@PreAuthorize("hasAnyAuthority('user')")
 	public ResponseEntity<?> acceptBooking(@PathVariable int bookingId) {
 		return bookingService.acceptBooking(bookingId);
 	}
@@ -66,7 +66,7 @@ public class BookingController {
 
 	// get booking detail
 	@GetMapping("/{bookingId}")
-	@PreAuthorize("hasAnyAuthority('user')")
+	@PreAuthorize("hasAnyAuthority('user', 'admin')")
 	public ResponseEntity<?> getBookingDetail(@PathVariable int bookingId) {
 		return bookingService.getBookingDetail(bookingId);
 	}
