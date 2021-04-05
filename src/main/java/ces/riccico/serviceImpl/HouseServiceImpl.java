@@ -1,9 +1,14 @@
 package ces.riccico.serviceImpl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -15,18 +20,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import ces.riccico.common.constants.BookingConstants;
 import ces.riccico.common.constants.CommonConstants;
 import ces.riccico.common.constants.HouseConstants;
 import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.enums.Amenities;
 import ces.riccico.common.enums.Role;
 import ces.riccico.entity.Account;
+import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
+import ces.riccico.model.DateModel;
 import ces.riccico.model.HouseDetailModel;
 import ces.riccico.model.HouseModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
 import ces.riccico.repository.AccountRepository;
+import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
 import ces.riccico.service.HouseService;
 import ces.riccico.security.SecurityAuditorAware;
@@ -45,6 +54,9 @@ public class HouseServiceImpl implements HouseService {
 
 	@Autowired
 	private AccountRepository accountRepository;
+	
+	@Autowired
+	private BookingRepository bookingRepository;
 
 	@Autowired
 	private HouseRepository houseRepository;
@@ -260,15 +272,37 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 
 	public ResponseEntity<?> getHouseDetail(Integer houseId) {
-		House house = houseRepository.findById(houseId).get();
 		MessageModel message = new MessageModel();
 		HouseDetailModel houseDetail;
 
-		if (house == null) {
+		if (!houseRepository.findById(houseId).isPresent()) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
-
+		
+		House house = houseRepository.findById(houseId).get();
+		
+		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
+		List<DateModel> listDateModel = new ArrayList<DateModel>();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+		Date currentDate = new Date();
+		String dateNow = dateFormat.format(currentDate);
+		
+		try {
+			currentDate = dateFormat.parse(dateNow);
+		} catch (ParseException e) {
+			logger.error(e.getMessage());
+		}
+	
+		for(Booking booking : listBookings) {
+			if (TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - currentDate.getTime()) > 0) {
+				DateModel dateModel = new DateModel();
+				dateModel.setDateCheckIn(booking.getDateCheckIn().toString());
+				dateModel.setDateCheckOut(booking.getDateCheckOut().toString());
+				listDateModel.add(dateModel);
+			}
+		}
+		
 		houseDetail = mapper.map(house, HouseDetailModel.class);
 		int amenities = Integer.parseInt(house.getAmenities(), 2);
 		boolean wifi = ((amenities & Amenities.WIFI.getValue()) != 0) ? true : false;
@@ -281,7 +315,8 @@ public class HouseServiceImpl implements HouseService {
 		houseDetail.setAirConditioner(airConditioner);
 		houseDetail.setFridge(fridge);
 		houseDetail.setSwimPool(swimPool);
-
+		houseDetail.setDateBooked(listDateModel);
+		
 		return ResponseEntity.ok(houseDetail);
 	}
 

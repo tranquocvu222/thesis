@@ -49,36 +49,36 @@ public class RatingServiceImpl implements RatingService {
 	private ModelMapper mapper;
 
 //	Find rating by account id
-	@Override
-	public ResponseEntity<?> findRatingByAccountId(int accountId) {
-		MessageModel message = new MessageModel();
-		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-
-		if (idCurrent != accountId) {
-			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-		}
-
-		List<Rating> listRating = ratingRepository.findByBookingAccountId(idCurrent);
-		List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
-
-		if (listRating.size() == 0) {
-			message.setMessage(RatingConstants.NULL_RATING);
-			return ResponseEntity.ok(message);
-		}
-
-		for (Rating rating : listRating) {
-			RatingAccountModel ratingModel = new RatingAccountModel();
-			ratingModel.setRating(rating);
-			ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
-			ratingModel.setCreatedAt(rating.getCreatedAt());
-			listRatingModel.add(ratingModel);
-
-		}
-
-		return ResponseEntity.ok(listRatingModel);
-
-	}
+//	@Override
+//	public ResponseEntity<?> findRatingByAccountId(int accountId) {
+//		MessageModel message = new MessageModel();
+//		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+//
+//		if (idCurrent != accountId) {
+//			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+//		}
+//
+//		List<Rating> listRating = ratingRepository.findByBookingAccountId(idCurrent);
+//		List<RatingAccountModel> listRatingModel = new ArrayList<RatingAccountModel>();
+//
+//		if (listRating.size() == 0) {
+//			message.setMessage(RatingConstants.NULL_RATING);
+//			return ResponseEntity.ok(message);
+//		}
+//
+//		for (Rating rating : listRating) {
+//			RatingAccountModel ratingModel = new RatingAccountModel();
+//			ratingModel.setRating(rating);
+//			ratingModel.setHouseName(rating.getBooking().getHouse().getTitle());
+//			ratingModel.setCreatedAt(rating.getCreatedAt());
+//			listRatingModel.add(ratingModel);
+//
+//		}
+//
+//		return ResponseEntity.ok(listRatingModel);
+//
+//	}
 
 //	Find rating by id_house
 	@Override

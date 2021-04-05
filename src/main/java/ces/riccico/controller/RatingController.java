@@ -24,11 +24,11 @@ public class RatingController {
 	@Autowired
 	private RatingService ratingService;
 
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	@GetMapping("/account/{accountId}")
-	public ResponseEntity<?> findRatingByAccountId(@PathVariable int accountId) {
-		return ratingService.findRatingByAccountId(accountId);
-	}
+//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	@GetMapping("/account/{accountId}")
+//	public ResponseEntity<?> findRatingByAccountId(@PathVariable int accountId) {
+//		return ratingService.findRatingByAccountId(accountId);
+//	}
 
 	@GetMapping("/houses/{houseId}")
 	public ResponseEntity<?> findRatingByHouseId(@PathVariable int houseId) {

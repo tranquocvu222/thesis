@@ -8,7 +8,7 @@ public class RatingAccountModel {
 
 	private Rating rating;
 
-	private String houseName;
+//	private String houseName;
 
 	private Date createdAt;
 
@@ -20,13 +20,13 @@ public class RatingAccountModel {
 		this.rating = rating;
 	}
 
-	public String getHouseName() {
-		return houseName;
-	}
-
-	public void setHouseName(String houseName) {
-		this.houseName = houseName;
-	}
+//	public String getHouseName() {
+//		return houseName;
+//	}
+//
+//	public void setHouseName(String houseName) {
+//		this.houseName = houseName;
+//	}
 
 	public Date getCreatedAt() {
 		return createdAt;

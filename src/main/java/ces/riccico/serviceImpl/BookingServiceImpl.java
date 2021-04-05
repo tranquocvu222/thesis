@@ -24,12 +24,15 @@ import ces.riccico.common.enums.Status;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
+import ces.riccico.entity.Rating;
 import ces.riccico.model.BookingDetailModel;
 import ces.riccico.model.DateModel;
 import ces.riccico.model.MessageModel;
+import ces.riccico.model.RatingAccountModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
+import ces.riccico.repository.RatingRepository;
 import ces.riccico.security.SecurityAuditorAware;
 import ces.riccico.service.BookingService;
 
@@ -46,7 +49,10 @@ public class BookingServiceImpl implements BookingService {
 
 	@Autowired
 	private HouseRepository houseRepository;
-
+	
+	@Autowired
+	private RatingRepository ratingRepository;
+	
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
 
@@ -172,6 +178,10 @@ public class BookingServiceImpl implements BookingService {
 			bookingModel.setBooking(booking);
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
+			Rating rating = ratingRepository.findByBookingId(booking.getId());
+			if(rating != null) {
+				bookingModel.setRating(rating);
+			}
 			listBookingModels.add(bookingModel);
 		}
 		return ResponseEntity.ok(listBookingModels);
@@ -225,9 +235,55 @@ public class BookingServiceImpl implements BookingService {
 
 		return ResponseEntity.ok(booking);
 	}
+	
+	@Override
+	public ResponseEntity<?> getBookingDate(int houseId) {
+		// TODO Auto-generated method stub
+		MessageModel message = new MessageModel();
+
+		if (!houseRepository.findById(houseId).isPresent()) {
+			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+		
+		House house = houseRepository.findById(houseId).get();
+		
+		if (house.isApproved() == false || house.isDeleted() == true) {
+			message.setMessage(HouseConstants.HOUSE_DELETED);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+		
+		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
+		
+		if(listBookings.size() ==0) {
+			message.setMessage(BookingConstants.NULL_BOOKING);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+		
+		List<DateModel> listDateModel = new ArrayList<DateModel>();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+		Date currentDate = new Date();
+		String dateNow = dateFormat.format(currentDate);
+		
+		try {
+			currentDate = dateFormat.parse(dateNow);
+		} catch (ParseException e) {
+			logger.error(e.getMessage());
+		}
+	
+		for(Booking booking : listBookings) {
+			if (TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - currentDate.getTime()) > 0) {
+				DateModel dateModel = new DateModel();
+				dateModel.setDateCheckIn(booking.getDateCheckIn().toString());
+				dateModel.setDateCheckOut(booking.getDateCheckOut().toString());
+				listDateModel.add(dateModel);
+			}
+		}
+		
+		return ResponseEntity.ok(listDateModel);
+	}
 
 	@Override
-
 	public ResponseEntity<?> payment(int bookingId) {
 		MessageModel message = new MessageModel();
 		Booking booking = bookingRepository.findById(bookingId).get();
@@ -292,8 +348,6 @@ public class BookingServiceImpl implements BookingService {
 			currentDate = dateFormat.parse(dateNow);
 		} catch (ParseException e) {
 			logger.error(e.getMessage());
-			message.setMessage(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (TimeUnit.MILLISECONDS.toDays(dateCheckIn.getTime() - currentDate.getTime()) < 0) {
@@ -312,7 +366,7 @@ public class BookingServiceImpl implements BookingService {
 							&& dateCheckOut.compareTo(booking.getDateCheckOut()) <= 0)
 					&& !Status.CANCELED.getStatusName().equals(booking.getStatus())) {
 				message.setMessage(BookingConstants.HOUSE_BOOKED);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 		}
 

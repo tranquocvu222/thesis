@@ -7,7 +7,7 @@ import ces.riccico.entity.Rating;
 public interface RatingService {
 
 
-	ResponseEntity<?> findRatingByAccountId(int accountId);
+//	ResponseEntity<?> findRatingByAccountId(int accountId);
 
 	ResponseEntity<?> findRatingByHouseId(int houseId);
 	

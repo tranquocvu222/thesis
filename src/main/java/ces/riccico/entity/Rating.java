@@ -32,6 +32,7 @@ public class Rating extends Auditable {
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "bookingId", nullable = false)
+	@JsonIgnore
 	private Booking booking;
 
 	public Integer getId() {

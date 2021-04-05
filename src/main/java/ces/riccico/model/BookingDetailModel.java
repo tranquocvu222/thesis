@@ -1,6 +1,7 @@
 package ces.riccico.model;
 
 import ces.riccico.entity.Booking;
+import ces.riccico.entity.Rating;
 
 public class BookingDetailModel {
 	private Booking booking;
@@ -12,6 +13,8 @@ public class BookingDetailModel {
 	private int accountId;
 
 	private String accountName;
+	
+	private Rating rating;
 
 	public Booking getBooking() {
 		return booking;
@@ -51,6 +54,14 @@ public class BookingDetailModel {
 
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
+	}
+
+	public Rating getRating() {
+		return rating;
+	}
+
+	public void setRating(Rating rating) {
+		this.rating = rating;
 	}
 
 }

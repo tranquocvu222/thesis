@@ -19,6 +19,8 @@ public interface BookingService {
 	ResponseEntity<?> getAlḷ();
 
 	ResponseEntity<?> getBookingDetail(int bookingId);
+	
+	ResponseEntity<?> getBookingDate(int houseId);
 
 	ResponseEntity<?> payment(int bookingId);
 
