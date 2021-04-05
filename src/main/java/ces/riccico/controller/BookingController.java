@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ces.riccico.model.DateModel;
 import ces.riccico.service.BookingService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -71,9 +73,9 @@ public class BookingController {
 	}
 
 	// this is home booking feature
-	@PostMapping
-	public ResponseEntity<?> receiveBooking (@RequestParam int houseId, @RequestParam String dateStart, @RequestParam String dateStop){
-		return bookingService.receiveBooking(houseId, dateStart, dateStop);
+	@PostMapping("/{houseId}")
+	public ResponseEntity<?> receiveBooking (@PathVariable int houseId, @RequestBody DateModel dateModel){
+		return bookingService.receiveBooking(houseId, dateModel);
 	}
 
 }

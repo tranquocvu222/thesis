@@ -2,7 +2,7 @@ package ces.riccico.model;
 
 import ces.riccico.entity.Booking;
 
-public class BookingModel {
+public class BookingDetailModel {
 	private Booking booking;
 
 	private int houseId;

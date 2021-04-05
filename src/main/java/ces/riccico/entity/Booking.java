@@ -30,10 +30,10 @@ public class Booking extends Auditable {
 	private double bill;
 
 	@Column(name = "createCheckIn")
-	private Date createCheckIn;
+	private Date dateCheckIn;
 
 	@Column(name = "createEnd")
-	private Date createEnd;
+	private Date dateCheckOut;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "accountId", nullable = false)
@@ -63,20 +63,20 @@ public class Booking extends Auditable {
 		this.bill = bill;
 	}
 
-	public Date getCreateCheckIn() {
-		return createCheckIn;
+	public Date getDateCheckIn() {
+		return dateCheckIn;
 	}
 
-	public void setCreateCheckIn(Date createCheckIn) {
-		this.createCheckIn = createCheckIn;
+	public void setDateCheckIn(Date dateCheckIn) {
+		this.dateCheckIn = dateCheckIn;
 	}
 
-	public Date getCreateEnd() {
-		return createEnd;
+	public Date getDateCheckOut() {
+		return dateCheckOut;
 	}
 
-	public void setCreateEnd(Date createEnd) {
-		this.createEnd = createEnd;
+	public void setDateCheckOut(Date dateCheckOut) {
+		this.dateCheckOut = dateCheckOut;
 	}
 
 	public Account getAccount() {

@@ -24,7 +24,8 @@ import ces.riccico.common.enums.Status;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
-import ces.riccico.model.BookingModel;
+import ces.riccico.model.BookingDetailModel;
+import ces.riccico.model.DateModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
@@ -137,7 +138,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		if (currentDate.compareTo(booking.getCreateEnd()) < 0) {
+		if (currentDate.compareTo(booking.getDateCheckOut()) < 0) {
 			message.setMessage(BookingConstants.INVALID_DATE_COMPLETE);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -153,7 +154,7 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> findByAccountId(int accountId) {
 		MessageModel message = new MessageModel();
 		List<Booking> listBookings =  bookingRepository.findByAccountId(accountId);
-		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
+		List<BookingDetailModel> listBookingModels = new ArrayList<BookingDetailModel>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (idCurrent != accountId) {
@@ -167,7 +168,7 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		for (Booking booking : listBookings) {
-			BookingModel bookingModel = new BookingModel();
+			BookingDetailModel bookingModel = new BookingDetailModel();
 			bookingModel.setBooking(booking);
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
@@ -181,7 +182,7 @@ public class BookingServiceImpl implements BookingService {
 		MessageModel message = new MessageModel();
 		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		List<BookingModel> listBookingModels = new ArrayList<BookingModel>();
+		List<BookingDetailModel> listBookingModels = new ArrayList<BookingDetailModel>();
 
 		if (!idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getAccountId())) {
 
@@ -195,7 +196,7 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		for (Booking booking : listBookings) {
-			BookingModel bookingModel = new BookingModel();
+			BookingDetailModel bookingModel = new BookingDetailModel();
 			bookingModel.setBooking(booking);
 			bookingModel.setAccountId(booking.getAccount().getAccountId());
 			bookingModel.setAccountName(booking.getAccount().getUsername());
@@ -255,7 +256,7 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public ResponseEntity<?> receiveBooking(int houseId, String dateStart, String dateStop) {
+	public ResponseEntity<?> receiveBooking(int houseId, DateModel dateModel) {
 		
 		MessageModel message = new MessageModel();
 
@@ -280,14 +281,14 @@ public class BookingServiceImpl implements BookingService {
 
 		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-		Date dateIn = null;
-		Date dateOut = null;
+		Date dateCheckIn = null;
+		Date dateCheckOut = null;
 		Date currentDate = new Date();
 		String dateNow = dateFormat.format(currentDate);
 
 		try {
-			dateIn = dateFormat.parse(dateStart);
-			dateOut = dateFormat.parse(dateStop);
+			dateCheckIn = dateFormat.parse(dateModel.getDateCheckIn());
+			dateCheckOut = dateFormat.parse(dateModel.getDateCheckOut());
 			currentDate = dateFormat.parse(dateNow);
 		} catch (ParseException e) {
 			logger.error(e.getMessage());
@@ -295,35 +296,35 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		if (TimeUnit.MILLISECONDS.toDays(dateIn.getTime() - currentDate.getTime()) < 0) {
+		if (TimeUnit.MILLISECONDS.toDays(dateCheckIn.getTime() - currentDate.getTime()) < 0) {
 			message.setMessage(BookingConstants.INVALID_CHECKIN);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		if (dateIn.compareTo(dateOut) >= 0) {
+		if (dateCheckIn.compareTo(dateCheckOut) >= 0) {
 			message.setMessage(BookingConstants.INVALID_CHECKOUT);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		for (Booking booking : listBookings) {
-			if ((dateIn.compareTo(booking.getCreateCheckIn()) >= 0 && dateIn.compareTo(booking.getCreateEnd()) < 0
-					|| dateOut.compareTo(booking.getCreateCheckIn()) > 0
-							&& dateOut.compareTo(booking.getCreateEnd()) <= 0)
+			if ((dateCheckIn.compareTo(booking.getDateCheckIn()) >= 0 && dateCheckIn.compareTo(booking.getDateCheckOut()) < 0
+					|| dateCheckOut.compareTo(booking.getDateCheckIn()) > 0
+							&& dateCheckOut.compareTo(booking.getDateCheckOut()) <= 0)
 					&& !Status.CANCELED.getStatusName().equals(booking.getStatus())) {
 				message.setMessage(BookingConstants.HOUSE_BOOKED);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 		}
 
-		long days = TimeUnit.MILLISECONDS.toDays(dateOut.getTime() - dateIn.getTime());
+		long days = TimeUnit.MILLISECONDS.toDays(dateCheckOut.getTime() - dateCheckIn.getTime());
 		double price = house.getPrice();
 		double bill = price * days;
 		Booking booking = new Booking();
 		booking.setAccount(account);
 		booking.setHouse(house);
 		booking.setStatus(Status.PENDING_PAYMENT.getStatusName());
-		booking.setCreateCheckIn(dateIn);
-		booking.setCreateEnd(dateOut);
+		booking.setDateCheckIn(dateCheckIn);
+		booking.setDateCheckOut(dateCheckOut);
 		booking.setBill(bill);
 		houseRepository.saveAndFlush(house);
 		bookingRepository.saveAndFlush(booking);
