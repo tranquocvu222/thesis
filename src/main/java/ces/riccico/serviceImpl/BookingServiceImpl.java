@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ public class BookingServiceImpl implements BookingService {
 
 	@Autowired
 	private BookingRepository bookingRepository;
+	
+	@Autowired
+	private ModelMapper mapper;
 
 	@Autowired
 	private HouseRepository houseRepository;
@@ -174,8 +178,9 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		for (Booking booking : listBookings) {
-			BookingDetailModel bookingModel = new BookingDetailModel();
-			bookingModel.setBooking(booking);
+			BookingDetailModel bookingModel = mapper.map(booking, BookingDetailModel.class);
+			bookingModel.setCustomerId(booking.getAccount().getAccountId());
+			bookingModel.setCustomerName(booking.getAccount().getUsername());
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
 			Rating rating = ratingRepository.findByBookingId(booking.getId());
@@ -206,10 +211,11 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		for (Booking booking : listBookings) {
-			BookingDetailModel bookingModel = new BookingDetailModel();
-			bookingModel.setBooking(booking);
-			bookingModel.setAccountId(booking.getAccount().getAccountId());
-			bookingModel.setAccountName(booking.getAccount().getUsername());
+			BookingDetailModel bookingModel = mapper.map(booking, BookingDetailModel.class);
+			bookingModel.setCustomerId(booking.getAccount().getAccountId());
+			bookingModel.setCustomerName(booking.getAccount().getUsername());
+			bookingModel.setHouseName(booking.getHouse().getTitle());
+			bookingModel.setHouseId(booking.getHouse().getId());
 			listBookingModels.add(bookingModel);
 		}
 		return ResponseEntity.ok(listBookingModels);
