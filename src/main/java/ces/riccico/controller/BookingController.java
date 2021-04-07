@@ -26,21 +26,21 @@ public class BookingController {
 	private BookingService bookingService;
 
 	// this is the feature of accepting guests' booking
-	@PutMapping("/acceptBooking/{bookingId}")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> acceptBooking(@PathVariable int bookingId) {
-		return bookingService.acceptBooking(bookingId);
-	}
+//	@GetMapping("/acceptBooking/{bookingId}")
+//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	public ResponseEntity<?> acceptBooking(@PathVariable int bookingId) {
+//		return bookingService.acceptBooking(bookingId);
+//	}
 
 	// this is the cancellation feature
-	@PutMapping("/cancelBooking/{bookingId}")
+	@GetMapping("/cancelBooking/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> cancelBooking(@PathVariable int bookingId) {
 		return bookingService.cancelBooking(bookingId);
 	}
 
 	// this is the feature to confirm the booking has been completed
-	@PutMapping("/completeBooking/{bookingId}")
+	@GetMapping("/completeBooking/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> completeBooking(@PathVariable int bookingId) {
 		return bookingService.completeBooking̣̣̣(bookingId);

@@ -6,7 +6,7 @@ import ces.riccico.model.DateModel;
 
 public interface BookingService {
 
-	ResponseEntity<?> acceptBooking(int bookingId);
+//	ResponseEntity<?> acceptBooking(int bookingId);
 
 	ResponseEntity<?> cancelBooking(int bookingId);
 

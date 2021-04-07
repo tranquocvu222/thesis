@@ -60,32 +60,32 @@ public class BookingServiceImpl implements BookingService {
 	@Autowired
 	private SecurityAuditorAware securityAuditorAware;
 
-	@Override
-	public ResponseEntity<?> acceptBooking(int bookingId) {
-		MessageModel message = new MessageModel();
-		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		Booking booking = bookingRepository.findById(bookingId).get();
-		
-		if (!bookingRepository.findById(bookingId).isPresent()) {
-			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
-		if (!idCurrent.equals(bookingRepository.findById(bookingId).get().getHouse().getAccount().getAccountId())) {
-			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-		}
-		
-		if (!Status.PAID.getStatusName().equals(booking.getStatus())) {
-			message.setMessage(BookingConstants.INVALID_STATUS);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		booking.setStatus(Status.APPROVAL.getStatusName());
-		bookingRepository.saveAndFlush(booking);
-		message.setMessage(CommonConstants.SUCCESS);
-		return ResponseEntity.ok(message);
-	}
+//	@Override
+//	public ResponseEntity<?> acceptBooking(int bookingId) {
+//		MessageModel message = new MessageModel();
+//		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+//		Booking booking = bookingRepository.findById(bookingId).get();
+//		
+//		if (!bookingRepository.findById(bookingId).isPresent()) {
+//			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//		}
+//
+//		if (!idCurrent.equals(bookingRepository.findById(bookingId).get().getHouse().getAccount().getAccountId())) {
+//			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+//		}
+//		
+//		if (!Status.PAID.getStatusName().equals(booking.getStatus())) {
+//			message.setMessage(BookingConstants.INVALID_STATUS);
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+//		}
+//
+//		booking.setStatus(Status.APPROVAL.getStatusName());
+//		bookingRepository.saveAndFlush(booking);
+//		message.setMessage(CommonConstants.SUCCESS);
+//		return ResponseEntity.ok(message);
+//	}
 
 	@Override
 	public ResponseEntity<?> cancelBooking(int bookingId) {
@@ -128,7 +128,8 @@ public class BookingServiceImpl implements BookingService {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
 		String dateNow = sdf.format(currentDate);
-
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		
 		try {
 			currentDate = sdf.parse(dateNow);
 		} catch (ParseException e) {
@@ -138,12 +139,19 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		Booking booking = bookingRepository.findById(bookingId).get();
+		
+		if (!idCurrent.equals(booking.getHouse().getAccount().getAccountId())
+				&& !idCurrent.equals(booking.getAccount().getAccountId())) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+		}
+		
 		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (!Status.APPROVAL.getStatusName().equals(booking.getStatus())) {
+		if (!Status.PAID.getStatusName().equals(booking.getStatus())) {
 			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
