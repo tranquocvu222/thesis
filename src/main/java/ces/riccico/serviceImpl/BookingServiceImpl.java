@@ -26,6 +26,7 @@ import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
 import ces.riccico.entity.Rating;
+import ces.riccico.model.BookingByStatus;
 import ces.riccico.model.BookingDetailModel;
 import ces.riccico.model.DateModel;
 import ces.riccico.model.MessageModel;
@@ -172,7 +173,6 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> findByAccountId(int accountId) {
 		MessageModel message = new MessageModel();
 		List<Booking> listBookings = bookingRepository.findByAccountId(accountId);
-		List<BookingDetailModel> listBookingModels = new ArrayList<BookingDetailModel>();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
 		if (idCurrent != accountId) {
@@ -184,7 +184,18 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-
+		
+		List<BookingDetailModel> listBookingCanceled = new ArrayList<BookingDetailModel>();
+		
+		List<BookingDetailModel> listBookingPending = new ArrayList<BookingDetailModel>();
+		
+	    List<BookingDetailModel> listBookingPaid = new ArrayList<BookingDetailModel>();
+		
+		List<BookingDetailModel> listBookingCompleted = new ArrayList<BookingDetailModel>();
+		
+		List<BookingDetailModel> listBookingRefunded = new ArrayList<BookingDetailModel>();
+		BookingByStatus listBookingModels  = new BookingByStatus();
+		
 		for (Booking booking : listBookings) {
 			BookingDetailModel bookingModel = mapper.map(booking, BookingDetailModel.class);
 			bookingModel.setCustomerId(booking.getAccount().getAccountId());
@@ -195,7 +206,26 @@ public class BookingServiceImpl implements BookingService {
 			if (rating != null) {
 				bookingModel.setRating(rating);
 			}
-			listBookingModels.add(bookingModel);
+			if(Status.CANCELED.getStatusName().equals(booking.getStatus())){
+				listBookingCanceled.add(bookingModel);
+			}
+			if(Status.COMPLETED.getStatusName().equals(booking.getStatus())){
+				listBookingCompleted.add(bookingModel);
+			}
+			if(Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())){
+				listBookingPending.add(bookingModel);
+			}
+			if(Status.PAID.getStatusName().equals(booking.getStatus())) {
+				listBookingPaid.add(bookingModel);
+			}
+			if(Status.REFUNDED.getStatusName().equals(booking.getStatus())) {
+				listBookingRefunded.add(bookingModel);
+			}
+			listBookingModels.setListBookingCanceled(listBookingCanceled);
+			listBookingModels.setListBookingCompleted(listBookingCompleted);
+			listBookingModels.setListBookingPaid(listBookingPaid);
+			listBookingModels.setListBookingPending(listBookingPending);
+			listBookingModels.setListBookingRefunded(listBookingRefunded);
 		}
 		return ResponseEntity.ok(listBookingModels);
 	}
@@ -205,7 +235,6 @@ public class BookingServiceImpl implements BookingService {
 		MessageModel message = new MessageModel();
 		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		List<BookingDetailModel> listBookingModels = new ArrayList<BookingDetailModel>();
 
 		if (!idCurrent.equals(houseRepository.findById(houseId).get().getAccount().getAccountId())) {
 
@@ -217,6 +246,17 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.NULL_BOOKING);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
+		
+		List<BookingDetailModel> listBookingCanceled = new ArrayList<BookingDetailModel>();
+		
+		List<BookingDetailModel> listBookingPending = new ArrayList<BookingDetailModel>();
+		
+	    List<BookingDetailModel> listBookingPaid = new ArrayList<BookingDetailModel>();
+		
+		List<BookingDetailModel> listBookingCompleted = new ArrayList<BookingDetailModel>();
+		
+		List<BookingDetailModel> listBookingRefunded = new ArrayList<BookingDetailModel>();
+		BookingByStatus listBookingModels  = new BookingByStatus();
 
 		for (Booking booking : listBookings) {
 			BookingDetailModel bookingModel = mapper.map(booking, BookingDetailModel.class);
@@ -224,7 +264,26 @@ public class BookingServiceImpl implements BookingService {
 			bookingModel.setCustomerName(booking.getAccount().getUsername());
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
-			listBookingModels.add(bookingModel);
+			if(Status.CANCELED.getStatusName().equals(booking.getStatus())){
+				listBookingCanceled.add(bookingModel);
+			}
+			if(Status.COMPLETED.getStatusName().equals(booking.getStatus())){
+				listBookingCompleted.add(bookingModel);
+			}
+			if(Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())){
+				listBookingPending.add(bookingModel);
+			}
+			if(Status.PAID.getStatusName().equals(booking.getStatus())) {
+				listBookingPaid.add(bookingModel);
+			}
+			if(Status.REFUNDED.getStatusName().equals(booking.getStatus())) {
+				listBookingRefunded.add(bookingModel);
+			}
+			listBookingModels.setListBookingCanceled(listBookingCanceled);
+			listBookingModels.setListBookingCompleted(listBookingCompleted);
+			listBookingModels.setListBookingPaid(listBookingPaid);
+			listBookingModels.setListBookingPending(listBookingPending);
+			listBookingModels.setListBookingRefunded(listBookingRefunded);
 		}
 		return ResponseEntity.ok(listBookingModels);
 	}
@@ -373,7 +432,7 @@ public class BookingServiceImpl implements BookingService {
 			message.setMessage(BookingConstants.INVALID_CHECKOUT);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
+
 		for (Booking booking : listBookings) {
 			if ((dateCheckIn.compareTo(booking.getDateCheckIn()) >= 0
 					&& dateCheckIn.compareTo(booking.getDateCheckOut()) < 0
