@@ -2,7 +2,7 @@ package ces.riccico.common.enums;
 
 public enum Status {
 
-	APPROVAL("approval"),
+//	APPROVAL("approval"),
 
 	CANCELED("canceled"),
 

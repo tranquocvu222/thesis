@@ -1,6 +1,5 @@
 package ces.riccico.model;
 
-import java.util.Date;
 
 public class DateModel {
 	

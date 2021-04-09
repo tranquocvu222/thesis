@@ -26,6 +26,7 @@ import ces.riccico.common.constants.HouseConstants;
 import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.enums.Amenities;
 import ces.riccico.common.enums.Role;
+import ces.riccico.common.enums.Status;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
@@ -44,17 +45,16 @@ import ces.riccico.security.SecurityAuditorAware;
 public class HouseServiceImpl implements HouseService {
 
 	private static final boolean IS_APPROVED = true;
-	
-	private static final boolean IS_DELETED = true;
-	
-	private static final boolean NOT_DELETED = false;
-	
-	private static Logger logger = LoggerFactory.getLogger(HouseServiceImpl.class);
 
+	private static final boolean IS_DELETED = true;
+
+	private static final boolean NOT_DELETED = false;
+
+	private static Logger logger = LoggerFactory.getLogger(HouseServiceImpl.class);
 
 	@Autowired
 	private AccountRepository accountRepository;
-	
+
 	@Autowired
 	private BookingRepository bookingRepository;
 
@@ -70,7 +70,7 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 
 	public ResponseEntity<?> approveHouse(int houseId) {
-		
+
 		MessageModel message = new MessageModel();
 		House house = houseRepository.findById(houseId).get();
 
@@ -150,7 +150,6 @@ public class HouseServiceImpl implements HouseService {
 
 	}
 
-
 	@Override
 	public ResponseEntity<?> findByTitle(String title, int page, int size) {
 		Pageable paging = PageRequest.of(page, size);
@@ -165,10 +164,9 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> findHouseByUsername(String username) {
-		
+
 		MessageModel message = new MessageModel();
 		Integer idAccount = accountRepository.findByUsername(username).getAccountId();
-
 
 		if (!accountRepository.findById(idAccount).isPresent()) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
@@ -279,30 +277,33 @@ public class HouseServiceImpl implements HouseService {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
-		
+
 		House house = houseRepository.findById(houseId).get();
-		
+
 		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
 		List<DateModel> listDateModel = new ArrayList<DateModel>();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
 		String dateNow = dateFormat.format(currentDate);
-		
+
 		try {
 			currentDate = dateFormat.parse(dateNow);
 		} catch (ParseException e) {
 			logger.error(e.getMessage());
 		}
-	
-		for(Booking booking : listBookings) {
-			if (TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - currentDate.getTime()) > 0) {
-				DateModel dateModel = new DateModel();
-				dateModel.setDateCheckIn(booking.getDateCheckIn().toString());
-				dateModel.setDateCheckOut(booking.getDateCheckOut().toString());
-				listDateModel.add(dateModel);
+
+		for (Booking booking : listBookings) {
+			if (Status.COMPLETED.getStatusName().equals(booking.getStatus())
+					|| Status.PAID.getStatusName().equals(booking.getStatus())) {
+				if (TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - currentDate.getTime()) > 0) {
+					DateModel dateModel = new DateModel();
+					dateModel.setDateCheckIn(booking.getDateCheckIn().toString());
+					dateModel.setDateCheckOut(booking.getDateCheckOut().toString());
+					listDateModel.add(dateModel);
+				}
 			}
 		}
-		
+
 		houseDetail = mapper.map(house, HouseDetailModel.class);
 		int amenities = Integer.parseInt(house.getAmenities(), 2);
 		boolean wifi = ((amenities & Amenities.WIFI.getValue()) != 0) ? true : false;
@@ -316,13 +317,13 @@ public class HouseServiceImpl implements HouseService {
 		houseDetail.setFridge(fridge);
 		houseDetail.setSwimPool(swimPool);
 		houseDetail.setDateBooked(listDateModel);
-		
+
 		return ResponseEntity.ok(houseDetail);
 	}
 
 	@Override
 	public ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail) {
-		
+
 		Integer idCurrent = null;
 		Account account;
 		MessageModel message = new MessageModel();
@@ -354,7 +355,6 @@ public class HouseServiceImpl implements HouseService {
 	public ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
 			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner, boolean fridge,
 			boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
-
 
 		MessageModel message = new MessageModel();
 
@@ -402,7 +402,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> updateHouse(int houseId, HouseDetailModel houseDetail) {
-		
+
 		MessageModel message = new MessageModel();
 
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
