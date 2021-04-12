@@ -45,7 +45,9 @@ public class HouseDetailModel {
 	private Set<Image> images = new HashSet<>();
 	
 	private List<DateModel> dateBooked;
-
+	
+	private List<RatingHouseModel> listRating;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -196,6 +198,14 @@ public class HouseDetailModel {
 
 	public void setDateBooked(List<DateModel> dateBooked) {
 		this.dateBooked = dateBooked;
+	}
+
+	public List<RatingHouseModel> getListRating() {
+		return listRating;
+	}
+
+	public void setListRating(List<RatingHouseModel> listRating) {
+		this.listRating = listRating;
 	}
 	
 }

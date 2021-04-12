@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import ces.riccico.common.constants.BookingConstants;
 import ces.riccico.common.constants.CommonConstants;
 import ces.riccico.common.constants.HouseConstants;
+import ces.riccico.common.constants.RatingConstants;
 import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.enums.Amenities;
 import ces.riccico.common.enums.Role;
@@ -30,14 +31,17 @@ import ces.riccico.common.enums.Status;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
+import ces.riccico.entity.Rating;
 import ces.riccico.model.DateModel;
 import ces.riccico.model.HouseDetailModel;
 import ces.riccico.model.HouseModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
+import ces.riccico.model.RatingHouseModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
+import ces.riccico.repository.RatingRepository;
 import ces.riccico.service.HouseService;
 import ces.riccico.security.SecurityAuditorAware;
 
@@ -60,6 +64,9 @@ public class HouseServiceImpl implements HouseService {
 
 	@Autowired
 	private HouseRepository houseRepository;
+	
+	@Autowired
+	private RatingRepository ratingRepository;
 
 	@Autowired
 	private ModelMapper mapper;
@@ -303,6 +310,17 @@ public class HouseServiceImpl implements HouseService {
 				}
 			}
 		}
+		
+		List<Rating> listRating = ratingRepository.findByBookingHouseId(houseId);
+		List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
+		
+		for (Rating rating : listRating) {
+			RatingHouseModel ratingModel = new RatingHouseModel();
+			ratingModel.setRating(rating);
+			ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
+			ratingModel.setCreatedAt(rating.getCreatedAt());
+			listRatingModel.add(ratingModel);
+		}
 
 		houseDetail = mapper.map(house, HouseDetailModel.class);
 		int amenities = Integer.parseInt(house.getAmenities(), 2);
@@ -317,6 +335,7 @@ public class HouseServiceImpl implements HouseService {
 		houseDetail.setFridge(fridge);
 		houseDetail.setSwimPool(swimPool);
 		houseDetail.setDateBooked(listDateModel);
+		houseDetail.setListRating(listRatingModel);
 
 		return ResponseEntity.ok(houseDetail);
 	}
