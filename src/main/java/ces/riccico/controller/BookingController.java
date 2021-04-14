@@ -59,7 +59,7 @@ public class BookingController {
 	}
 
 	// get booking detail
-	@GetMapping("/{bookingId}")
+	@GetMapping("/detail/{bookingId}")
 	public ResponseEntity<?> getBookingDetail(@PathVariable int bookingId) {
 		return bookingService.getBookingDetail(bookingId);
 	}
@@ -80,6 +80,14 @@ public class BookingController {
 	@PostMapping("/{houseId}")
 	public ResponseEntity<?> receiveBooking(@PathVariable int houseId, @RequestBody DateModel dateModel) {
 		return bookingService.receiveBooking(houseId, dateModel);
+	}
+
+	// this is list home booking paid
+	@GetMapping("/paid")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+	public ResponseEntity<?> findByBookingPaid(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return bookingService.fingByBookingPaid(page, size);
 	}
 
 }

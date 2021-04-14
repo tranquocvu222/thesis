@@ -28,4 +28,7 @@ public interface BookingService {
 
 	ResponseEntity<?> refund(int bookingId);
 
+	ResponseEntity<?> fingByBookingPaid(int size, int page);
+
+
 }

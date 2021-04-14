@@ -55,12 +55,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// booking service
 		.antMatchers(HttpMethod.GET,"/bookings/account/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.GET,"/bookings/house/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.GET, "/bookings/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
-		.antMatchers(HttpMethod.POST, "/bookings").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.GET,"/bookings/detail/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET,"/bookings/paid").hasAnyAuthority(ROLE_ADMIN)
+		.antMatchers(HttpMethod.POST,"/bookings/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/acceptBooking/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/cancelBooking/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/completeBooking/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/payment/**").hasAnyAuthority(ROLE_USER)
+
 
 		// rating service
 		.antMatchers(HttpMethod.GET, "/ratings/account/**").hasAnyAuthority(ROLE_USER)
