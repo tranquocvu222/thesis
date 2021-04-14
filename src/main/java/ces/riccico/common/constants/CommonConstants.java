@@ -1,3 +1,4 @@
+
 package ces.riccico.common.constants;
 
 public class CommonConstants {
@@ -13,6 +14,8 @@ public class CommonConstants {
 	public static final String LIST_EMPTY = "list is empty";
 
 	public static final String MESSAGE = "message";
+	
+	public static Double NET_INCOME ; 
 	
 
 

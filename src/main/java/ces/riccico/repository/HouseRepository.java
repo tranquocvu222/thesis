@@ -24,5 +24,9 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 			+ "and h.isApproved = true and h.isDeleted = false")
 	List<House> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
 			Double highestPrice, byte lowestGuest, byte highestGuest);
+	
+	List<House> findByAccountId(int accountId);
+	
+
 
 }
