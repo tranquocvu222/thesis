@@ -22,7 +22,7 @@ import ces.riccico.common.constants.BookingConstants;
 import ces.riccico.common.constants.CommonConstants;
 import ces.riccico.common.constants.HouseConstants;
 import ces.riccico.common.constants.UserConstants;
-import ces.riccico.common.enums.Status;
+import ces.riccico.common.enums.StatusBooking;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
@@ -116,12 +116,12 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
-		if (!Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())) {
+		if (!StatusBooking.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())) {
 			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		booking.setStatus(Status.CANCELED.getStatusName());
+		booking.setStatus(StatusBooking.CANCELED.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 
 		if (idCurrent.equals(booking.getAccount().getAccountId())) {
@@ -163,7 +163,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (!Status.PAID.getStatusName().equals(booking.getStatus())) {
+		if (!StatusBooking.PAID.getStatusName().equals(booking.getStatus())) {
 			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -173,7 +173,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		booking.setStatus(Status.COMPLETED.getStatusName());
+		booking.setStatus(StatusBooking.COMPLETED.getStatusName());
 		bookingRepository.saveAndFlush(booking);
 		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
@@ -217,19 +217,19 @@ public class BookingServiceImpl implements BookingService {
 			if (rating != null) {
 				bookingModel.setRating(rating);
 			}
-			if(Status.CANCELED.getStatusName().equals(booking.getStatus())){
+			if(StatusBooking.CANCELED.getStatusName().equals(booking.getStatus())){
 				listBookingCanceled.add(bookingModel);
 			}
-			if(Status.COMPLETED.getStatusName().equals(booking.getStatus())){
+			if(StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus())){
 				listBookingCompleted.add(bookingModel);
 			}
-			if(Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())){
+			if(StatusBooking.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())){
 				listBookingPending.add(bookingModel);
 			}
-			if(Status.PAID.getStatusName().equals(booking.getStatus())) {
+			if(StatusBooking.PAID.getStatusName().equals(booking.getStatus())) {
 				listBookingPaid.add(bookingModel);
 			}
-			if(Status.REFUNDED.getStatusName().equals(booking.getStatus())) {
+			if(StatusBooking.INCOMPLETED.getStatusName().equals(booking.getStatus())) {
 				listBookingRefunded.add(bookingModel);
 			}
 			listBookingModels.setListBookingCanceled(listBookingCanceled);
@@ -275,19 +275,19 @@ public class BookingServiceImpl implements BookingService {
 			bookingModel.setCustomerName(booking.getAccount().getUsername());
 			bookingModel.setHouseName(booking.getHouse().getTitle());
 			bookingModel.setHouseId(booking.getHouse().getId());
-			if(Status.CANCELED.getStatusName().equals(booking.getStatus())){
+			if(StatusBooking.CANCELED.getStatusName().equals(booking.getStatus())){
 				listBookingCanceled.add(bookingModel);
 			}
-			if(Status.COMPLETED.getStatusName().equals(booking.getStatus())){
+			if(StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus())){
 				listBookingCompleted.add(bookingModel);
 			}
-			if(Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())){
+			if(StatusBooking.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())){
 				listBookingPending.add(bookingModel);
 			}
-			if(Status.PAID.getStatusName().equals(booking.getStatus())) {
+			if(StatusBooking.PAID.getStatusName().equals(booking.getStatus())) {
 				listBookingPaid.add(bookingModel);
 			}
-			if(Status.REFUNDED.getStatusName().equals(booking.getStatus())) {
+			if(StatusBooking.INCOMPLETED.getStatusName().equals(booking.getStatus())) {
 				listBookingRefunded.add(bookingModel);
 			}
 			listBookingModels.setListBookingCanceled(listBookingCanceled);
@@ -394,14 +394,14 @@ public class BookingServiceImpl implements BookingService {
 					&& dateCheckOut.compareTo(booking.getDateCheckIn()) < 0
 					|| dateCheckOut.compareTo(booking.getDateCheckIn()) > 0
 							&& dateCheckIn.compareTo(booking.getDateCheckOut()) <= 0)
-					&& (Status.PAID.getStatusName().equals(booking.getStatus())
-							|| Status.COMPLETED.getStatusName().equals(booking.getStatus()))) {
+					&& (StatusBooking.PAID.getStatusName().equals(booking.getStatus())
+							|| StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus()))) {
 				message.setMessage(BookingConstants.HOUSE_BOOKED);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 		}
 
-		if (!Status.PENDING_PAYMENT.getStatusName().equals(bookingCurrent.getStatus())) {
+		if (!StatusBooking.PENDING_PAYMENT.getStatusName().equals(bookingCurrent.getStatus())) {
 			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -430,7 +430,7 @@ public class BookingServiceImpl implements BookingService {
 				+ "\nThrough phone number " + bookingCurrent.getHouse().getPhoneContact());
 		sender.send(messageEmailCustomer);
 
-		bookingCurrent.setStatus(Status.PAID.getStatusName());
+		bookingCurrent.setStatus(StatusBooking.PAID.getStatusName());
 		bookingRepository.saveAndFlush(bookingCurrent);
 		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
@@ -491,8 +491,8 @@ public class BookingServiceImpl implements BookingService {
 					&& dateCheckIn.compareTo(booking.getDateCheckOut()) < 0
 					|| dateCheckOut.compareTo(booking.getDateCheckIn()) > 0
 							&& dateCheckOut.compareTo(booking.getDateCheckOut()) <= 0)
-					&& (Status.PAID.getStatusName().equals(booking.getStatus())
-							|| Status.COMPLETED.getStatusName().equals(booking.getStatus()))) {
+					&& (StatusBooking.PAID.getStatusName().equals(booking.getStatus())
+							|| StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus()))) {
 				message.setMessage(BookingConstants.HOUSE_BOOKED);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
@@ -504,7 +504,7 @@ public class BookingServiceImpl implements BookingService {
 		Booking booking = new Booking();
 		booking.setAccount(account);
 		booking.setHouse(house);
-		booking.setStatus(Status.PENDING_PAYMENT.getStatusName());
+		booking.setStatus(StatusBooking.PENDING_PAYMENT.getStatusName());
 		booking.setDateCheckIn(dateCheckIn);
 		booking.setDateCheckOut(dateCheckOut);
 		booking.setBill(bill);
@@ -539,7 +539,7 @@ public class BookingServiceImpl implements BookingService {
 						List<Booking> listBooking = new ArrayList<Booking>();
 
 						for (Booking booking : bookingRepository.findByHouseId(house.getId())) {
-							if (booking.getStatus().equals(Status.PAID.getStatusName())) {
+							if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())) {
 								listBooking.add(booking);
 							}
 						}
@@ -561,7 +561,7 @@ public class BookingServiceImpl implements BookingService {
 		bookingPaid.setListBookingModel(listBookingModel);
 		
 		for (Booking booking : bookingRepository.findAll()) {
-			if (booking.getStatus().equals(Status.PAID.getStatusName())) {
+			if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())) {
 				netIncome += ((booking.getBill() * 15) / 100);
 				CommonConstants.NET_INCOME = netIncome;
 			}

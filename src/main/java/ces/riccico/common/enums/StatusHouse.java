@@ -1,22 +1,20 @@
 package ces.riccico.common.enums;
 
-public enum Status {
+public enum StatusHouse {
+	
+	APPROVAL("approval"),
 
-//	APPROVAL("approval"),
+	LISTED("listed"),
 
-	CANCELED("canceled"),
+	UNLISTED("unlisted"),
 
-	COMPLETED("completed"),
+	BLOCKED("blocked"),
 
-	PAID("paid"),
-
-	PENDING_PAYMENT("pending payment"),
-
-	REFUNDED("refunded");
+	DEACTIVED("deactived");
 
 	private String statusName;
 
-	Status(String statusName) {
+	StatusHouse(String statusName) {
 		this.statusName = statusName;
 	}
 
@@ -27,5 +25,4 @@ public enum Status {
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
 	}
-
 }

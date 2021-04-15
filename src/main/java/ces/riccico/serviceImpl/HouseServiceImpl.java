@@ -27,7 +27,7 @@ import ces.riccico.common.constants.RatingConstants;
 import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.enums.Amenities;
 import ces.riccico.common.enums.Role;
-import ces.riccico.common.enums.Status;
+import ces.riccico.common.enums.StatusBooking;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
@@ -300,8 +300,8 @@ public class HouseServiceImpl implements HouseService {
 		}
 
 		for (Booking booking : listBookings) {
-			if (Status.COMPLETED.getStatusName().equals(booking.getStatus())
-					|| Status.PAID.getStatusName().equals(booking.getStatus())) {
+			if (StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus())
+					|| StatusBooking.PAID.getStatusName().equals(booking.getStatus())) {
 				if (TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - currentDate.getTime()) > 0) {
 					DateModel dateModel = new DateModel();
 					dateModel.setDateCheckIn(booking.getDateCheckIn().toString());
