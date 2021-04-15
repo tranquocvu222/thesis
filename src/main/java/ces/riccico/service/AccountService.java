@@ -35,7 +35,6 @@ public interface AccountService {
 
 	ResponseEntity<?> findByPageAndSize(int page, int size);
 
-	
-
+	ResponseEntity<?> getStatisticOwner(int accountId);
 
 }

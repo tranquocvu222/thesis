@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		if (model.getBirthDay() == null) {
+		if (model.getBirthday() == null) {
 			message.setMessage(UserConstants.BIRTHDAY_NULL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
 		
 		user.setFirstName(model.getFirstName());
 		user.setLastName(model.getLastName());
-		user.setBirthDay(model.getBirthDay());
+		user.setBirthday(model.getBirthday());
 		user.setAddress(model.getAddress());
 		user.setCity(model.getCity());
 		user.setCountry(model.getCountry());

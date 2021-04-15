@@ -34,7 +34,7 @@ public class User {
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@Temporal(TemporalType.DATE)
-	private Date birthDay;
+	private Date birthday;
 
 	@Column(name = "city", length = 100)
 	private String city;
@@ -78,12 +78,12 @@ public class User {
 		this.lastName = lastName;
 	}
 
-	public Date getBirthDay() {
-		return birthDay;
+	public Date getBirthday() {
+		return birthday;
 	}
 
-	public void setBirthDay(Date birthDay) {
-		this.birthDay = birthDay;
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 
 	public String getCity() {
@@ -118,11 +118,5 @@ public class User {
 		this.account = account;
 	}
 
-	@Override
-	public String toString() {
-
-		return "Users [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", birthDay=" + birthDay
-				+ ", city=" + city + ", country=" + country + ", address=" + address + ", account=" + account + "]";
-	}
 
 }

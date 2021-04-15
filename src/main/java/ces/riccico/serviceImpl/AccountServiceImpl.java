@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.decimal4j.util.DoubleRounder;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,10 @@ import ces.riccico.entity.User;
 import ces.riccico.model.LoginModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
+import ces.riccico.model.StatisticOwner;
 import ces.riccico.repository.AccountRepository;
+import ces.riccico.repository.BookingRepository;
+import ces.riccico.repository.RatingRepository;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;
 import ces.riccico.security.AccountDetail;
@@ -70,6 +74,12 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private BookingRepository bookingRepository;
+	
+	@Autowired 
+	private RatingRepository ratingRepository;
 
 //	Active account by email
 	@Override
@@ -195,10 +205,10 @@ public class AccountServiceImpl implements AccountService {
 
 		return ResponseEntity.ok(listAccount);
 	}
-	
+
 	@Override
 	public ResponseEntity<?> findByPageAndSize(int page, int size) {
-		
+
 		List<Object> listAccountModel = new ArrayList<Object>();
 		List<Account> listAccount = new ArrayList<Account>();
 		PaginationModel paginationModel = new PaginationModel();
@@ -223,14 +233,13 @@ public class AccountServiceImpl implements AccountService {
 		return ResponseEntity.ok(paginationModel);
 	}
 
-
 //  Recover password by email when forget 
 	@Override
 	public ResponseEntity<?> forgetPassword(String email) {
-		
+
 		MessageModel message = new MessageModel();
 		Account account = accountRepository.findByEmail(email);
-		
+
 		if (account == null) {
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -259,7 +268,6 @@ public class AccountServiceImpl implements AccountService {
 		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
 	}
-	
 
 //	Load user by username
 	@Override
@@ -274,7 +282,7 @@ public class AccountServiceImpl implements AccountService {
 			if (account.getRole() != null) {
 				authorities.add(account.getRole());
 			}
-			accountDetail.setIdUser(account.getAccountId());
+			accountDetail.setUserId(account.getAccountId());
 			accountDetail.setAuthorities(authorities);
 		}
 
@@ -396,7 +404,6 @@ public class AccountServiceImpl implements AccountService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-
 		if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -442,7 +449,7 @@ public class AccountServiceImpl implements AccountService {
 
 		MessageModel message = new MessageModel();
 		Account account = accountRepository.findByEmail(email);
-		
+
 		if (accountRepository.findByEmail(email) == null) {
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -451,7 +458,6 @@ public class AccountServiceImpl implements AccountService {
 		if (account.isActive() == false) {
 			message.setMessage(UserConstants.NOT_ACTIVATED);
 		}
-
 
 		if (!email.matches(Validation.EMAIL_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
@@ -475,4 +481,26 @@ public class AccountServiceImpl implements AccountService {
 
 	}
 
+	@Override
+	public ResponseEntity<?> getStatisticOwner(int accountId) {
+		// TODO Auto-generated method stub
+		StatisticOwner statisticOwner = new StatisticOwner();
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		MessageModel message = new MessageModel();
+
+		if (!idCurrent.equals(accountId)) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+		}
+		double revenue = (bookingRepository.sumByAccountId(accountId)*85)/100;
+		int totalBooking = bookingRepository.countByAccountId(accountId);
+		int totalRating = ratingRepository.countByAccountId(accountId);
+		float averageRating = (float) DoubleRounder.round(ratingRepository.averageRatingByAccountId(accountId), 1);
+		logger.info(String.valueOf(revenue));
+		statisticOwner.setRevenue(revenue);
+		statisticOwner.setTotalBooking(totalBooking);
+		statisticOwner.setTotalRating(totalRating);
+		statisticOwner.setAverageRating(averageRating);
+		return ResponseEntity.ok(statisticOwner);
+	}
 }

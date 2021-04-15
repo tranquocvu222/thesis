@@ -3,12 +3,11 @@ package ces.riccico.security;
 
 import java.util.Collection;
 
-
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class AccountDetail implements UserDetails {
 
-	private Integer idUser;
+	private Integer userId;
 
 	private String email;
 
@@ -20,12 +19,12 @@ public class AccountDetail implements UserDetails {
 
 	private Collection authorities;
 
-	public Integer getIdUser() {
-		return idUser;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setIdUser(Integer idUser) {
-		this.idUser = idUser;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public void setPassword(String password) {

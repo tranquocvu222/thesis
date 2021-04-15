@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// account service
 		.antMatchers(HttpMethod.GET,"/accounts").hasAnyAuthority(ROLE_ADMIN)
 		.antMatchers(HttpMethod.GET,"/accounts/isBanned").hasAnyAuthority(ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET,"/statisticOwner/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/ban/**").hasAnyAuthority(ROLE_ADMIN)
 		.antMatchers(HttpMethod.PUT,"/changePassword/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
 		.antMatchers(HttpMethod.DELETE,"/log-out").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
