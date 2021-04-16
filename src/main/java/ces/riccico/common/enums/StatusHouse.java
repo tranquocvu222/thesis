@@ -2,7 +2,7 @@ package ces.riccico.common.enums;
 
 public enum StatusHouse {
 	
-	APPROVAL("approval"),
+//	APPROVAL("approval"),
 
 	LISTED("listed"),
 

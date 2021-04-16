@@ -1,7 +1,9 @@
 package ces.riccico.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -12,6 +14,8 @@ import ces.riccico.common.enums.Role;
 
 //prePostEnabled = true use 2 annotation @PreAuthorize and @PostAuthorize 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+@EnableScheduling
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String ROLE_ADMIN = Role.ADMIN.getRole();
@@ -45,19 +49,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.DELETE,"/log-out").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
 
 		// house service
-		.antMatchers(HttpMethod.GET,"/houses/isDeleted").hasAnyAuthority(ROLE_ADMIN)
-		.antMatchers(HttpMethod.GET,"/houses/notApproved").hasAnyAuthority(ROLE_ADMIN)
-		.antMatchers(HttpMethod.GET, "/houses/getAll").hasAnyAuthority(ROLE_ADMIN)
-		.antMatchers(HttpMethod.PUT, "/houses/approve/**").hasAnyAuthority(ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET,"/houses/block").hasAnyAuthority(ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET,"/houses/unBlock").hasAnyAuthority(ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET, "/houses/host/**").hasAnyAuthority(ROLE_USER,ROLE_ADMIN)
 		.antMatchers(HttpMethod.PUT, "/houses/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.POST,"/houses/create").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.DELETE, "/houses/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
 
 		// booking service
-		.antMatchers(HttpMethod.GET,"/bookings/account/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.GET,"/bookings/house/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.GET,"/bookings/detail/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
 		.antMatchers(HttpMethod.GET,"/bookings/paid").hasAnyAuthority(ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET,"/bookings/customer/**").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.GET,"/bookings/host/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.POST,"/bookings/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/acceptBooking/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/cancelBooking/**").hasAnyAuthority(ROLE_USER)

@@ -9,7 +9,7 @@ public enum StatusBooking {
 
 	PAID("paid"),
 
-	PENDING_PAYMENT("pending payment"),
+	PENDING("pending"),
 
 	INCOMPLETED("incompleted");
 

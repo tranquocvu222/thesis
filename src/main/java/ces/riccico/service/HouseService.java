@@ -5,9 +5,13 @@ import ces.riccico.model.HouseDetailModel;
 
 public interface HouseService {
 
-	ResponseEntity<?> approveHouse(int houseId);
+//	ResponseEntity<?> approveHouse(int houseId);
 
 	ResponseEntity<?> deleteHouse(int houseId);
+	
+	ResponseEntity<?> blockHouse(int houseId);
+	
+	ResponseEntity<?> unBlockHouse(int houseId);
 
 	ResponseEntity<?> findByPageAndSize(int page, int size);
 
@@ -15,15 +19,9 @@ public interface HouseService {
 
 	ResponseEntity<?> findHouseByUsername(String username);
 
-	ResponseEntity<?> getAll();
-
-	ResponseEntity<?> getAllApproved();
-
-	ResponseEntity<?> getAllDeleted();
-
-	ResponseEntity<?> getAllUnApproved();
-
 	ResponseEntity<?> getHouseDetail(Integer houseId);
+	
+	ResponseEntity<?> getHouseForHost(int accountId, String status, int page, int size);
 
 	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
 

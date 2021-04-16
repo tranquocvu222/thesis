@@ -2,45 +2,47 @@ package ces.riccico.model;
 
 public class StatisticOwner {
 	
-	private double revenue;
+	private Long revenue;
 	
-	private int totalBooking;
+	private Integer totalBooking;
 	
-	private int totalRating;
+	private Integer totalRating;
 	
-	private float averageRating;
+	private Float averageRating;
 
-	public double getRevenue() {
+	public Long getRevenue() {
 		return revenue;
 	}
 
-	public void setRevenue(double revenue) {
+	public void setRevenue(Long revenue) {
 		this.revenue = revenue;
 	}
 
-	public int getTotalBooking() {
+	public Integer getTotalBooking() {
 		return totalBooking;
 	}
 
-	public void setTotalBooking(int totalBooking) {
+	public void setTotalBooking(Integer totalBooking) {
 		this.totalBooking = totalBooking;
 	}
 
-	public int getTotalRating() {
+	public Integer getTotalRating() {
 		return totalRating;
 	}
 
-	public void setTotalRating(int totalRating) {
+	public void setTotalRating(Integer totalRating) {
 		this.totalRating = totalRating;
 	}
 
-	public float getAverageRating() {
+	public Float getAverageRating() {
 		return averageRating;
 	}
 
-	public void setAverageRating(float averageRating) {
+	public void setAverageRating(Float averageRating) {
 		this.averageRating = averageRating;
 	}
+
+	
 	
 }
 	

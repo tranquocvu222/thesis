@@ -18,9 +18,9 @@ public interface RatingRepository extends JpaRepository<Rating, Integer> {
 	List<Rating> findByBookingHouseId(int houseId);
 	
 	@Query("Select COUNT(b) from Rating b where b.booking.house.account.id = ?1")
-	int countByAccountId (int accountId);
+	Integer countByAccountId (int accountId);
 	
 	@Query("Select AVG(b.star) from Rating b where b.booking.house.account.id = ?1")
-	float averageRatingByAccountId (int accountId);
+	Float averageRatingByAccountId (int accountId);
 	
 }

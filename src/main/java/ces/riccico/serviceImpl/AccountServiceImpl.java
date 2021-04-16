@@ -483,7 +483,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public ResponseEntity<?> getStatisticOwner(int accountId) {
-		// TODO Auto-generated method stub
 		StatisticOwner statisticOwner = new StatisticOwner();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
@@ -492,11 +491,20 @@ public class AccountServiceImpl implements AccountService {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
-		double revenue = (bookingRepository.sumByAccountId(accountId)*85)/100;
-		int totalBooking = bookingRepository.countByAccountId(accountId);
-		int totalRating = ratingRepository.countByAccountId(accountId);
-		float averageRating = (float) DoubleRounder.round(ratingRepository.averageRatingByAccountId(accountId), 1);
-		logger.info(String.valueOf(revenue));
+		Long revenue = 0l;
+		try {
+			revenue = (bookingRepository.sumByAccountId(accountId)*85)/100;
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage());
+		}
+		Integer totalBooking = bookingRepository.countByAccountId(accountId);
+		Integer totalRating = ratingRepository.countByAccountId(accountId);
+		Float averageRating = 0f;
+		try {
+			averageRating = (float) DoubleRounder.round(ratingRepository.averageRatingByAccountId(accountId), 1);
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage());
+		}
 		statisticOwner.setRevenue(revenue);
 		statisticOwner.setTotalBooking(totalBooking);
 		statisticOwner.setTotalRating(totalRating);

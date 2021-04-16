@@ -18,10 +18,13 @@ public class HouseConstants {
 
 	public static final String HOUSE_NOT_EXIST = "House isn't exist";
 
-	public static final String HOUSE_NOT_FOUND = "Can't find the house";
+	public static final String HOUSE_NOT_FOUND = "no house yet";
 
 	public static final String NAME_IS_NULL = "Please enter your homestayName";
 
 	public static final String PRICE_INVALID_FORMAT = "Price must > 0đ";
+	
+	public static final String INVALID_STATUS = "invalid status house";
+
 
 }

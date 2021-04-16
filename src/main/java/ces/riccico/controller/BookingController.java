@@ -2,6 +2,9 @@ package ces.riccico.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,20 +20,15 @@ import ces.riccico.service.BookingService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
+
 @RestController
 @RequestMapping("/bookings")
 @CrossOrigin
+@EnableAsync
 public class BookingController {
 
 	@Autowired
 	private BookingService bookingService;
-
-	// this is the feature of accepting guests' booking
-//	@GetMapping("/acceptBooking/{bookingId}")
-//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-//	public ResponseEntity<?> acceptBooking(@PathVariable int bookingId) {
-//		return bookingService.acceptBooking(bookingId);
-//	}
 
 	// this is the cancellation feature
 	@GetMapping("/cancelBooking/{bookingId}")
@@ -45,11 +43,12 @@ public class BookingController {
 	public ResponseEntity<?> completeBooking(@PathVariable int bookingId) {
 		return bookingService.completeBooking̣̣̣(bookingId);
 	}
-
-	// get list booking of account
-	@GetMapping("/account/{accountId}")
-	public ResponseEntity<?> getBookingByAccountId(@PathVariable int accountId) {
-		return bookingService.findByAccountId(accountId);
+	//auto incompleted booking 
+	@Async
+	@Scheduled(fixedDelay = 20000)
+	@PutMapping("/incompleted")
+	public ResponseEntity<?> incompleteBooking() {
+		return bookingService.incompleteBooking();
 	}
 
 	// get list booking of house
@@ -63,10 +62,19 @@ public class BookingController {
 	public ResponseEntity<?> getBookingDetail(@PathVariable int bookingId) {
 		return bookingService.getBookingDetail(bookingId);
 	}
-
-	@GetMapping("/date/{houseId}")
-	public ResponseEntity<?> getBookingDate(@PathVariable int houseId) {
-		return bookingService.getBookingDate(houseId);
+	
+	//this is get booking for customer by status
+	@GetMapping("/customer")
+	public ResponseEntity<?> getBookingForCustomer(@RequestParam Integer accountId, @RequestParam(defaultValue = "") String status,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+		return bookingService.getBookingForCustomer(accountId, status, page, size);
+	}
+	
+	//this is get booking for host by status
+	@GetMapping("/host")
+	public ResponseEntity<?> getBookingForHost(@RequestParam Integer accountId, @RequestParam(defaultValue = "") String status,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+		return bookingService.getBookingForHost(accountId, status, page, size);
 	}
 
 	// this is the booking payment feature
@@ -80,14 +88,6 @@ public class BookingController {
 	@PostMapping("/{houseId}")
 	public ResponseEntity<?> receiveBooking(@PathVariable int houseId, @RequestBody DateModel dateModel) {
 		return bookingService.receiveBooking(houseId, dateModel);
-	}
-
-	// this is list home booking paid
-	@GetMapping("/paid")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> findByBookingPaid(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
-		return bookingService.fingByBookingPaid(page, size);
 	}
 
 }

@@ -41,6 +41,8 @@ public class HouseDetailModel {
 	private String city;
 
 	private String title;
+	
+	private String status;
 
 	private Set<Image> images = new HashSet<>();
 	
@@ -182,6 +184,14 @@ public class HouseDetailModel {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public Set<Image> getImages() {

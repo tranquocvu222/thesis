@@ -65,18 +65,15 @@ public class House extends Auditable {
 	@Column(name = "maxGuest")
 	private byte maxGuest;
 
-	@Column(name = "isApproved")
-	private boolean isApproved;
-
-	@Column(name = "isDeleted")
-	private boolean isDeleted;
+	@Column(name = "status")
+	private String status;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn(name = "accountId", nullable = false)
 	@JsonIgnore
 	private Account account;
 
-	@OneToMany(mappedBy = "house", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "house", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
 
@@ -91,22 +88,6 @@ public class House extends Auditable {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public boolean isApproved() {
-		return isApproved;
-	}
-
-	public void setApproved(boolean isApproved) {
-		this.isApproved = isApproved;
-	}
-
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
 	}
 
 	public Account getAccount() {
@@ -229,13 +210,14 @@ public class House extends Auditable {
 		this.amenities = amenities;
 	}
 
-//	public Set<String> getImage_url() {
-//		return image_url;
-//	}
-//
-//	public void setImage_url(Set<String> image_url) {
-//		this.image_url = image_url;
-//	}
-//	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	
 
 }

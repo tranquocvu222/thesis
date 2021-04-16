@@ -37,16 +37,17 @@ public class Booking extends Auditable {
 	@Column(name = "createEnd")
 	private Date dateCheckOut;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	@JoinColumn(name = "accountId", nullable = false)
 	@JsonIgnore
 	private Account account;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	@JoinColumn(name = "houseId", nullable = false)
 	@JsonIgnore
 	private House house;
-
+	
+	@Column(name = "status")
 	private String status;
 
 	public Integer getId() {

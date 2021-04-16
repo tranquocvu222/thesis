@@ -6,29 +6,23 @@ import ces.riccico.model.DateModel;
 
 public interface BookingService {
 
-//	ResponseEntity<?> acceptBooking(int bookingId);
-
 	ResponseEntity<?> cancelBooking(int bookingId);
 
 	ResponseEntity<?> completeBooking̣̣̣(int bookingId);
-
-	ResponseEntity<?> findByAccountId(int accountId);
+	
+	ResponseEntity<?> incompleteBooking();
 
 	ResponseEntity<?> findByHouseId(int houseId) ;
 
-	ResponseEntity<?> getAlḷ();
-
 	ResponseEntity<?> getBookingDetail(int bookingId);
 	
-	ResponseEntity<?> getBookingDate(int houseId);
-
+	ResponseEntity<?> getBookingForCustomer(int accountId, String status, int page, int size);
+	
+	ResponseEntity<?> getBookingForHost(int accountId, String status, int page, int size);
+	
 	ResponseEntity<?> payment(int bookingId);
 
 	ResponseEntity<?> receiveBooking(int houseId, DateModel dateModel);
-
-	ResponseEntity<?> refund(int bookingId);
-
-	ResponseEntity<?> fingByBookingPaid(int size, int page);
 
 
 }
