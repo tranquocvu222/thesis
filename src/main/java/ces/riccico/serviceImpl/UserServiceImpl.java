@@ -40,7 +40,8 @@ public class UserServiceImpl implements UserService {
 		User user = new User();
 
 		if (!userRepository.findById(userId).isPresent()) {
-			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+			message.setError(UserConstants.ACCOUNT_NOT_EXISTS);
+			message.setStatusCode(404);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
@@ -48,37 +49,44 @@ public class UserServiceImpl implements UserService {
 
 		if (!userRepository.findByAccountId(idCurrent).getAccount().getRole().equals(Role.ADMIN.getRole())
 				&& !idCurrent.equals(user.getAccount().getAccountId())) {
-			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+			message.setError(UserConstants.ACCOUNT_NOT_PERMISSION);
+			message.setStatusCode(403);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
 
 		if (model.getFirstName().equals("")) {
-			message.setMessage(UserConstants.FIRST_NAME_NULL);
+			message.setError(UserConstants.FIRST_NAME_NULL);
+			message.setStatusCode(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getLastName().equals("")) {
-			message.setMessage(UserConstants.LAST_NAME_NULL);
+			message.setError(UserConstants.LAST_NAME_NULL);
+			message.setStatusCode(HttpStatus.BAD_REQUEST.hashCode());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getBirthday() == null) {
-			message.setMessage(UserConstants.BIRTHDAY_NULL);
+			message.setError(UserConstants.BIRTHDAY_NULL);
+			message.setStatusCode(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getAddress().equals("")) {
-			message.setMessage(UserConstants.ADDRESS_NULL);
+			message.setError(UserConstants.ADDRESS_NULL);
+			message.setStatusCode(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getCity().equals("")) {
-			message.setMessage(UserConstants.CITY_NULL);
+			message.setError(UserConstants.CITY_NULL);
+			message.setStatusCode(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getCountry().equals("")) {
-			message.setMessage(UserConstants.COUNTRY_NULL);
+			message.setError(UserConstants.COUNTRY_NULL);
+			message.setStatusCode(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
@@ -92,7 +100,6 @@ public class UserServiceImpl implements UserService {
 		message.setMessage(UserConstants.UPDATE_SUCCESS);
 		message.setData(user);
 		message.setStatusCode(200);
-
 		return ResponseEntity.ok(message);
 
 	}
@@ -109,11 +116,6 @@ public class UserServiceImpl implements UserService {
 
 		MessageModel message = new MessageModel();
 		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
-		if (accountId == null) {
-			message.setError("Account current null");
-			return ResponseEntity.ok(message);
-		}
-
 		User user = userRepository.findByAccountId(accountId);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setData(user);
