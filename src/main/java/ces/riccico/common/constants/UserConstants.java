@@ -12,7 +12,7 @@ public class UserConstants {
 	public static final String ACCOUNT_NOT_EXISTS = "Account isn't exist";
 
 	public static final String ACCOUNT_NOT_PERMISSION = "You don't have permission";
-	
+
 	public static final String ADDRESS_NULL = "Address is required!";
 
 	public static final String BIRTHDAY_NULL = "Birthday is required!";
@@ -56,5 +56,9 @@ public class UserConstants {
 	public static final String PASSWORD_NEW_NULL = "Please enter new password!";
 
 	public static final String WRONG_OLD_PASSWORD = "Please enter the valid old password!";
+
+	public static final String UPDATE_SUCCESS = "Updated information successly";
+
+	public static final String GET_INFORMATION = "Get information successly";
 
 }
