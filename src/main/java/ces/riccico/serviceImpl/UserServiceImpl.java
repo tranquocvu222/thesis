@@ -1,5 +1,4 @@
 
-
 package ces.riccico.serviceImpl;
 
 import org.slf4j.Logger;
@@ -113,6 +112,7 @@ public class UserServiceImpl implements UserService {
 		message.setMessage(UserConstants.UPDATE_SUCCESS);
 		message.setData(user);
 		message.setStatus(HttpStatus.OK.value());
+
 		return ResponseEntity.ok(message);
 
 	}

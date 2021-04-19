@@ -40,6 +40,7 @@ public class MessageModel {
 
 	public void setStatus(int status) {
 		this.status = status;
+
 	}
 
 }
