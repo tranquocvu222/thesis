@@ -36,6 +36,7 @@ public class RatingController {
 	}
 
 	@GetMapping("/detail/{ratingId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> getRatingDetail(@PathVariable int ratingId) {
 		return ratingService.getRatingDetail(ratingId);
 	}
@@ -47,6 +48,7 @@ public class RatingController {
 	}
 
 	@PutMapping("/{ratingId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> updateRating(@PathVariable int ratingId, @RequestBody Rating rating) {
 		return ratingService.updateRating(ratingId, rating);
 	}

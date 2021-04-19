@@ -1,5 +1,6 @@
 
 
+
 package ces.riccico.entity;
 
 import java.util.Date;
@@ -21,6 +22,7 @@ import ces.riccico.model.Auditable;
 
 @Entity
 @Table(name = "bookings")
+
 public class Booking extends Auditable {
 
 	@Id
@@ -37,12 +39,12 @@ public class Booking extends Auditable {
 	@Column(name = "createEnd")
 	private Date dateCheckOut;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	@JoinColumn(name = "accountId", nullable = false)
 	@JsonIgnore
 	private Account account;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	@JoinColumn(name = "houseId", nullable = false)
 	@JsonIgnore
 	private House house;
@@ -104,5 +106,13 @@ public class Booking extends Auditable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+//	@Override
+//	public String toString() {
+//		return "Booking [id=" + id + ", bill=" + bill + ", dateCheckIn=" + dateCheckIn + ", dateCheckOut="
+//				+ dateCheckOut + ", account=" + account + ", house=" + house + ", status=" + status + "]";
+//	}
+//	
+	
 
 }

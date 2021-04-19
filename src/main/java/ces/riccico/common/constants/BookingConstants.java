@@ -1,3 +1,4 @@
+
 package ces.riccico.common.constants;
 
 public class BookingConstants {
@@ -21,5 +22,7 @@ public class BookingConstants {
 	public static final String HOUSE_BOOKED = "The house has been booked";
 
 	public static final String NULL_BOOKING = "no bookings yet";
+	
+	public static final String CANCEL_BOOKING = "Because you cancel booking in 24h before checkin";
 
 }

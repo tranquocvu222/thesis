@@ -42,11 +42,11 @@ public class Account {
 	@Column(name = "isBanned")
 	private boolean isBanned;
 
-	@OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<House> houses = new HashSet<>();
 
-	@OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
 	

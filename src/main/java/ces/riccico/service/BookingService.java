@@ -8,9 +8,9 @@ public interface BookingService {
 
 //	ResponseEntity<?> acceptBooking(int bookingId);
 
-	ResponseEntity<?> cancelBooking(int bookingId);
+	ResponseEntity<?> cancelBooking(int bookingId, boolean click);
 
-	ResponseEntity<?> completeBooking̣̣̣(int bookingId);
+	ResponseEntity<?> completeBooking̣̣̣();
 
 	ResponseEntity<?> findByAccountId(int accountId);
 
@@ -26,9 +26,6 @@ public interface BookingService {
 
 	ResponseEntity<?> receiveBooking(int houseId, DateModel dateModel);
 
-	ResponseEntity<?> refund(int bookingId);
-
-	ResponseEntity<?> fingByBookingPaid(int size, int page);
 
 
 }

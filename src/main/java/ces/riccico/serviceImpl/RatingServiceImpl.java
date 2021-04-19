@@ -15,7 +15,7 @@ import ces.riccico.common.constants.BookingConstants;
 import ces.riccico.common.constants.HouseConstants;
 import ces.riccico.common.constants.RatingConstants;
 import ces.riccico.common.constants.UserConstants;
-import ces.riccico.common.enums.Status;
+import ces.riccico.common.enums.StatusBooking;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.Rating;
 import ces.riccico.model.MessageModel;
@@ -148,7 +148,7 @@ public class RatingServiceImpl implements RatingService {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (!Status.COMPLETED.getStatusName().equals(booking.getStatus())) {
+		if (!StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus())) {
 			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}

@@ -1,7 +1,9 @@
 package ces.riccico.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -12,6 +14,8 @@ import ces.riccico.common.enums.Role;
 
 //prePostEnabled = true use 2 annotation @PreAuthorize and @PostAuthorize 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+@EnableScheduling
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String ROLE_ADMIN = Role.ADMIN.getRole();
@@ -56,20 +60,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET,"/bookings/account/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.GET,"/bookings/house/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.GET,"/bookings/detail/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
-		.antMatchers(HttpMethod.GET,"/bookings/paid").hasAnyAuthority(ROLE_ADMIN)
 		.antMatchers(HttpMethod.POST,"/bookings/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/acceptBooking/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/cancelBooking/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.PUT,"/bookings/completeBooking/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/payment/**").hasAnyAuthority(ROLE_USER)
 
 
 		// rating service
-		.antMatchers(HttpMethod.GET, "/ratings/account/**").hasAnyAuthority(ROLE_USER)
+//		.antMatchers(HttpMethod.GET, "/ratings/account/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.GET, "/ratings/detail/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.POST, "/ratings/write/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT, "/ratings/**").hasAnyAuthority(ROLE_USER)
 		
+		//Admin statistics
+		.antMatchers(HttpMethod.GET, "/statisticsAdmin").hasAnyAuthority(ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET, "/listBookingsPaid").hasAnyAuthority(ROLE_ADMIN)
 		
 		//permit all 
 		

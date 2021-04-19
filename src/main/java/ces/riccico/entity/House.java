@@ -1,4 +1,5 @@
 
+
 package ces.riccico.entity;
 
 import java.util.HashSet;
@@ -71,16 +72,16 @@ public class House extends Auditable {
 	@Column(name = "isDeleted")
 	private boolean isDeleted;
 
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	@JoinColumn(name = "accountId", nullable = false)
 	@JsonIgnore
 	private Account account;
 
-	@OneToMany(mappedBy = "house", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "house", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
 
-	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	private Set<Image> images = new HashSet<>();
 
 //	private Set<String> image_url = new HashSet<>();
@@ -229,6 +230,15 @@ public class House extends Auditable {
 		this.amenities = amenities;
 	}
 
+//	@Override
+//	public String toString() {
+//		return "House [id=" + id + ", title=" + title + ", country=" + country + ", city=" + city + ", address="
+//				+ address + ", price=" + price + ", size=" + size + ", content=" + content + ", image=" + image
+//				+ ", phoneContact=" + phoneContact + ", amenities=" + amenities + ", bedroom=" + bedroom + ", maxGuest="
+//				+ maxGuest + ", isApproved=" + isApproved + ", isDeleted=" + isDeleted + ", account=" + account
+//				+ ", bookings=" + bookings + ", images=" + images + "]";
+//	}
+
 //	public Set<String> getImage_url() {
 //		return image_url;
 //	}
@@ -237,5 +247,7 @@ public class House extends Auditable {
 //		this.image_url = image_url;
 //	}
 //	
+	
+	
 
 }

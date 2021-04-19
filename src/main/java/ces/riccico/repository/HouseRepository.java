@@ -25,6 +25,12 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 	List<House> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
 			Double highestPrice, byte lowestGuest, byte highestGuest);
 	
+	@Query("select count(DISTINCT account) from House ")
+	Integer totalAccountHost();
+	
+	@Query("select count(id) from  House ")
+	Integer totalHouse();
+	
 	List<House> findByAccountId(int accountId);
 	
 

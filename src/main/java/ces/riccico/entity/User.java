@@ -1,3 +1,4 @@
+
 package ces.riccico.entity;
 
 import java.util.Date;
@@ -23,6 +24,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	@Column(name = "userId")
 	private Integer id;
 
@@ -34,7 +36,7 @@ public class User {
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@Temporal(TemporalType.DATE)
-	private Date birthDay;
+	private Date birthday;
 
 	@Column(name = "city", length = 100)
 	private String city;
@@ -79,11 +81,11 @@ public class User {
 	}
 
 	public Date getBirthDay() {
-		return birthDay;
+		return birthday;
 	}
 
-	public void setBirthDay(Date birthDay) {
-		this.birthDay = birthDay;
+	public void setBirthDay(Date birthday) {
+		this.birthday = birthday;
 	}
 
 	public String getCity() {
@@ -121,7 +123,7 @@ public class User {
 	@Override
 	public String toString() {
 
-		return "Users [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", birthDay=" + birthDay
+		return "Users [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", birthDay=" + birthday
 				+ ", city=" + city + ", country=" + country + ", address=" + address + ", account=" + account + "]";
 	}
 

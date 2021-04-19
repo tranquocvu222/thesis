@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -22,18 +21,14 @@ import ces.riccico.common.constants.BookingConstants;
 import ces.riccico.common.constants.CommonConstants;
 import ces.riccico.common.constants.HouseConstants;
 import ces.riccico.common.constants.UserConstants;
-import ces.riccico.common.enums.Status;
+import ces.riccico.common.enums.StatusBooking;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
 import ces.riccico.entity.Rating;
 import ces.riccico.model.BookingDetailModel;
-import ces.riccico.model.BookingModel;
-import ces.riccico.model.BookingPaid;
 import ces.riccico.model.DateModel;
-import ces.riccico.model.HouseBooking;
 import ces.riccico.model.MessageModel;
-import ces.riccico.model.PaginationModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
@@ -98,11 +93,15 @@ public class BookingServiceImpl implements BookingService {
 //		return ResponseEntity.ok(message);
 //	}
 
-	@Override
-	public ResponseEntity<?> cancelBooking(int bookingId) {
+	public ResponseEntity<?> cancelBooking(int bookingId, boolean click) {
 		MessageModel message = new MessageModel();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Booking booking = bookingRepository.findById(bookingId).get();
+		Date dateCheckIn = booking.getDateCheckIn();
+		Date dateCreateAt = booking.getCreatedAt();
+
+		long hours = TimeUnit.MILLISECONDS.toHours(dateCheckIn.getTime() - dateCreateAt.getTime());
+		System.out.println("====== " + hours);
 
 		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
@@ -115,67 +114,86 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
-		if (!Status.PENDING_PAYMENT.getStatusName().equals(booking.getStatus())) {
+		if (!StatusBooking.PAID.getStatusName().equals(booking.getStatus())) {
 			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		booking.setStatus(Status.CANCELED.getStatusName());
-		bookingRepository.saveAndFlush(booking);
+		if (hours < 24) {
+			if (click == false) {
+				float bill = (float) (booking.getBill() * 25) / 100;
+				message.setMessage(BookingConstants.CANCEL_BOOKING);
+				message.setMessage("Cancel fee " + bill);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			} else {
 
-		if (idCurrent.equals(booking.getAccount().getAccountId())) {
-			message.setMessage(BookingConstants.BY_CUSTOMER);
-			return ResponseEntity.ok(message);
+				System.out.println("========== " + click);
+				booking.setStatus(StatusBooking.CANCELED.getStatusName());
+				bookingRepository.saveAndFlush(booking);
+
+				if (idCurrent.equals(booking.getAccount().getAccountId())) {
+					message.setMessage(BookingConstants.BY_CUSTOMER);
+					return ResponseEntity.ok(message);
+				}
+				message.setMessage(BookingConstants.BY_HOST);
+				return ResponseEntity.ok(message);
+
+			}
 		} else {
 
-			message.setMessage(BookingConstants.BY_HOST);
+			booking.setStatus(StatusBooking.CANCELED.getStatusName());
+			bookingRepository.saveAndFlush(booking);
+		}
+
+		if (idCurrent.equals(booking.getAccount().getAccountId())) {
+			SimpleMailMessage messageEmailCustomer = new SimpleMailMessage();
+			messageEmailCustomer.setTo(booking.getAccount().getEmail());
+			messageEmailCustomer.setSubject("BOOKING CENCELED");
+			messageEmailCustomer.setText("Wellcome " + booking.getAccount().getUser().getLastName() + " "
+					+ booking.getAccount().getUser().getFirstName()
+					+ "\nYou booking canceled successfull \nRented on the date : " + booking.getDateCheckIn() + " to "
+					+ booking.getDateCheckOut() + "\nAt Homestay " + booking.getHouse().getTitle()
+					+ "\nThe total cost you get after deducting cancellation fee is : " + (booking.getBill() * 25) / 100
+					+ "\nAny questions please contact " + booking.getHouse().getAccount().getUsername()
+					+ "\nThrough phone number " + booking.getHouse().getPhoneContact());
+			sender.send(messageEmailCustomer);
+
+			message.setMessage(BookingConstants.BY_CUSTOMER);
 			return ResponseEntity.ok(message);
 		}
+
+		message.setMessage(BookingConstants.BY_HOST);
+		return ResponseEntity.ok(message);
 	}
 
+
 	@Override
-	public ResponseEntity<?> completeBooking̣̣̣(int bookingId) {
-		MessageModel message = new MessageModel();
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+	public ResponseEntity<?> completeBooking̣̣̣() {
+		List<Booking> listBooking = bookingRepository.findBookingPaid();
 		Date currentDate = new Date();
-		String dateNow = sdf.format(currentDate);
-		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 
-		try {
-			currentDate = sdf.parse(dateNow);
-		} catch (ParseException e) {
-			logger.error(e.getMessage());
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		for (Booking booking : listBooking) {
+			Date dateCheckOut = booking.getDateCheckOut();
+			if (dateCheckOut.compareTo(currentDate) <0 ) {
+				booking.setStatus(StatusBooking.COMPLETED.getStatusName());
+
+				Double cost = booking.getBill() - ((booking.getBill() * 15) / 100);
+
+				SimpleMailMessage messageEmailHost = new SimpleMailMessage();
+				messageEmailHost.setTo(booking.getHouse().getAccount().getEmail());
+				messageEmailHost.setSubject("PAYMENT THE BILL ");
+				messageEmailHost.setText("Wellcome " + booking.getHouse().getAccount().getUsername()
+						+ "\nYou have received the cost for the bill " + booking.getId() + " from "
+						+ booking.getAccount().getUsername() + "\nHave booked your home "
+						+ booking.getHouse().getTitle() + "\nRented on the date : " + booking.getDateCheckIn() + " to "
+						+ booking.getDateCheckOut() + "\nWith total cost (Commissions have been deducted) " + cost);
+				sender.send(messageEmailHost);
+			}
+
+			bookingRepository.saveAndFlush(booking);
 		}
 
-		Booking booking = bookingRepository.findById(bookingId).get();
-
-		if (!idCurrent.equals(booking.getHouse().getAccount().getAccountId())
-				&& !idCurrent.equals(booking.getAccount().getAccountId())) {
-			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
-		}
-
-		if (!bookingRepository.findById(bookingId).isPresent()) {
-			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
-		if (!Status.PAID.getStatusName().equals(booking.getStatus())) {
-			message.setMessage(BookingConstants.INVALID_STATUS);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		if (currentDate.compareTo(booking.getDateCheckOut()) < 0) {
-			message.setMessage(BookingConstants.INVALID_DATE_COMPLETE);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		booking.setStatus(Status.COMPLETED.getStatusName());
-		bookingRepository.saveAndFlush(booking);
-		message.setMessage(CommonConstants.SUCCESS);
-		return ResponseEntity.ok(message);
+		return ResponseEntity.ok(listBooking);
 
 	}
 
@@ -335,29 +353,26 @@ public class BookingServiceImpl implements BookingService {
 					&& dateCheckOut.compareTo(booking.getDateCheckIn()) < 0
 					|| dateCheckOut.compareTo(booking.getDateCheckIn()) > 0
 							&& dateCheckIn.compareTo(booking.getDateCheckOut()) <= 0)
-					&& (Status.PAID.getStatusName().equals(booking.getStatus())
-							|| Status.COMPLETED.getStatusName().equals(booking.getStatus()))) {
+					&& (StatusBooking.PAID.getStatusName().equals(booking.getStatus())
+							|| StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus()))) {
 				message.setMessage(BookingConstants.HOUSE_BOOKED);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 		}
 
-		if (!Status.PENDING_PAYMENT.getStatusName().equals(bookingCurrent.getStatus())) {
+		if (!StatusBooking.PENDING_PAYMENT.getStatusName().equals(bookingCurrent.getStatus())) {
 			message.setMessage(BookingConstants.INVALID_STATUS);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		Double cost = bookingCurrent.getBill() - ((bookingCurrent.getBill() * 15) / 100);
-
 		SimpleMailMessage messageEmailHost = new SimpleMailMessage();
 		messageEmailHost.setTo(bookingCurrent.getHouse().getAccount().getEmail());
-		messageEmailHost.setSubject("PAYMENT THE BILL ");
+		messageEmailHost.setSubject("BOOKING CONFIRMATION ");
 		messageEmailHost.setText("Wellcome " + bookingCurrent.getHouse().getAccount().getUsername()
-				+ "\nYou have received the cost for the bill " + bookingCurrent.getId() + " from "
-				+ bookingCurrent.getAccount().getUsername() + "\nHave booked your home "
-				+ bookingCurrent.getHouse().getTitle() + "\nRented on the date : " + bookingCurrent.getDateCheckIn()
-				+ " to " + bookingCurrent.getDateCheckOut() + "\nWith total cost (Commissions have been deducted) "
-				+ cost);
+				+ "\nHave booked your home " + bookingCurrent.getHouse().getTitle() + "\nRented on the date : "
+				+ bookingCurrent.getDateCheckIn() + " to " + bookingCurrent.getDateCheckOut() + "\nBy customer "
+				+ bookingCurrent.getAccount().getUser().getLastName() + " "
+				+ bookingCurrent.getAccount().getUser().getFirstName());
 		sender.send(messageEmailHost);
 
 		SimpleMailMessage messageEmailCustomer = new SimpleMailMessage();
@@ -371,7 +386,7 @@ public class BookingServiceImpl implements BookingService {
 				+ "\nThrough phone number " + bookingCurrent.getHouse().getPhoneContact());
 		sender.send(messageEmailCustomer);
 
-		bookingCurrent.setStatus(Status.PAID.getStatusName());
+		bookingCurrent.setStatus(StatusBooking.PAID.getStatusName());
 		bookingRepository.saveAndFlush(bookingCurrent);
 		message.setMessage(CommonConstants.SUCCESS);
 		return ResponseEntity.ok(message);
@@ -432,8 +447,8 @@ public class BookingServiceImpl implements BookingService {
 					&& dateCheckIn.compareTo(booking.getDateCheckOut()) < 0
 					|| dateCheckOut.compareTo(booking.getDateCheckIn()) > 0
 							&& dateCheckOut.compareTo(booking.getDateCheckOut()) <= 0)
-					&& (Status.PAID.getStatusName().equals(booking.getStatus())
-							|| Status.COMPLETED.getStatusName().equals(booking.getStatus()))) {
+					&& (StatusBooking.PAID.getStatusName().equals(booking.getStatus())
+							|| StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus()))) {
 				message.setMessage(BookingConstants.HOUSE_BOOKED);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
@@ -445,7 +460,7 @@ public class BookingServiceImpl implements BookingService {
 		Booking booking = new Booking();
 		booking.setAccount(account);
 		booking.setHouse(house);
-		booking.setStatus(Status.PENDING_PAYMENT.getStatusName());
+		booking.setStatus(StatusBooking.PENDING_PAYMENT.getStatusName());
 		booking.setDateCheckIn(dateCheckIn);
 		booking.setDateCheckOut(dateCheckOut);
 		booking.setBill(bill);
@@ -453,70 +468,6 @@ public class BookingServiceImpl implements BookingService {
 		bookingRepository.saveAndFlush(booking);
 		return ResponseEntity.ok(booking);
 
-	}
-
-	@Override
-	public ResponseEntity<?> refund(int bookingId) {
-		return null;
-	}
-
-	
-	@Override
-	public ResponseEntity<?> fingByBookingPaid(int page, int size ) {
-		BookingPaid bookingPaid = new BookingPaid();
-		Double netIncome = 0d;
-		List<BookingModel> listBookingModel = new ArrayList<BookingModel>();
-
-		for (Account account : accountRepository.findAll()) {
-			if (account.getHouses().size() != 0) {
-				BookingModel bookingModel = new BookingModel();
-				List<HouseBooking> listHouseBooking = new ArrayList<HouseBooking>();
-				bookingModel.setHostName(account.getUsername());
-
-				for (House house : houseRepository.findByAccountId(account.getAccountId())) {
-					HouseBooking houseBooking = new HouseBooking();
-
-					if (house.isApproved() == true && house.isDeleted() == false) {
-						List<Booking> listBooking = new ArrayList<Booking>();
-
-						for (Booking booking : bookingRepository.findByHouseId(house.getId())) {
-							if (booking.getStatus().equals(Status.PAID.getStatusName())) {
-								listBooking.add(booking);
-							}
-						}
-
-						houseBooking.setHouseName(house.getTitle());
-						houseBooking.setListBooking(listBooking);
-					}
-
-					listHouseBooking.add(houseBooking);
-				}
-
-				bookingModel.setListHouseBooking(listHouseBooking);
-				listBookingModel.add(bookingModel);
-
-			}
-
-		}
-
-		bookingPaid.setListBookingModel(listBookingModel);
-		
-		for (Booking booking : bookingRepository.findAll()) {
-			if (booking.getStatus().equals(Status.PAID.getStatusName())) {
-				netIncome += ((booking.getBill() * 15) / 100);
-				CommonConstants.NET_INCOME = netIncome;
-			}
-		}
-
-		bookingPaid.setNetIncome(netIncome);
-		
-		int fromIndex = (page) * size;
-		final int numPages = (int) Math.ceil((double) listBookingModel.size() / (double) size);
-		
-		bookingPaid.setListBookingModel(listBookingModel.subList(fromIndex, Math.min(fromIndex + size, listBookingModel.size())));
-		bookingPaid.setPageMax(numPages);
-
-		return ResponseEntity.ok(bookingPaid);
 	}
 
 }

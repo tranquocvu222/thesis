@@ -1,6 +1,11 @@
 package ces.riccico.controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +25,9 @@ import io.swagger.annotations.Authorization;
 @RestController
 @RequestMapping("/houses")
 @CrossOrigin
+//@Configuration
+//@EnableScheduling
+//@EnableAsync
 public class HouseController {
 
 	@Autowired
@@ -54,6 +62,7 @@ public class HouseController {
 	}
 
 	// this is the all-post feature
+
 	@GetMapping("/getAll")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> getAll() {
@@ -61,8 +70,10 @@ public class HouseController {
 	}
 
 	// shows approved houses list
+//	@Async
+//	@Scheduled(initialDelay = 1000, fixedRate = 50000)
 	@GetMapping("/isApproved")
-	public ResponseEntity<?> getAllApproved() {
+	public ResponseEntity<?> getAllApproved() throws InterruptedException{
 		return houseService.getAllApproved();
 	}
 
