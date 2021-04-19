@@ -100,7 +100,7 @@ public class BookingServiceImpl implements BookingService {
 
 		if (hours < 24) {
 			if (click == false) {
-				float bill = (float) (booking.getBill() * 25) / 100;
+				float bill = (float) (booking.getBill() * 75) / 100;
 				message.setMessage(BookingConstants.CANCEL_BOOKING);
 				message.setMessage("Cancel fee " + bill);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
