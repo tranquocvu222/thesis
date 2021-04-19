@@ -19,7 +19,6 @@ import ces.riccico.common.enums.StatusBooking;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.Rating;
 import ces.riccico.model.MessageModel;
-import ces.riccico.model.RatingAccountModel;
 import ces.riccico.model.RatingHouseModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;

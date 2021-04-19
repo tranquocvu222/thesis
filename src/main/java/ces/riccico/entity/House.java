@@ -66,11 +66,8 @@ public class House extends Auditable {
 	@Column(name = "maxGuest")
 	private byte maxGuest;
 
-	@Column(name = "isApproved")
-	private boolean isApproved;
-
-	@Column(name = "isDeleted")
-	private boolean isDeleted;
+	@Column(name = "status")
+	private String status;
 
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	@JoinColumn(name = "accountId", nullable = false)
@@ -92,22 +89,6 @@ public class House extends Auditable {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public boolean isApproved() {
-		return isApproved;
-	}
-
-	public void setApproved(boolean isApproved) {
-		this.isApproved = isApproved;
-	}
-
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
 	}
 
 	public Account getAccount() {
@@ -230,24 +211,14 @@ public class House extends Auditable {
 		this.amenities = amenities;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "House [id=" + id + ", title=" + title + ", country=" + country + ", city=" + city + ", address="
-//				+ address + ", price=" + price + ", size=" + size + ", content=" + content + ", image=" + image
-//				+ ", phoneContact=" + phoneContact + ", amenities=" + amenities + ", bedroom=" + bedroom + ", maxGuest="
-//				+ maxGuest + ", isApproved=" + isApproved + ", isDeleted=" + isDeleted + ", account=" + account
-//				+ ", bookings=" + bookings + ", images=" + images + "]";
-//	}
 
-//	public Set<String> getImage_url() {
-//		return image_url;
-//	}
-//
-//	public void setImage_url(Set<String> image_url) {
-//		this.image_url = image_url;
-//	}
-//	
-	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	
 
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import ces.riccico.common.constants.CommonConstants;
 import ces.riccico.common.enums.StatusBooking;
+import ces.riccico.common.enums.StatusHouse;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
@@ -52,7 +53,7 @@ public class AdminServiceImpl implements AdminService {
 				for (House house : houseRepository.findByAccountId(account.getAccountId())) {
 					HouseBooking houseBooking = new HouseBooking();
 
-					if (house.isApproved() == true && house.isDeleted() == false) {
+					if (StatusHouse.LISTED.getStatusName().equals(house.getStatus())) {
 						List<Booking> listBooking = new ArrayList<Booking>();
 
 						for (Booking booking : bookingRepository.findByHouseId(house.getId())) {

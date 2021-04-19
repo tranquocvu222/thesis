@@ -48,7 +48,8 @@ public class Booking extends Auditable {
 	@JoinColumn(name = "houseId", nullable = false)
 	@JsonIgnore
 	private House house;
-
+	
+	@Column(name = "status")
 	private String status;
 
 	public Integer getId() {

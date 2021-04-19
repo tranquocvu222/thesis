@@ -80,11 +80,11 @@ public class User {
 		this.lastName = lastName;
 	}
 
-	public Date getBirthDay() {
+	public Date getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthDay(Date birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 
@@ -120,11 +120,6 @@ public class User {
 		this.account = account;
 	}
 
-	@Override
-	public String toString() {
 
-		return "Users [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", birthDay=" + birthday
-				+ ", city=" + city + ", country=" + country + ", address=" + address + ", account=" + account + "]";
-	}
 
 }

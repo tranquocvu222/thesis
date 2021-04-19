@@ -22,7 +22,7 @@ public class SecurityAuditorAware implements AuditorAware<Integer> {
 		if (authentication.getPrincipal() == "anonymousUser") {
 			return Optional.of(0);
 		}
-		return Optional.of(((AccountDetail) authentication.getPrincipal()).getIdUser());
+		return Optional.of(((AccountDetail) authentication.getPrincipal()).getUserId());
 
 	}
 }

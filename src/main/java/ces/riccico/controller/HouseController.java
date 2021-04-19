@@ -1,4 +1,5 @@
 package ces.riccico.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -25,19 +26,16 @@ import io.swagger.annotations.Authorization;
 @RestController
 @RequestMapping("/houses")
 @CrossOrigin
-//@Configuration
-//@EnableScheduling
-//@EnableAsync
 public class HouseController {
 
 	@Autowired
 	private HouseService houseService;
 
-	// confirm post to home page from user
-	@PutMapping("/approve/{houseId}")
+	// block
+	@PutMapping("/block/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> approveHouse(@PathVariable int houseId) {
-		return houseService.approveHouse(houseId);
+	public ResponseEntity<?> blockHouse(@PathVariable int houseId) {
+		return houseService.blockHouse(houseId);
 	}
 
 	// delete house
@@ -61,46 +59,24 @@ public class HouseController {
 		return houseService.findByTitle(title, page, size);
 	}
 
-	// this is the all-post feature
-
-	@GetMapping("/getAll")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> getAll() {
-		return houseService.getAll();
-	}
-
-	// shows approved houses list
-//	@Async
-//	@Scheduled(initialDelay = 1000, fixedRate = 50000)
-	@GetMapping("/isApproved")
-	public ResponseEntity<?> getAllApproved() throws InterruptedException{
-		return houseService.getAllApproved();
-	}
-
-	// shows unapproved home lists
-	@GetMapping("/notApproved")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> getAllUnApproved() {
-		return houseService.getAllUnApproved();
-	}
-
 	// find house by username of host
 	@GetMapping("/username/{username}")
 	public ResponseEntity<?> getHouseByUsername(@PathVariable String username) {
 		return houseService.findHouseByUsername(username);
 	}
 
-	// show list house has been deleted
-	@GetMapping("/isDeleted")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> getHouseDelete() {
-		return houseService.getAllDeleted();
-	}
-
 	// see house's detail, service of room and view room
 	@GetMapping("/detail")
 	public ResponseEntity<?> getHouseDetail(@RequestParam Integer houseId) {
 		return houseService.getHouseDetail(houseId);
+	}
+
+	// getHouseForHost
+	@GetMapping("/host")
+	public ResponseEntity<?> getHouseForHost(@RequestParam(defaultValue = "0") Integer accountId,
+			@RequestParam(required = false) String status, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return houseService.getHouseForHost(accountId, status, page, size);
 	}
 
 	// post your house on the website
@@ -115,7 +91,8 @@ public class HouseController {
 	public ResponseEntity<?> searchFilter(@RequestParam(defaultValue = "") String country,
 
 			@RequestParam(defaultValue = "") String city, @RequestParam(defaultValue = "0") Double lowestSize,
-			@RequestParam(defaultValue = "50000") Double highestSize, @RequestParam(defaultValue = "0") Double lowestPrice,
+			@RequestParam(defaultValue = "50000") Double highestSize,
+			@RequestParam(defaultValue = "0") Double lowestPrice,
 			@RequestParam(defaultValue = "50000000") Double highestPrice,
 			@RequestParam(defaultValue = "false") boolean tivi, @RequestParam(defaultValue = "false") boolean wifi,
 			@RequestParam(defaultValue = "false") boolean airConditioner,
@@ -126,6 +103,13 @@ public class HouseController {
 		return houseService.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice, tivi, wifi,
 				airConditioner, fridge, swimPool, lowestGuest, highestGuest, page, size);
 
+	}
+
+	// unblock house
+	@PutMapping("/unBlock/{houseId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+	public ResponseEntity<?> unBlockHouse(@PathVariable int houseId) {
+		return houseService.unBlockHouse(houseId);
 	}
 
 	// this is the house update feature
