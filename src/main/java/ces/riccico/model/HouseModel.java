@@ -1,10 +1,14 @@
 package ces.riccico.model;
 
+import java.util.Date;
+
 public class HouseModel {
 
 	private Integer id;
 
 	private String image;
+	
+	private String address;
 
 	private double price;
 
@@ -15,6 +19,8 @@ public class HouseModel {
 	private String title;
 
 	private String status;
+	
+	private Date modifiedDate;
 
 	public Integer getId() {
 		return id;
@@ -71,5 +77,23 @@ public class HouseModel {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+	
+	
 
 }
