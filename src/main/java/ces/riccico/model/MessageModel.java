@@ -34,12 +34,14 @@ public class MessageModel {
 		this.message = message;
 	}
 
-	public int getStatusCode() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatusCode(int statusCode) {
-		this.status = statusCode;
+	public void setStatus(int status) {
+		this.status = status;
 	}
+
+	
 
 }

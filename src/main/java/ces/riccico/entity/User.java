@@ -24,7 +24,6 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	@Column(name = "userId")
 	private Integer id;
 

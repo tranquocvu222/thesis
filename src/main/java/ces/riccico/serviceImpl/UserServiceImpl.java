@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
 		if (!userRepository.findById(userId).isPresent()) {
 			message.setError(UserConstants.ACCOUNT_NOT_EXISTS);
-			message.setStatusCode(404);
+			message.setStatus(404);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
@@ -50,43 +50,43 @@ public class UserServiceImpl implements UserService {
 		if (!userRepository.findByAccountId(idCurrent).getAccount().getRole().equals(Role.ADMIN.getRole())
 				&& !idCurrent.equals(user.getAccount().getAccountId())) {
 			message.setError(UserConstants.ACCOUNT_NOT_PERMISSION);
-			message.setStatusCode(403);
+			message.setStatus(403);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
 
 		if (model.getFirstName().equals("")) {
 			message.setError(UserConstants.FIRST_NAME_NULL);
-			message.setStatusCode(400);
+			message.setStatus(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getLastName().equals("")) {
 			message.setError(UserConstants.LAST_NAME_NULL);
-			message.setStatusCode(HttpStatus.BAD_REQUEST.hashCode());
+			message.setStatus(HttpStatus.BAD_REQUEST.hashCode());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getBirthday() == null) {
 			message.setError(UserConstants.BIRTHDAY_NULL);
-			message.setStatusCode(400);
+			message.setStatus(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getAddress().equals("")) {
 			message.setError(UserConstants.ADDRESS_NULL);
-			message.setStatusCode(400);
+			message.setStatus(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getCity().equals("")) {
 			message.setError(UserConstants.CITY_NULL);
-			message.setStatusCode(400);
+			message.setStatus(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (model.getCountry().equals("")) {
 			message.setError(UserConstants.COUNTRY_NULL);
-			message.setStatusCode(400);
+			message.setStatus(400);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
 		userRepository.saveAndFlush(user);
 		message.setMessage(UserConstants.UPDATE_SUCCESS);
 		message.setData(user);
-		message.setStatusCode(200);
+		message.setStatus(200);
 		return ResponseEntity.ok(message);
 
 	}
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
 		User user = userRepository.findByAccountId(accountId);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setData(user);
-		message.setStatusCode(200);
+		message.setStatus(200);
 		return ResponseEntity.ok(message);
 
 	}
