@@ -14,6 +14,8 @@ public class HouseModel {
 
 	private String title;
 
+	private String status;
+
 	public Integer getId() {
 		return id;
 	}
@@ -60,6 +62,14 @@ public class HouseModel {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }
