@@ -45,7 +45,7 @@ public class UserConstants {
 
 	public static final String INVALID_ACCOUNT = "Username or password is wrong";
 
-	public static final String INVALID_CODE = "invalid code";
+	public static final String INVALID_CODE = "Invalid code";
 
 	public static final String LAST_NAME_NULL = "LastName is required!";
 
@@ -56,5 +56,9 @@ public class UserConstants {
 	public static final String PASSWORD_NEW_NULL = "Please enter new password!";
 
 	public static final String WRONG_OLD_PASSWORD = "Please enter the valid old password!";
+	
+	public static final String UPDATE_SUCCESS = "Updated information successly";
+	
+	public static final String GET_INFORMATION = "Get information successly";
 
 }
