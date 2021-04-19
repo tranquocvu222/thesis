@@ -369,6 +369,9 @@ public class HouseServiceImpl implements HouseService {
 		}
 		for (House house : listHouse) {
 			HouseModel houseModel = mapper.map(house, HouseModel.class);
+			if(houseModel.getModifiedDate() == null || houseModel.getModifiedDate().toString().isEmpty()) {
+				houseModel.setModifiedDate(house.getCreatedAt());
+			}
 			listHouseModel.add(houseModel);
 		}
 

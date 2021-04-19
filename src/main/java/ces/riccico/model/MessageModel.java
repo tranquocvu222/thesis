@@ -34,6 +34,7 @@ public class MessageModel {
 		this.message = message;
 	}
 
+
 	public int getStatus() {
 		return status;
 	}
