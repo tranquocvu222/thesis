@@ -1,7 +1,6 @@
 
 package ces.riccico.serviceImpl;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +38,14 @@ public class UserServiceImpl implements UserService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
 		User user = new User();
-		
-		if(!userRepository.findById(userId).isPresent()) {
+
+		if (!userRepository.findById(userId).isPresent()) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
-		
-		 user = userRepository.findById(userId).get();
-		
+
+		user = userRepository.findById(userId).get();
+
 		if (!userRepository.findByAccountId(idCurrent).getAccount().getRole().equals(Role.ADMIN.getRole())
 				&& !idCurrent.equals(user.getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
@@ -82,7 +81,7 @@ public class UserServiceImpl implements UserService {
 			message.setMessage(UserConstants.COUNTRY_NULL);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
+
 		user.setFirstName(model.getFirstName());
 		user.setLastName(model.getLastName());
 		user.setBirthday(model.getBirthday());
@@ -90,7 +89,10 @@ public class UserServiceImpl implements UserService {
 		user.setCity(model.getCity());
 		user.setCountry(model.getCountry());
 		userRepository.saveAndFlush(user);
-		message.setMessage(CommonConstants.SUCCESS);
+		message.setMessage(UserConstants.UPDATE_SUCCESS);
+		message.setData(user);
+		message.setStatusCode(200);
+
 		return ResponseEntity.ok(message);
 
 	}
@@ -106,18 +108,17 @@ public class UserServiceImpl implements UserService {
 	public ResponseEntity<?> findById() {
 
 		MessageModel message = new MessageModel();
-
-		try {
-			
-			Integer accountId = securityAuditorAware.getCurrentAuditor().get();
-			User user = userRepository.findByAccountId(accountId);
-			message.setMessage(CommonConstants.SUCCESS);
-			return ResponseEntity.ok(user);
-
-		} catch (Exception e) {
-			message.setMessage(e.getLocalizedMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
+		if (accountId == null) {
+			message.setError("Account current null");
+			return ResponseEntity.ok(message);
 		}
+
+		User user = userRepository.findByAccountId(accountId);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setData(user);
+		message.setStatusCode(200);
+		return ResponseEntity.ok(message);
 
 	}
 
