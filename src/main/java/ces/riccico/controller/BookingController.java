@@ -45,6 +45,7 @@ public class BookingController {
 		return bookingService.completeBooking̣̣̣();
 	}
 
+
 	// auto incompleted booking
 //	@Async
 //	@Scheduled(fixedDelay = 500000)

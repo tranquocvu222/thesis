@@ -1,10 +1,7 @@
 package ces.riccico.model;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import ces.riccico.entity.Image;
+import java.util.List;
 
 public class HouseDetailModel {
 
@@ -44,7 +41,7 @@ public class HouseDetailModel {
 	
 	private String status;
 
-	private Set<Image> images = new HashSet<>();
+	private List<String> images;
 	
 	private List<DateModel> dateBooked;
 	
@@ -193,12 +190,12 @@ public class HouseDetailModel {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	public Set<Image> getImages() {
+	
+	public List<String> getImages() {
 		return images;
 	}
 
-	public void setImages(Set<Image> images) {
+	public void setImages(List<String> images) {
 		this.images = images;
 	}
 
