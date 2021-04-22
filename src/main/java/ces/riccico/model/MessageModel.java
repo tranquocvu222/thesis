@@ -8,7 +8,7 @@ public class MessageModel {
 
 	private String message;
 
-	private int statusCode;
+	private int status;
 
 	public Object getData() {
 		return data;
@@ -34,12 +34,12 @@ public class MessageModel {
 		this.message = message;
 	}
 
-	public int getStatusCode() {
-		return statusCode;
+	public int getStatus() {
+		return status;
 	}
 
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 }

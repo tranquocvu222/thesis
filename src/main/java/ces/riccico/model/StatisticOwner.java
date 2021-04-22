@@ -1,5 +1,10 @@
 package ces.riccico.model;
 
+import java.util.List;
+
+import ces.riccico.entity.Booking;
+import ces.riccico.entity.House;
+
 public class StatisticOwner {
 	
 	private Long revenue;
@@ -9,6 +14,8 @@ public class StatisticOwner {
 	private Integer totalRating;
 	
 	private Float averageRating;
+	
+	private List<Booking> listBooking;
 
 	public Long getRevenue() {
 		return revenue;
@@ -41,6 +48,16 @@ public class StatisticOwner {
 	public void setAverageRating(Float averageRating) {
 		this.averageRating = averageRating;
 	}
+
+	public List<Booking> getListBooking() {
+		return listBooking;
+	}
+
+	public void setListBooking(List<Booking> listBooking) {
+		this.listBooking = listBooking;
+	}
+	
+	
 
 	
 	

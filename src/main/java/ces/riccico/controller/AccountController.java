@@ -1,5 +1,3 @@
-
-
 package ces.riccico.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,18 +44,18 @@ public class AccountController {
 	}
 
 	// shows banned accounts list
-	@GetMapping("/accounts/isBanned")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> findAllIsBanned() {
-		return accountService.findAllIsBanned();
-	}
+//	@GetMapping("/accounts/isBanned")
+//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	public ResponseEntity<?> findAllIsBanned() {
+//		return accountService.findAllIsBanned();
+//	}
 
 	// find house with pagination
 	@GetMapping("/accounts")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
-		return accountService.findByPageAndSize(page, size);
+		return accountService.findAllAccountPageAndSize(page, size);
 	}
 
 	// this is a forgotten password feature, which helps you recover your password
@@ -68,7 +66,7 @@ public class AccountController {
 	}
 
 	// prevent users from using the system
-	@PutMapping("/ban/{accountId}")
+	@GetMapping("/ban/{accountId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> isBanneed(@PathVariable int accountId) {
 		return accountService.banAccount(accountId);

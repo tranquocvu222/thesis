@@ -1,3 +1,4 @@
+
 package ces.riccico.common.enums;
 
 public enum StatusHouse {

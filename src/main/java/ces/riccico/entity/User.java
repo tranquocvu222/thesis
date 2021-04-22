@@ -11,11 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -24,7 +19,6 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	@Column(name = "userId")
 	private Integer id;
 
@@ -34,8 +28,6 @@ public class User {
 	@Column(name = "lastName", length = 100)
 	private String lastName;
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	@Temporal(TemporalType.DATE)
 	private Date birthday;
 
 	@Column(name = "city", length = 100)
@@ -46,7 +38,10 @@ public class User {
 
 	@Column(name = "address", length = 100)
 	private String address;
-
+	
+	@Column(name = "image")
+	private String image;
+	
 	@OneToOne
 	@JsonIgnore
 	@JoinColumn(name = "accountId", nullable = false)
@@ -118,6 +113,14 @@ public class User {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 

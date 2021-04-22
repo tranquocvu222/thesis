@@ -27,15 +27,22 @@ import ces.riccico.common.constants.TokenConstants;
 import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.constants.Validation;
 import ces.riccico.common.enums.Role;
+import ces.riccico.common.enums.StatusBooking;
+import ces.riccico.common.enums.StatusHouse;
 import ces.riccico.entity.Account;
+import ces.riccico.entity.Booking;
+import ces.riccico.entity.House;
 import ces.riccico.entity.Token;
 import ces.riccico.entity.User;
+import ces.riccico.model.AccountModel;
+import ces.riccico.model.HouseBooking;
 import ces.riccico.model.LoginModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
 import ces.riccico.model.StatisticOwner;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
+import ces.riccico.repository.HouseRepository;
 import ces.riccico.repository.RatingRepository;
 import ces.riccico.repository.TokenRepository;
 import ces.riccico.repository.UserRepository;
@@ -75,11 +82,14 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private BookingRepository bookingRepository;
-	
-	@Autowired 
+
+	@Autowired
+	private HouseRepository houseRepository;
+
+	@Autowired
 	private RatingRepository ratingRepository;
 
 //	Active account by email
@@ -91,16 +101,20 @@ public class AccountServiceImpl implements AccountService {
 
 		if (account == null) {
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (codeInput != CONFIRM_CODE) {
 			message.setMessage(UserConstants.INVALID_CODE);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		} else {
 			account.setActive(true);
 			accountRepository.saveAndFlush(account);
-			message.setMessage(CommonConstants.SUCCESS);
+			message.setData(account);
+			message.setMessage(CommonConstants.ACTIVE_SUCCESS);
+			message.setStatus(HttpStatus.OK.value());
 			return ResponseEntity.ok(message);
 		}
 	}
@@ -108,17 +122,31 @@ public class AccountServiceImpl implements AccountService {
 //	Banned account 
 	@Override
 	public ResponseEntity<?> banAccount(int accountId) {
+		
 		MessageModel message = new MessageModel();
+		Integer currentId = securityAuditorAware.getCurrentAuditor().get();
 		Account account = accountRepository.findById(accountId).get();
+		
+		if (!accountRepository.findById(currentId).get().getRole().equals(Role.ADMIN.getRole())) {
+			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			message.setStatus(HttpStatus.FORBIDDEN.value());
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+		}
 
 		if (account.isBanned() == IS_BANNED) {
-			message.setMessage(UserConstants.ACCOUNT_BANNED);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			account.setBanned(IS_NOT_BANNED);
+			accountRepository.saveAndFlush(account);
+			message.setData(account);
+			message.setMessage(CommonConstants.UNBAN_SUCCESS);
+			message.setStatus(HttpStatus.OK.value());
+			return ResponseEntity.ok(message);
 		}
 
 		account.setBanned(IS_BANNED);
 		accountRepository.saveAndFlush(account);
-		message.setMessage(CommonConstants.SUCCESS);
+		message.setData(account);
+		message.setMessage(CommonConstants.BAN_SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
 	}
 
@@ -132,35 +160,43 @@ public class AccountServiceImpl implements AccountService {
 
 		if (account == null) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else {
 			if (oldPassword == null || oldPassword.isEmpty()) {
 				message.setMessage(UserConstants.PASSWORD_NULL);
+				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			if (newPassword == null || newPassword.isEmpty()) {
 				message.setMessage(UserConstants.PASSWORD_NEW_NULL);
+				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			if (!encoder.matches(oldPassword, account.getPassword())) {
 				message.setMessage(UserConstants.WRONG_OLD_PASSWORD);
+				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			if (!newPassword.matches(Validation.PASSWORD_PATTERN)) {
 				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
+				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			if (newPassword.equals(oldPassword)) {
 				message.setMessage(UserConstants.IS_MATCHING_OLD_PASSWORD);
+				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			} else {
-				message.setMessage(CommonConstants.SUCCESS);
 				account.setPassword(encoder.encode(newPassword));
 				accountRepository.saveAndFlush(account);
+				message.setData(account);
+				message.setMessage(CommonConstants.CHANGEPASSWORD_SUCCESS);
+				message.setStatus(HttpStatus.OK.value());
 				return ResponseEntity.ok(message);
 			}
 
@@ -168,70 +204,96 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 //	Show list account was banned
+//	@Override
+//	public ResponseEntity<?> findAllIsBanned() {
+//		List<Account> listAccount = new ArrayList<Account>();
+//		MessageModel message = new MessageModel();
+//
+//		for (Account account : accountRepository.findAll()) {
+//			if (account.isBanned() == IS_BANNED) {
+//				listAccount.add(account);
+//			}
+//		}
+//
+//		if (listAccount.size() == 0) {
+//			message.setError("List Account was banned empty");
+//			message.setMessage(CommonConstants.LIST_EMPTY);
+//			message.setStatus(HttpStatus.NOT_FOUND.value());
+//			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//		}
+//
+//		message.setData(listAccount);
+//		message.setMessage(UserConstants.GET_INFORMATION);
+//		message.setStatus(HttpStatus.OK.value());
+//		return ResponseEntity.ok(message);
+//	}
+
+////	Show list account was not banned
+//	@Override
+//	public ResponseEntity<?> findAll() {
+//		List<Account> listAccount = new ArrayList<Account>();
+//		MessageModel message = new MessageModel();
+//
+//		for (Account account : accountRepository.findAll()) {
+//			if (account.isBanned() == IS_NOT_BANNED) {
+//				listAccount.add(account);
+//			}
+//		}
+//
+//		if (listAccount.size() == 0) {
+//			message.setError("List Account was not banned empty");
+//			message.setMessage(CommonConstants.LIST_EMPTY);
+//			message.setStatus(HttpStatus.NOT_FOUND.value());
+//			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//		}
+//
+//		message.setData(listAccount);
+//		message.setMessage(UserConstants.GET_INFORMATION);
+//		message.setStatus(HttpStatus.OK.value());
+//		return ResponseEntity.ok(message);
+//	}
+
 	@Override
-	public ResponseEntity<?> findAllIsBanned() {
-		List<Account> listAccount = new ArrayList<Account>();
-		MessageModel message = new MessageModel();
-
-		for (Account account : accountRepository.findAll()) {
-			if (account.isBanned() == IS_BANNED) {
-				listAccount.add(account);
-			}
-		}
-
-		if (listAccount.size() == 0) {
-			message.setMessage(CommonConstants.LIST_EMPTY);
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		return ResponseEntity.ok(listAccount);
-	}
-
-//	Show list account was not banned
-	@Override
-	public ResponseEntity<?> findAll() {
-		List<Account> listAccount = new ArrayList<Account>();
-		MessageModel message = new MessageModel();
-
-		for (Account account : accountRepository.findAll()) {
-			if (account.isBanned() == IS_NOT_BANNED) {
-				listAccount.add(account);
-			}
-		}
-
-		if (listAccount.size() == 0) {
-			message.setMessage(CommonConstants.LIST_EMPTY);
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		}
-
-		return ResponseEntity.ok(listAccount);
-	}
-
-	@Override
-	public ResponseEntity<?> findByPageAndSize(int page, int size) {
+	public ResponseEntity<?> findAllAccountPageAndSize(int page, int size) {
 
 		List<Object> listAccountModel = new ArrayList<Object>();
 		List<Account> listAccount = new ArrayList<Account>();
 		PaginationModel paginationModel = new PaginationModel();
 		MessageModel message = new MessageModel();
+		
 		Pageable paging = PageRequest.of(page, size);
 		listAccount = accountRepository.findAll(paging).getContent();
 		int pageMax = accountRepository.findAll(paging).getTotalPages();
 
 		if (listAccount.size() == 0) {
+			message.setError("List account empty");
 			message.setMessage(CommonConstants.LIST_EMPTY);
-			ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
+			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		for (Account account : listAccount) {
-			Account accountModel = mapper.map(account, Account.class);
+
+			AccountModel accountModel = mapper.map(account, AccountModel.class);
+			accountModel.setId(account.getAccountId());
+			accountModel.setFirstName(account.getUser().getFirstName());
+			accountModel.setLastName(account.getUser().getLastName());
+			accountModel.setBirthday(account.getUser().getBirthday());
+			accountModel.setCity(account.getUser().getCity());
+			accountModel.setAddress(account.getUser().getAddress());
+			accountModel.setImage(account.getUser().getImage());
+
+			System.out.println("======= " + account.getUser().getBirthday());
 			listAccountModel.add(accountModel);
 
 		}
 
 		paginationModel.setListObject(listAccountModel);
 		paginationModel.setPageMax(pageMax);
-		return ResponseEntity.ok(paginationModel);
+		message.setData(paginationModel);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 	}
 
 //  Recover password by email when forget 
@@ -242,16 +304,23 @@ public class AccountServiceImpl implements AccountService {
 		Account account = accountRepository.findByEmail(email);
 
 		if (account == null) {
+			message.setError(null);
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (account.isActive() == false) {
+			message.setError(null);
 			message.setMessage(UserConstants.NOT_ACTIVATED);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (!email.matches(Validation.EMAIL_PATTERN)) {
+			message.setError(null);
 			message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
@@ -267,6 +336,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 		message.setMessage(CommonConstants.SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
 	}
 
@@ -299,19 +369,25 @@ public class AccountServiceImpl implements AccountService {
 		String password = account.getPassword();
 
 		if (usernameOrEmail == null || usernameOrEmail.isEmpty()) {
+			message.setError(null);
 			message.setMessage(UserConstants.USERNAME_NULL);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (password == null || password.isEmpty()) {
+			message.setError(null);
 			message.setMessage(UserConstants.PASSWORD_NULL);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (usernameOrEmail.matches(Validation.EMAIL_PATTERN)) {
 			if (accountRepository.findByEmail(usernameOrEmail) == null) {
+				message.setError(null);
 				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+				message.setStatus(HttpStatus.NOT_FOUND.value());
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 			usernameOrEmail = accountRepository.findByEmail(usernameOrEmail).getUsername();
 		}
@@ -320,28 +396,39 @@ public class AccountServiceImpl implements AccountService {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 		if (accountRepository.findByUsername(usernameOrEmail) == null) {
+			message.setError(null);
 			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		} else {
 			if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
+				message.setError(null);
 				message.setMessage(UserConstants.INVALID_ACCOUNT);
+				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
+				message.setError(null);
 				message.setMessage(UserConstants.ACCOUNT_BANNED);
+				message.setStatus(HttpStatus.FORBIDDEN.value());
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
 
 			if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
+				message.setError(null);
 				message.setMessage(UserConstants.NOT_ACTIVATED);
+				message.setStatus(HttpStatus.FORBIDDEN.value());
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			} else {
 				Token token = new Token();
 				token.setToken(jwtUtil.generateToken(accountDetail));
 				token.setTokenExpDate(jwtUtil.generateExpirationDate());
 				tokenRepository.saveAndFlush(token);
-				return ResponseEntity.ok(token.getToken());
+				message.setData(token.getToken());
+				message.setMessage(CommonConstants.LOGIN_SUCCESS);
+				message.setStatus(HttpStatus.OK.value());
+				return ResponseEntity.ok(message);
 			}
 		}
 
@@ -494,7 +581,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		Long revenue = 0l;
 		try {
-			revenue = (bookingRepository.sumByAccountId(accountId)*85)/100;
+			revenue = (bookingRepository.sumByAccountId(accountId) * 85) / 100;
 		} catch (NullPointerException e) {
 			logger.error(e.getMessage());
 		}
@@ -506,10 +593,26 @@ public class AccountServiceImpl implements AccountService {
 		} catch (NullPointerException e) {
 			logger.error(e.getMessage());
 		}
+
+		List<Booking> listBooking = new ArrayList<Booking>();
+
+		try {
+			for (Booking booking : bookingRepository.findAccountId(accountId)) {
+				if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())
+						|| booking.getStatus().equals(StatusBooking.COMPLETED.getStatusName())) {
+					listBooking.add(booking);
+				}
+			}
+
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage());
+		}
+
 		statisticOwner.setRevenue(revenue);
 		statisticOwner.setTotalBooking(totalBooking);
 		statisticOwner.setTotalRating(totalRating);
 		statisticOwner.setAverageRating(averageRating);
+		statisticOwner.setListBooking(listBooking);
 		return ResponseEntity.ok(statisticOwner);
 	}
 }

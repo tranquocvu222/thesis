@@ -1,3 +1,4 @@
+
 package ces.riccico.common.constants;
 
 public class HouseConstants {
@@ -7,6 +8,10 @@ public class HouseConstants {
 	public static final String BY_ADMIN = "Success by admin";
 
 	public static final String BY_USER = "Success by user";
+	
+	public static final String BLOCK_SUCCESS = "House block out successfully";
+
+	public static final String UNBLOCK_SUCCESS = "House unblock out successfully";
 
 	public static final String CITY_IS_NULL = "Please choose your city";
 

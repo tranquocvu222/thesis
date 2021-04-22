@@ -50,6 +50,8 @@ public class HouseServiceImpl implements HouseService {
 
 	private static Logger logger = LoggerFactory.getLogger(HouseServiceImpl.class);
 
+	private static final String BLOCKED = "blocked";
+
 	@Autowired
 	private AccountRepository accountRepository;
 
@@ -73,19 +75,31 @@ public class HouseServiceImpl implements HouseService {
 		// TODO Auto-generated method stub
 		Integer currentId = securityAuditorAware.getCurrentAuditor().get();
 		MessageModel message = new MessageModel();
+
 		if (!accountRepository.findById(currentId).get().getRole().equals(Role.ADMIN.getRole())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
+
 		House house = houseRepository.findById(houseId).get();
-		if (house == null && !StatusHouse.LISTED.equals(house.getStatus())) {
-			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
-			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+
+		if (StatusHouse.BLOCKED.getStatusName().equals(house.getStatus())) {
+			house.setStatus(StatusHouse.LISTED.getStatusName());
+			houseRepository.saveAndFlush(house);
+			message.setMessage(HouseConstants.UNBLOCK_SUCCESS);
+			return ResponseEntity.ok(message);
 		}
-		house.setStatus(StatusHouse.BLOCKED.getStatusName());
-		houseRepository.saveAndFlush(house);
-		message.setMessage(HouseConstants.BY_ADMIN);
-		return ResponseEntity.ok(message);
+		
+		if (StatusHouse.LISTED.getStatusName().equals(house.getStatus())) {
+			house.setStatus(StatusHouse.BLOCKED.getStatusName());
+			houseRepository.saveAndFlush(house);
+			message.setMessage(HouseConstants.BLOCK_SUCCESS);
+			return ResponseEntity.ok(message);
+		}
+
+		message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+
 	}
 
 	@Override

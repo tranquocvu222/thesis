@@ -16,10 +16,8 @@ public interface AccountService {
 	ResponseEntity<?> banAccount(int accountId);
 	
 	ResponseEntity<?> changePassword(String oldPassword, String newPassword);
-	
-	ResponseEntity<?> findAll();
 
-	ResponseEntity<?> findAllIsBanned();
+//	ResponseEntity<?> findAllIsBanned();
 
 	ResponseEntity<?> forgetPassword(String email);
 
@@ -33,8 +31,8 @@ public interface AccountService {
 
 	ResponseEntity<?> resetPassword(String email, String password);
 
-	ResponseEntity<?> findByPageAndSize(int page, int size);
-
 	ResponseEntity<?> getStatisticOwner(int accountId);
+
+	ResponseEntity<?> findAllAccountPageAndSize(int page, int size);
 
 }

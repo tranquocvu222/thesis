@@ -17,6 +17,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	List<Booking> findByAccountId(int accountId);
 
 	List<Booking> findByHouseId(int houseId);
+	
+	@Query(value = "SELECT b.booking_id, b.created_at, b.bill, b.create_check_in, b.create_end, b.status, b.account_id, b.house_id, b.modified_date"
+			+ " FROM bookings b join houses h on b.house_id = h.house_id join accounts a on h.account_id = a.account_id WHERE a.account_id = ?1 ORDER BY b.created_at DESC LIMIT 5", nativeQuery = true)
+	List<Booking>findAccountId(int accountId );
 
 	@Query("select sum(bill) from Booking where status = 'paid' or status = 'completed'")
 	Double totalRevenue();

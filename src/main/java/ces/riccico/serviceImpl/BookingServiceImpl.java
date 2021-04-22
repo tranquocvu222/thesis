@@ -1,4 +1,5 @@
 
+
 package ces.riccico.serviceImpl;
 
 import java.text.ParseException;
@@ -99,17 +100,31 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		if (hours < 24) {
-			if (click == false) {
+
+			if (click == false && idCurrent.equals(booking.getAccount().getAccountId())) {
 				float bill = (float) (booking.getBill() * 75) / 100;
 				message.setMessage(BookingConstants.CANCEL_BOOKING);
 				message.setMessage("Cancel fee " + bill);
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else {
 
+			} else {
+				
 				booking.setStatus(StatusBooking.CANCELED.getStatusName());
 				bookingRepository.saveAndFlush(booking);
 
 				if (idCurrent.equals(booking.getAccount().getAccountId())) {
+					SimpleMailMessage messageEmailCustomer = new SimpleMailMessage();
+					messageEmailCustomer.setTo(booking.getAccount().getEmail());
+					messageEmailCustomer.setSubject("BOOKING CENCELED");
+					messageEmailCustomer.setText("Wellcome " + booking.getAccount().getUser().getLastName() + " "
+							+ booking.getAccount().getUser().getFirstName()
+							+ "\nYou booking canceled successfull \nRented on the date : " + booking.getDateCheckIn()
+							+ " to " + booking.getDateCheckOut() + "\nAt Homestay " + booking.getHouse().getTitle()
+							+ "\nThe total cost you get after deducting cancellation fee is : "
+							+ (booking.getBill() * 25) / 100 + "\nAny questions please contact "
+							+ booking.getHouse().getAccount().getUsername() + "\nThrough phone number "
+							+ booking.getHouse().getPhoneContact());
+					sender.send(messageEmailCustomer);
 					message.setMessage(BookingConstants.BY_CUSTOMER);
 					return ResponseEntity.ok(message);
 				}
@@ -124,17 +139,6 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		if (idCurrent.equals(booking.getAccount().getAccountId())) {
-			SimpleMailMessage messageEmailCustomer = new SimpleMailMessage();
-			messageEmailCustomer.setTo(booking.getAccount().getEmail());
-			messageEmailCustomer.setSubject("BOOKING CENCELED");
-			messageEmailCustomer.setText("Wellcome " + booking.getAccount().getUser().getLastName() + " "
-					+ booking.getAccount().getUser().getFirstName()
-					+ "\nYou booking canceled successfull \nRented on the date : " + booking.getDateCheckIn() + " to "
-					+ booking.getDateCheckOut() + "\nAt Homestay " + booking.getHouse().getTitle()
-					+ "\nThe total cost you get after deducting cancellation fee is : " + (booking.getBill() * 25) / 100
-					+ "\nAny questions please contact " + booking.getHouse().getAccount().getUsername()
-					+ "\nThrough phone number " + booking.getHouse().getPhoneContact());
-			sender.send(messageEmailCustomer);
 
 			message.setMessage(BookingConstants.BY_CUSTOMER);
 			return ResponseEntity.ok(message);

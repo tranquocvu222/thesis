@@ -1,4 +1,5 @@
 
+
 package ces.riccico.serviceImpl;
 
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import ces.riccico.service.UserService;
 public class UserServiceImpl implements UserService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	
 
 	@Autowired
 	AccountRepository accountRepository;
@@ -91,7 +93,8 @@ public class UserServiceImpl implements UserService {
 		userRepository.saveAndFlush(user);
 		message.setMessage(UserConstants.UPDATE_SUCCESS);
 		message.setData(user);
-		message.setStatusCode(200);
+		message.setStatus(HttpStatus.OK.value());
+		
 
 		return ResponseEntity.ok(message);
 
@@ -107,17 +110,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseEntity<?> findById() {
 
+		
 		MessageModel message = new MessageModel();
 		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
 		if (accountId == null) {
 			message.setError("Account current null");
+			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.ok(message);
 		}
 
 		User user = userRepository.findByAccountId(accountId);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setData(user);
-		message.setStatusCode(200);
+		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
 
 	}

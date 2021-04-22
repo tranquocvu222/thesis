@@ -1,3 +1,4 @@
+
 package ces.riccico.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class HouseController {
 	private HouseService houseService;
 
 	// block
-	@PutMapping("/block/{houseId}")
+	@GetMapping("/block/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> blockHouse(@PathVariable int houseId) {
 		return houseService.blockHouse(houseId);
@@ -73,6 +74,7 @@ public class HouseController {
 
 	// getHouseForHost
 	@GetMapping("/host")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> getHouseForHost(@RequestParam(defaultValue = "0") Integer accountId,
 			@RequestParam(required = false) String status, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
