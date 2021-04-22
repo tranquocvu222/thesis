@@ -27,7 +27,7 @@ public class Rating extends Auditable {
 	@Column(name = "star")
 	private Integer star;
 
-	@Column(name = "content", length = 600)
+	@Column(name = "content", length = 5000)
 	private String content;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

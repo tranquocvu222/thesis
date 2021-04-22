@@ -31,7 +31,7 @@ public class Booking extends Auditable {
 	private Integer id;
 
 	@Column(name = "bill")
-	private double bill;
+	private Double bill;
 
 	@Column(name = "createCheckIn")
 	private Date dateCheckIn;
@@ -60,11 +60,11 @@ public class Booking extends Auditable {
 		this.id = id;
 	}
 
-	public double getBill() {
+	public Double getBill() {
 		return bill;
 	}
 
-	public void setBill(double bill) {
+	public void setBill(Double bill) {
 		this.bill = bill;
 	}
 

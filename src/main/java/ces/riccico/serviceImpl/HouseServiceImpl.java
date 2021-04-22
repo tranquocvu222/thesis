@@ -216,8 +216,7 @@ public class HouseServiceImpl implements HouseService {
 		}
 
 		for (Booking booking : listBookings) {
-			if (StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus())
-					|| StatusBooking.PAID.getStatusName().equals(booking.getStatus())) {
+			if (StatusBooking.PAID.getStatusName().equals(booking.getStatus())) {
 				if (TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - currentDate.getTime()) > 0) {
 					DateModel dateModel = new DateModel();
 					dateModel.setDateCheckIn(booking.getDateCheckIn().toString());
@@ -245,6 +244,14 @@ public class HouseServiceImpl implements HouseService {
 		boolean airConditioner = ((amenities & Amenities.AC.getValue()) != 0) ? true : false;
 		boolean fridge = ((amenities & Amenities.FRIDGE.getValue()) != 0) ? true : false;
 		boolean swimPool = ((amenities & Amenities.SWIM_POOL.getValue()) != 0) ? true : false;
+
+		List<String> listImages = new ArrayList<String>();
+		String images = house.getImages();
+		for (String image : images.split(",")) {
+			listImages.add(image);
+		}
+		
+		houseDetail.setImages(listImages);
 		houseDetail.setWifi(wifi);
 		houseDetail.setTivi(tivi);
 		houseDetail.setAirConditioner(airConditioner);
@@ -319,7 +326,7 @@ public class HouseServiceImpl implements HouseService {
 		}
 		for (House house : listHouse) {
 			HouseModel houseModel = mapper.map(house, HouseModel.class);
-			if(houseModel.getModifiedDate() == null || houseModel.getModifiedDate().toString().isEmpty()) {
+			if (houseModel.getModifiedDate() == null || houseModel.getModifiedDate().toString().isEmpty()) {
 				houseModel.setModifiedDate(house.getCreatedAt());
 			}
 			listHouseModel.add(houseModel);
@@ -357,6 +364,17 @@ public class HouseServiceImpl implements HouseService {
 		byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
 		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
 		house.setAmenities(amenities);
+		
+		List<String> listImages = houseDetail.getImages();
+		String images = "";
+		for(String i : listImages) {
+			images += i+",";
+		}
+		images = images.strip();
+		images = images.substring(0, images.length() -1);
+		
+		house.setImages(images);
+		
 		house.setAccount(account);
 		house.setStatus(StatusHouse.LISTED.getStatusName());
 		houseRepository.saveAndFlush(house);
@@ -479,11 +497,20 @@ public class HouseServiceImpl implements HouseService {
 		byte swim_pool = ((houseDetail.isSwimPool() == true)) ? Amenities.SWIM_POOL.getValue() : 0;
 		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
 		house.setAmenities(amenities);
+		
+		List<String> listImages = houseDetail.getImages();
+		String images = "";
+		for(String i : listImages) {
+			images += i+",";
+		}
+		images = images.strip();
+		images = images.substring(0, images.length() -1);
+		
+		house.setImages(images);
 		house.setBedroom(houseDetail.getBedroom());
 		house.setMaxGuest(houseDetail.getMaxGuest());
 		houseRepository.saveAndFlush(house);
 		return ResponseEntity.ok(house);
-
 	}
 
 }

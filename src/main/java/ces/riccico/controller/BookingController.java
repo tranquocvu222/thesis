@@ -39,16 +39,16 @@ public class BookingController {
 
 	// this is the feature to confirm the booking has been completed
 	@PutMapping("/completeBooking")
-	@Async
-	@Scheduled( fixedDelay = 40000)
+//	@Async
+//	@Scheduled( fixedDelay = 40000)
 	public ResponseEntity<?> completeBooking() throws InterruptedException {
 		return bookingService.completeBooking̣̣̣();
 	}
 
 	//auto incompleted booking 
 	@Async
-	@Scheduled(fixedDelay = 500000)
-	@PutMapping("/incompleted")
+//	@Scheduled(fixedDelay = 500000)
+//	@PutMapping("/incompleted")
 	public ResponseEntity<?> incompleteBooking() {
 		return bookingService.incompleteBooking();
 	}

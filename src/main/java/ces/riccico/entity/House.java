@@ -1,5 +1,4 @@
 
-
 package ces.riccico.entity;
 
 import java.util.HashSet;
@@ -54,6 +53,9 @@ public class House extends Auditable {
 	@Column(name = "image")
 	private String image;
 
+	@Column(name = "images", length = 50000)
+	private String images;
+
 	@Column(name = "phoneContact")
 	private String phoneContact;
 
@@ -77,9 +79,6 @@ public class House extends Auditable {
 	@OneToMany(mappedBy = "house", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private Set<Booking> bookings = new HashSet<>();
-
-	@OneToMany(mappedBy = "house", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-	private Set<Image> images = new HashSet<>();
 
 //	private Set<String> image_url = new HashSet<>();
 
@@ -105,14 +104,6 @@ public class House extends Auditable {
 
 	public void setBookings(Set<Booking> bookings) {
 		this.bookings = bookings;
-	}
-
-	public Set<Image> getImages() {
-		return images;
-	}
-
-	public void setImages(Set<Image> images) {
-		this.images = images;
 	}
 
 	public double getPrice() {
@@ -211,7 +202,6 @@ public class House extends Auditable {
 		this.amenities = amenities;
 	}
 
-
 	public String getStatus() {
 		return status;
 	}
@@ -219,6 +209,13 @@ public class House extends Auditable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
+	public String getImages() {
+		return images;
+	}
+
+	public void setImages(String images) {
+		this.images = images;
+	}
 
 }
