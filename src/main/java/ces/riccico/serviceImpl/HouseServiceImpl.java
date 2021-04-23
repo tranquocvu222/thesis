@@ -424,7 +424,6 @@ public class HouseServiceImpl implements HouseService {
 		for(String i : listImages) {
 			images += i+",";
 		}
-		images = images.strip();
 		images = images.substring(0, images.length() -1);
 		
 		house.setImages(images);
@@ -572,7 +571,6 @@ public class HouseServiceImpl implements HouseService {
 		for(String i : listImages) {
 			images += i+",";
 		}
-		images = images.strip();
 		images = images.substring(0, images.length() -1);
 		
 		house.setImages(images);
