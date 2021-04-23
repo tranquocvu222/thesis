@@ -50,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// house service
 		.antMatchers(HttpMethod.GET,"/houses/block/**").hasAnyAuthority(ROLE_ADMIN)
-		.antMatchers(HttpMethod.GET,"/houses/unBlock/**").hasAnyAuthority(ROLE_ADMIN)
 		.antMatchers(HttpMethod.GET, "/houses/host/**").hasAnyAuthority(ROLE_USER,ROLE_ADMIN)
 		.antMatchers(HttpMethod.PUT, "/houses/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.POST,"/houses/create").hasAnyAuthority(ROLE_USER)
@@ -64,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.POST,"/bookings/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/cancelBooking/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.PUT,"/bookings/payment/**").hasAnyAuthority(ROLE_USER)
+//		.antMatchers(HttpMethod.PUT,"/bookings/revenue/**").hasAnyAuthority(ROLE_ADMIN)
 
 
 		// rating service

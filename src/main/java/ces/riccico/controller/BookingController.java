@@ -20,7 +20,6 @@ import ces.riccico.service.BookingService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 
-
 @RestController
 @RequestMapping("/bookings")
 @CrossOrigin
@@ -33,7 +32,8 @@ public class BookingController {
 	// this is the cancellation feature
 	@PutMapping("/cancelBooking/{bookingId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> cancelBooking(@PathVariable int bookingId, @RequestParam(defaultValue = "false") boolean click) {
+	public ResponseEntity<?> cancelBooking(@PathVariable int bookingId,
+			@RequestParam(defaultValue = "false") boolean click) {
 		return bookingService.cancelBooking(bookingId, click);
 	}
 
@@ -45,7 +45,7 @@ public class BookingController {
 		return bookingService.completeBooking̣̣̣();
 	}
 
-	//auto incompleted booking 
+	// auto incompleted booking
 //	@Async
 //	@Scheduled(fixedDelay = 500000)
 	@PutMapping("/incompleted")
@@ -64,18 +64,20 @@ public class BookingController {
 	public ResponseEntity<?> getBookingDetail(@PathVariable int bookingId) {
 		return bookingService.getBookingDetail(bookingId);
 	}
-	
-	//this is get booking for customer by status
+
+	// this is get booking for customer by status
 	@GetMapping("/customer")
-	public ResponseEntity<?> getBookingForCustomer(@RequestParam Integer accountId, @RequestParam(defaultValue = "") String status,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+	public ResponseEntity<?> getBookingForCustomer(@RequestParam Integer accountId,
+			@RequestParam(defaultValue = "") String status, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
 		return bookingService.getBookingForCustomer(accountId, status, page, size);
 	}
-	
-	//this is get booking for host by status
+
+	// this is get booking for host by status
 	@GetMapping("/host")
-	public ResponseEntity<?> getBookingForHost(@RequestParam Integer accountId, @RequestParam(defaultValue = "") String status,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+	public ResponseEntity<?> getBookingForHost(@RequestParam Integer accountId,
+			@RequestParam(defaultValue = "") String status, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
 		return bookingService.getBookingForHost(accountId, status, page, size);
 	}
 
@@ -92,5 +94,6 @@ public class BookingController {
 	public ResponseEntity<?> receiveBooking(@PathVariable int houseId, @RequestBody DateModel dateModel) {
 		return bookingService.receiveBooking(houseId, dateModel);
 	}
+
 
 }

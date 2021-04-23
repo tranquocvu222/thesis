@@ -1,4 +1,3 @@
-
 package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
@@ -28,14 +27,11 @@ import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.constants.Validation;
 import ces.riccico.common.enums.Role;
 import ces.riccico.common.enums.StatusBooking;
-import ces.riccico.common.enums.StatusHouse;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
-import ces.riccico.entity.House;
 import ces.riccico.entity.Token;
 import ces.riccico.entity.User;
 import ces.riccico.model.AccountModel;
-import ces.riccico.model.HouseBooking;
 import ces.riccico.model.LoginModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
@@ -85,9 +81,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private BookingRepository bookingRepository;
-
-	@Autowired
-	private HouseRepository houseRepository;
 
 	@Autowired
 	private RatingRepository ratingRepository;
@@ -266,8 +259,7 @@ public class AccountServiceImpl implements AccountService {
 		int pageMax = accountRepository.findAll(paging).getTotalPages();
 
 		if (listAccount.size() == 0) {
-			message.setError("List account empty");
-			message.setMessage(CommonConstants.LIST_EMPTY);
+			message.setMessage(CommonConstants.LIST_ACCOUNT_EMPTY);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
@@ -282,8 +274,6 @@ public class AccountServiceImpl implements AccountService {
 			accountModel.setCity(account.getUser().getCity());
 			accountModel.setAddress(account.getUser().getAddress());
 			accountModel.setImage(account.getUser().getImage());
-
-			System.out.println("======= " + account.getUser().getBirthday());
 			listAccountModel.add(accountModel);
 
 		}
@@ -304,21 +294,18 @@ public class AccountServiceImpl implements AccountService {
 		Account account = accountRepository.findByEmail(email);
 
 		if (account == null) {
-			message.setError(null);
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (account.isActive() == false) {
-			message.setError(null);
 			message.setMessage(UserConstants.NOT_ACTIVATED);
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (!email.matches(Validation.EMAIL_PATTERN)) {
-			message.setError(null);
 			message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -369,14 +356,12 @@ public class AccountServiceImpl implements AccountService {
 		String password = account.getPassword();
 
 		if (usernameOrEmail == null || usernameOrEmail.isEmpty()) {
-			message.setError(null);
 			message.setMessage(UserConstants.USERNAME_NULL);
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (password == null || password.isEmpty()) {
-			message.setError(null);
 			message.setMessage(UserConstants.PASSWORD_NULL);
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -384,7 +369,6 @@ public class AccountServiceImpl implements AccountService {
 
 		if (usernameOrEmail.matches(Validation.EMAIL_PATTERN)) {
 			if (accountRepository.findByEmail(usernameOrEmail) == null) {
-				message.setError(null);
 				message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
 				message.setStatus(HttpStatus.NOT_FOUND.value());
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -396,27 +380,23 @@ public class AccountServiceImpl implements AccountService {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 		if (accountRepository.findByUsername(usernameOrEmail) == null) {
-			message.setError(null);
 			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		} else {
 			if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
-				message.setError(null);
 				message.setMessage(UserConstants.INVALID_ACCOUNT);
 				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
 
 			if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
-				message.setError(null);
 				message.setMessage(UserConstants.ACCOUNT_BANNED);
 				message.setStatus(HttpStatus.FORBIDDEN.value());
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
 
 			if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
-				message.setError(null);
 				message.setMessage(UserConstants.NOT_ACTIVATED);
 				message.setStatus(HttpStatus.FORBIDDEN.value());
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
@@ -446,21 +426,26 @@ public class AccountServiceImpl implements AccountService {
 
 		if (tokenRepository.findByToken(tokenCurrent) == null) {
 			message.setMessage(TokenConstants.TOKEN_NOT_EXIST);
+			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
 
 		if (!jwtUtil.isTokenExpired(claims)) {
 			message.setMessage(TokenConstants.IS_TOKEN_EXPIRED);
+			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
 
 		if (!jwtUtil.validateToken(tokenCurrent, account)) {
 			message.setMessage(TokenConstants.INVALID_TOKEN);
+			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		} else {
 			Token token = tokenRepository.findByToken(tokenCurrent);
 			tokenRepository.delete(token);
+			message.setData(token.getToken());
 			message.setMessage(CommonConstants.SUCCESS);
+			message.setStatus(HttpStatus.OK.value());
 			return ResponseEntity.ok(message);
 		}
 	}
@@ -474,41 +459,49 @@ public class AccountServiceImpl implements AccountService {
 
 		if (account.getUsername().equals("")) {
 			message.setMessage(UserConstants.USERNAME_NULL);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (account.getEmail().equals("")) {
 			message.setMessage(UserConstants.EMAIL_NULL);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (account.getPassword().equals("")) {
 			message.setMessage(UserConstants.PASSWORD_NULL);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (!account.getUsername().matches(Validation.USERNAME_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_USERNAME_FORMAT);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (!account.getEmail().matches(Validation.EMAIL_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (!account.getPassword().matches(Validation.PASSWORD_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (accountRepository.findByEmail(account.getEmail()) != null) {
 			message.setMessage(UserConstants.EMAIL_EXISTS);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (accountRepository.findByUsername(account.getUsername()) != null) {
 			message.setMessage(UserConstants.USERNAME_EXISTS);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 		SimpleMailMessage messageEmail = new SimpleMailMessage();
@@ -526,7 +519,9 @@ public class AccountServiceImpl implements AccountService {
 		user.setAccount(accountNew);
 		accountRepository.saveAndFlush(accountNew);
 		userRepository.saveAndFlush(user);
+		message.setData(accountNew);
 		message.setMessage(CommonConstants.SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
 
 	}
@@ -540,31 +535,39 @@ public class AccountServiceImpl implements AccountService {
 
 		if (accountRepository.findByEmail(email) == null) {
 			message.setMessage(UserConstants.EMAIL_NOT_EXISTS);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (account.isActive() == false) {
 			message.setMessage(UserConstants.NOT_ACTIVATED);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (!email.matches(Validation.EMAIL_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_EMAIL_FORMAT);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (password == null) {
 			message.setMessage(UserConstants.PASSWORD_NULL);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (!password.matches(Validation.PASSWORD_PATTERN)) {
 			message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		account.setPassword(new BCryptPasswordEncoder().encode(password));
 		accountRepository.saveAndFlush(account);
+		message.setData(account);
 		message.setMessage(CommonConstants.SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
 
 	}
@@ -577,6 +580,7 @@ public class AccountServiceImpl implements AccountService {
 
 		if (!idCurrent.equals(accountId)) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
 		Long revenue = 0l;
@@ -613,6 +617,9 @@ public class AccountServiceImpl implements AccountService {
 		statisticOwner.setTotalRating(totalRating);
 		statisticOwner.setAverageRating(averageRating);
 		statisticOwner.setListBooking(listBooking);
-		return ResponseEntity.ok(statisticOwner);
+		message.setData(statisticOwner);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 	}
 }

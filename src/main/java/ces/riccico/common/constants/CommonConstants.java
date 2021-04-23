@@ -19,7 +19,7 @@ public class CommonConstants {
 	
 	public static final String FAIL = "fail";
 
-	public static final String LIST_EMPTY = "list is empty";
+	public static final String LIST_ACCOUNT_EMPTY = "List account empty";
 	
 	public static final String LOGIN_SUCCESS = "Login successfully";
 

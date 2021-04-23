@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ces.riccico.common.constants.BookingConstants;
+import ces.riccico.common.constants.CommonConstants;
 import ces.riccico.common.constants.HouseConstants;
 import ces.riccico.common.constants.RatingConstants;
 import ces.riccico.common.constants.UserConstants;
@@ -86,6 +87,7 @@ public class RatingServiceImpl implements RatingService {
 
 		if (!houseRepository.findById(houseId).isPresent()) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
@@ -94,7 +96,8 @@ public class RatingServiceImpl implements RatingService {
 
 		if (listRating.size() == 0) {
 			message.setMessage(RatingConstants.NULL_RATING);
-			return ResponseEntity.ok(message);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		for (Rating rating : listRating) {
@@ -105,9 +108,11 @@ public class RatingServiceImpl implements RatingService {
 			listRatingModel.add(ratingModel);
 		}
 
-		return ResponseEntity.ok(listRatingModel);
+		message.setData(listRatingModel);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 	}
-
 
 	@Override
 	public ResponseEntity<?> getRatingDetail(int ratingId) {
@@ -117,6 +122,7 @@ public class RatingServiceImpl implements RatingService {
 
 		if (!ratingRepository.findById(ratingId).isPresent()) {
 			message.setMessage(RatingConstants.RATING_NOT_EXIST);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
@@ -124,10 +130,13 @@ public class RatingServiceImpl implements RatingService {
 
 		if (!idCurrent.equals(rating.getBooking().getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			message.setStatus(HttpStatus.UNAUTHORIZED.value());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
-
-		return ResponseEntity.ok(rating);
+		message.setData(rating);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 	}
 
 //	Write rating house 	
@@ -139,28 +148,35 @@ public class RatingServiceImpl implements RatingService {
 
 		if (!idCurrent.equals(booking.getAccount().getAccountId())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			message.setStatus(HttpStatus.UNAUTHORIZED.value());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
 		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (!StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus())) {
 			message.setMessage(BookingConstants.INVALID_STATUS);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		if (ratingRepository.findByBookingId(bookingId) != null) {
 			message.setMessage(RatingConstants.IS_RATED);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		Rating ratingNew = mapper.map(rating, Rating.class);
 		ratingNew.setBooking(booking);
 		ratingRepository.saveAndFlush(ratingNew);
-		return ResponseEntity.ok(ratingNew);
+		message.setData(ratingNew);
+		message.setMessage(CommonConstants.SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 
 	}
 
@@ -170,17 +186,20 @@ public class RatingServiceImpl implements RatingService {
 		MessageModel message = new MessageModel();
 		if (!ratingRepository.findById(ratingId).isPresent()) {
 			message.setMessage(RatingConstants.RATING_NOT_EXIST);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (ratingRepository.findById(ratingId) == null) {
 			message.setMessage(RatingConstants.RATING_NOT_EXIST);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		if (!idCurrent.equals(ratingRepository.findById(ratingId).get().getBooking().getAccount().getAccountId())) {
 
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
+			message.setStatus(HttpStatus.UNAUTHORIZED.value());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
@@ -188,7 +207,10 @@ public class RatingServiceImpl implements RatingService {
 		ratingUpdate.setStar(rating.getStar());
 		ratingUpdate.setContent(rating.getContent());
 		ratingRepository.saveAndFlush(ratingUpdate);
-		return ResponseEntity.ok(ratingUpdate);
+		message.setData(ratingUpdate);
+		message.setMessage(CommonConstants.SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 	}
 
 }

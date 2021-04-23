@@ -107,12 +107,12 @@ public class HouseController {
 
 	}
 
-	// unblock house
-	@PutMapping("/unBlock/{houseId}")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> unBlockHouse(@PathVariable int houseId) {
-		return houseService.unBlockHouse(houseId);
-	}
+//	// unblock house
+//	@PutMapping("/unBlock/{houseId}")
+//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	public ResponseEntity<?> unBlockHouse(@PathVariable int houseId) {
+//		return houseService.unBlockHouse(houseId);
+//	}
 
 	// this is the house update feature
 	@PutMapping("/{houseId}")

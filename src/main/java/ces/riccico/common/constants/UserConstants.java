@@ -60,5 +60,7 @@ public class UserConstants {
 	public static final String UPDATE_SUCCESS = "Updated information successly";
 
 	public static final String GET_INFORMATION = "Get information successly";
+	
+	public static final String IMAGE_DEFAULT = "Default image was attached";
 
 }

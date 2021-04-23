@@ -11,7 +11,7 @@ public interface HouseService {
 	
 	ResponseEntity<?> blockHouse(int houseId);
 	
-	ResponseEntity<?> unBlockHouse(int houseId);
+//	ResponseEntity<?> unBlockHouse(int houseId);
 
 	ResponseEntity<?> findByPageAndSize(int page, int size);
 

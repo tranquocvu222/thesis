@@ -3,14 +3,21 @@ package ces.riccico.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
+import javax.mail.Message;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.sun.mail.handlers.message_rfc822;
+
 import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.enums.StatusBooking;
 import ces.riccico.common.enums.StatusHouse;
 import ces.riccico.entity.Account;
@@ -20,6 +27,8 @@ import ces.riccico.model.AdminStatistics;
 import ces.riccico.model.BookingModel;
 import ces.riccico.model.BookingPaid;
 import ces.riccico.model.HouseBooking;
+import ces.riccico.model.MessageModel;
+import ces.riccico.model.RevenueMonthly;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
@@ -44,6 +53,7 @@ public class AdminServiceImpl implements AdminService {
 		BookingPaid bookingPaid = new BookingPaid();
 		Double netIncome = 0d;
 		List<BookingModel> listBookingModel = new ArrayList<BookingModel>();
+		MessageModel message = new MessageModel();
 
 		for (Account account : accountRepository.findAll()) {
 			if (account.getHouses().size() != 0) {
@@ -94,19 +104,50 @@ public class AdminServiceImpl implements AdminService {
 		bookingPaid.setListBookingModel(listBookingModel.subList(fromIndex, Math.min(fromIndex + size, listBookingModel.size())));
 		bookingPaid.setPageMax(numPages);
 
-		return ResponseEntity.ok(bookingPaid);
+		message.setData(bookingPaid);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 	}
 
 
 	@Override
 	public ResponseEntity<?> statisticsAdmin() {
+		
+		MessageModel message = new MessageModel();
 		AdminStatistics statisticsAdmin = new AdminStatistics();
 		statisticsAdmin.setTotalAccountHost(houseRepository.totalAccountHost());
 		statisticsAdmin.setTotalRevenue(bookingRepository.totalRevenue());
 		statisticsAdmin.setTotalHouse(houseRepository.totalHouse());
         statisticsAdmin.setTotalBookingPaid(bookingRepository.totalBookingPaid());
         statisticsAdmin.setTotalBookingCompleted(bookingRepository.totalBookingCompleted());
- 		return ResponseEntity.ok(statisticsAdmin);
+        message.setData(statisticsAdmin);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+ 		return ResponseEntity.ok(message);
+	}
+	
+	@Override
+	public ResponseEntity<?> monthlyRevenue(int year) {
+
+		List<Object> listRevenueMonthly = bookingRepository.getMonthlyRevenue(year);
+		List<RevenueMonthly> lrevenueMonthly =  new ArrayList<RevenueMonthly>();
+//		String vu [] = null;
+//		for (Object oj : listRevenueMonthly) {
+//			RevenueMonthly revenueMonthly = new RevenueMonthly();
+//			vu = oj.toString().split(",");
+//			System.out.println("========= " + oj.hashCode());
+//			revenueMonthly.setMonth(Integer.parseInt(vu[0]));
+//			
+//			lrevenueMonthly.add(revenueMonthly);
+//			
+//		}
+		RevenueMonthly revenueMonthly = new RevenueMonthly();
+		System.out.println("===== " + listRevenueMonthly.get(0).toString());
+		revenueMonthly.setRevenue(listRevenueMonthly.get(1));
+
+		
+		return ResponseEntity.ok(revenueMonthly);
 	}
 	
 	
