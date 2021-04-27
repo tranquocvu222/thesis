@@ -4,25 +4,40 @@ import java.util.List;
 
 public class RevenueMonthly {
 	
-	private Object revenue;
+	private Double revenue;
 	
-	private int month;
+	private Integer month;
+	
+	
 
-	public Object getRevenue() {
+	public RevenueMonthly(Double revenue, Integer month) {
+		super();
+		this.revenue = revenue;
+		this.month = month;
+	}
+
+	public Double getRevenue() {
 		return revenue;
 	}
 
-	public void setRevenue(Object revenue) {
+	public void setRevenue(Double revenue) {
 		this.revenue = revenue;
 	}
 
-	public int getMonth() {
+	public Integer getMonth() {
 		return month;
 	}
 
-	public void setMonth(int month) {
+	public void setMonth(Integer month) {
 		this.month = month;
 	}
+
+	@Override
+	public String toString() {
+		return "RevenueMonthly [revenue=" + revenue + ", month=" + month + "]";
+	}
+	
+	
 	
 	
 	

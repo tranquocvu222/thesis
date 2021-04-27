@@ -9,7 +9,7 @@ public interface HouseService {
 
 //	ResponseEntity<?> approveHouse(int houseId);
 
-	ResponseEntity<?> deleteHouse(int houseId);
+	ResponseEntity<?> deactiveHouse(int houseId);
 	
 	ResponseEntity<?> blockHouse(int houseId);
 	
@@ -17,13 +17,13 @@ public interface HouseService {
 
 	ResponseEntity<?> findByPageAndSize(int page, int size);
 
-	ResponseEntity<?> findByTitle(String title, int page, int size);
+//	ResponseEntity<?> findByTitle(String title, int page, int size);
 
 	ResponseEntity<?> findHouseByUsername(String username);
 
 	ResponseEntity<?> getHouseDetail(Integer houseId);
 	
-	ResponseEntity<?> getHouseForHost(int accountId, String status, int page, int size);
+	ResponseEntity<?> getHouseForHost(int accountId, String block, String status, int page, int size);
 
 	ResponseEntity<?> getHouseRecommendForUser(int houseId) throws IOException;
 	
@@ -34,5 +34,7 @@ public interface HouseService {
 			boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size);
 
 	ResponseEntity<?> updateHouse(int houseId, HouseDetailModel houseDetail);
+
+	ResponseEntity<?> unlistedHouse(int houseId);
 
 }

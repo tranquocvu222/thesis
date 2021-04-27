@@ -1,4 +1,5 @@
 
+
 package ces.riccico.service;
 
 import java.util.List;
@@ -33,6 +34,6 @@ public interface AccountService {
 
 	ResponseEntity<?> getStatisticOwner(int accountId);
 
-	ResponseEntity<?> findAllAccountPageAndSize(int page, int size);
+	ResponseEntity<?> findAllAccountPageAndSize(String status, int page, int size);
 
 }

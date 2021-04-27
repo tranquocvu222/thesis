@@ -1,6 +1,7 @@
 
 package ces.riccico.serviceImpl;
 
+import java.awt.Dialog.ModalityType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -36,20 +37,20 @@ import ces.riccico.service.AdminService;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(BookingServiceImpl.class);
-	
+
 	@Autowired
 	private AccountRepository accountRepository;
 
 	@Autowired
 	private BookingRepository bookingRepository;
-	
+
 	@Autowired
 	private HouseRepository houseRepository;
-	
+
 	@Override
-	public ResponseEntity<?> findByBookingPaid(int page, int size ) {
+	public ResponseEntity<?> findByBookingPaid(int page, int size) {
 		BookingPaid bookingPaid = new BookingPaid();
 		Double netIncome = 0d;
 		List<BookingModel> listBookingModel = new ArrayList<BookingModel>();
@@ -68,7 +69,8 @@ public class AdminServiceImpl implements AdminService {
 						List<Booking> listBooking = new ArrayList<Booking>();
 
 						for (Booking booking : bookingRepository.findByHouseId(house.getId())) {
-							if (booking.getStatus().equals(StatusBooking.PAID.getStatusName()) || booking.getStatus().equals(StatusBooking.COMPLETED.getStatusName())) {
+							if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())
+									|| booking.getStatus().equals(StatusBooking.COMPLETED.getStatusName())) {
 								listBooking.add(booking);
 							}
 						}
@@ -88,7 +90,7 @@ public class AdminServiceImpl implements AdminService {
 		}
 
 		bookingPaid.setListBookingModel(listBookingModel);
-		
+
 		for (Booking booking : bookingRepository.findAll()) {
 			if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())) {
 				netIncome += ((booking.getBill() * 15) / 100);
@@ -97,11 +99,12 @@ public class AdminServiceImpl implements AdminService {
 		}
 
 		bookingPaid.setNetIncome(netIncome);
-		
+
 		int fromIndex = (page) * size;
 		final int numPages = (int) Math.ceil((double) listBookingModel.size() / (double) size);
-		
-		bookingPaid.setListBookingModel(listBookingModel.subList(fromIndex, Math.min(fromIndex + size, listBookingModel.size())));
+
+		bookingPaid.setListBookingModel(
+				listBookingModel.subList(fromIndex, Math.min(fromIndex + size, listBookingModel.size())));
 		bookingPaid.setPageMax(numPages);
 
 		message.setData(bookingPaid);
@@ -110,45 +113,56 @@ public class AdminServiceImpl implements AdminService {
 		return ResponseEntity.ok(message);
 	}
 
-
 	@Override
 	public ResponseEntity<?> statisticsAdmin() {
-		
+
 		MessageModel message = new MessageModel();
 		AdminStatistics statisticsAdmin = new AdminStatistics();
 		statisticsAdmin.setTotalAccountHost(houseRepository.totalAccountHost());
 		statisticsAdmin.setTotalRevenue(bookingRepository.totalRevenue());
 		statisticsAdmin.setTotalHouse(houseRepository.totalHouse());
-        statisticsAdmin.setTotalBookingPaid(bookingRepository.totalBookingPaid());
-        statisticsAdmin.setTotalBookingCompleted(bookingRepository.totalBookingCompleted());
-        message.setData(statisticsAdmin);
+		statisticsAdmin.setTotalBookingPaid(bookingRepository.totalBookingPaid());
+		statisticsAdmin.setTotalBookingCompleted(bookingRepository.totalBookingCompleted());
+		message.setData(statisticsAdmin);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
- 		return ResponseEntity.ok(message);
+		return ResponseEntity.ok(message);
 	}
-	
+
 	@Override
 	public ResponseEntity<?> monthlyRevenue(int year) {
 
-		List<Object> listRevenueMonthly = bookingRepository.getMonthlyRevenue(year);
-		List<RevenueMonthly> lrevenueMonthly =  new ArrayList<RevenueMonthly>();
-//		String vu [] = null;
+		List<RevenueMonthly> listRevenueMonthly = new ArrayList<RevenueMonthly>();
+		MessageModel message = new MessageModel();
+
+			listRevenueMonthly = bookingRepository.getMonthlyRevenue(year);
+			if (listRevenueMonthly.size() == 0) {
+				message.setMessage(CommonConstants.LIST_REVENUE_EMPTY);			
+				message.setStatus(HttpStatus.NOT_FOUND.value());
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			}
+			message.setData(listRevenueMonthly);
+			message.setMessage(UserConstants.GET_INFORMATION);
+			message.setStatus(HttpStatus.OK.value());
+			return ResponseEntity.ok(message);
+	
+
+//		List<RevenueMonthly> lrevenueMonthly = new ArrayList<RevenueMonthly>();
+//		RevenueMonthly revenue = new RevenueMonthly();
+//		String [] vu = null;
 //		for (Object oj : listRevenueMonthly) {
 //			RevenueMonthly revenueMonthly = new RevenueMonthly();
-//			vu = oj.toString().split(",");
-//			System.out.println("========= " + oj.hashCode());
-//			revenueMonthly.setMonth(Integer.parseInt(vu[0]));
-//			
+//			System.out.println("========= " + oj.toString());
+//			revenueMonthly.setMonth(oj.toString().indexOf(1));
+//			revenueMonthly.setRevenue(oj.toString().indexOf(0));
+//			System.out.println("========= " + revenueMonthly.getMonth());
 //			lrevenueMonthly.add(revenueMonthly);
 //			
 //		}
-		RevenueMonthly revenueMonthly = new RevenueMonthly();
-		System.out.println("===== " + listRevenueMonthly.get(0).toString());
-		revenueMonthly.setRevenue(listRevenueMonthly.get(1));
+//		RevenueMonthly revenueMonthly = new RevenueMonthly();
+//		System.out.println("===== " + listRevenueMonthly.get(0).toString());
+//		revenueMonthly.setRevenue(listRevenueMonthly.get(1));
 
-		
-		return ResponseEntity.ok(revenueMonthly);
 	}
-	
-	
+
 }

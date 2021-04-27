@@ -53,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/houses/host/**").hasAnyAuthority(ROLE_USER,ROLE_ADMIN)
 		.antMatchers(HttpMethod.PUT, "/houses/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.POST,"/houses/create").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.DELETE, "/houses/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
+		.antMatchers(HttpMethod.PUT, "/unlistedHouse/houses/**").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.DELETE, "/deactiveHouse/houses/**").hasAnyAuthority(ROLE_USER)
 
 		// booking service
 		.antMatchers(HttpMethod.GET,"/bookings/house/**").hasAnyAuthority(ROLE_USER)
@@ -75,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//Admin statistics
 		.antMatchers(HttpMethod.GET, "/statisticsAdmin").hasAnyAuthority(ROLE_ADMIN)
 		.antMatchers(HttpMethod.GET, "/listBookingsPaid").hasAnyAuthority(ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET, "/revenue/**").hasAnyAuthority(ROLE_ADMIN)
 		
 		//permit all 
 		

@@ -1,3 +1,4 @@
+
 package ces.riccico.model;
 
 import java.util.Date;
@@ -24,6 +25,8 @@ public class AccountModel {
 	private String firstName;
 	
 	private String lastName;
+	
+	private int totalHouse;
 	
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@Temporal(TemporalType.DATE)
@@ -130,8 +133,15 @@ public class AccountModel {
 	public void setImage(String image) {
 		this.image = image;
 	}
-	
-	
-	
+
+	public int getTotalHouse() {
+		return totalHouse;
+	}
+
+	public void setTotalHouse(int totalHouse) {
+		this.totalHouse = totalHouse;
+	}
+
+
 
 }
