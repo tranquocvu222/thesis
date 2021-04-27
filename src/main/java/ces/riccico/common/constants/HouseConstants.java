@@ -34,7 +34,10 @@ public class HouseConstants {
 	
 	public static final String UNLISTED_BLOCK = "House was block or ulisted";
 	
-	public static final String INVALID_STATUS = "invalid status house";
+	public static final String INVALID_STATUS = "Invalid status house";
+	
+	public static final String STATUS_NULL = "Status is not entered yet";
+
 
 
 }

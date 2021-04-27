@@ -257,7 +257,6 @@ public class HouseServiceImpl implements HouseService {
 		}
 
 		if (page >= pageMax) {
-
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			message.setMessage(CommonConstants.INVALID_PAGE);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -432,18 +431,39 @@ public class HouseServiceImpl implements HouseService {
 				listHouse = houseRepository.getAllHouseForAdmin(paging).getContent();
 				pageMax = houseRepository.getAllHouseForAdmin(paging).getTotalPages();
 			} else {
+
+				if (blockCurrent == true && status == null) {
+					listHouse = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getContent();
+					pageMax = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getTotalPages();
+
+					for (House house : listHouse) {
+						HouseModel houseModel = mapper.map(house, HouseModel.class);
+						if (houseModel.getModifiedDate() == null || houseModel.getModifiedDate().toString().isEmpty()) {
+							houseModel.setModifiedDate(house.getCreatedAt());
+						}
+						listHouseModel.add(houseModel);
+					}
+					paginationModel.setListObject(listHouseModel);
+					paginationModel.setPageMax(pageMax);
+					message.setData(paginationModel);
+					message.setMessage(UserConstants.GET_INFORMATION);
+					message.setStatus(HttpStatus.OK.value());
+					return ResponseEntity.ok(message);
+				}
 				List<String> listStatus = Stream.of(StatusHouse.values()).map(StatusHouse::name)
 						.collect(Collectors.toList());
-				if (!listStatus.contains(status.toUpperCase())) {
-					message.setMessage(HouseConstants.INVALID_STATUS);
+				try {
+					if (!listStatus.contains(status.toUpperCase())) {
+						message.setMessage(HouseConstants.INVALID_STATUS);
+						message.setStatus(HttpStatus.BAD_REQUEST.value());
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+					}
+				} catch (Exception e) {
+					message.setMessage(HouseConstants.STATUS_NULL);
 					message.setStatus(HttpStatus.BAD_REQUEST.value());
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				}
-				if (blockCurrent == true) {
-					listHouse = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getContent();
-					pageMax = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getTotalPages();
-				}
-				System.out.println("======= " + blockCurrent);
+
 				blockCurrent = false;
 				listHouse = houseRepository.getHouseForAdmin(blockCurrent, status, paging).getContent();
 				pageMax = houseRepository.getHouseForAdmin(blockCurrent, status, paging).getTotalPages();
@@ -457,26 +477,57 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
-			if (status == null || status.isEmpty() || block == null) {
+			if ((status == null || status.isEmpty()) && block == null) {
 				listHouse = houseRepository.getAllHouseForHost(accountId, paging).getContent();
 				pageMax = houseRepository.getAllHouseForHost(accountId, paging).getTotalPages();
 			} else {
+				
+				if (blockCurrent == true && status == null) {
+					listHouse = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getContent();
+					pageMax = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getTotalPages();
+
+					for (House house : listHouse) {
+						HouseModel houseModel = mapper.map(house, HouseModel.class);
+						if (houseModel.getModifiedDate() == null || houseModel.getModifiedDate().toString().isEmpty()) {
+							houseModel.setModifiedDate(house.getCreatedAt());
+						}
+						listHouseModel.add(houseModel);
+					}
+					paginationModel.setListObject(listHouseModel);
+					paginationModel.setPageMax(pageMax);
+					message.setData(paginationModel);
+					message.setMessage(UserConstants.GET_INFORMATION);
+					message.setStatus(HttpStatus.OK.value());
+					return ResponseEntity.ok(message);
+				}
 				List<String> listStatus = Stream.of(StatusHouse.values()).map(StatusHouse::name)
 						.collect(Collectors.toList());
-				if (!listStatus.contains(status.toUpperCase())) {
-					message.setMessage(HouseConstants.INVALID_STATUS);
+				
+				try {
+					if (!listStatus.contains(status.toUpperCase())) {
+						message.setMessage(HouseConstants.INVALID_STATUS);
+						message.setStatus(HttpStatus.BAD_REQUEST.value());
+						return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+					}
+				} catch (Exception e) {
+					message.setMessage(HouseConstants.STATUS_NULL);
 					message.setStatus(HttpStatus.BAD_REQUEST.value());
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				}
+				
+				blockCurrent = false;
 				listHouse = houseRepository.getHouseForHost(accountId, status, blockCurrent, paging).getContent();
 				pageMax = houseRepository.getHouseForHost(accountId, status, blockCurrent, paging).getTotalPages();
+				
 			}
 		}
+
 		if (listHouse.size() == 0) {
 			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
+
 		for (House house : listHouse) {
 			HouseModel houseModel = mapper.map(house, HouseModel.class);
 			if (houseModel.getModifiedDate() == null || houseModel.getModifiedDate().toString().isEmpty()) {
@@ -675,6 +726,7 @@ public class HouseServiceImpl implements HouseService {
 		house.setImages(images);
 
 		house.setAccount(account);
+		house.setBlock(false);
 		house.setStatus(StatusHouse.LISTED.getStatusName());
 		houseRepository.saveAndFlush(house);
 		message.setData(house);
@@ -733,7 +785,7 @@ public class HouseServiceImpl implements HouseService {
 		message.setData(listHouseModel);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(paginationModel);
+		return ResponseEntity.ok(message);
 
 	}
 
