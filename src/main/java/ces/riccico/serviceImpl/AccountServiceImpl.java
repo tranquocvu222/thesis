@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.decimal4j.util.DoubleRounder;
 import org.modelmapper.ModelMapper;
@@ -22,11 +24,14 @@ import org.springframework.stereotype.Service;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 import ces.riccico.common.constants.CommonConstants;
+import ces.riccico.common.constants.HouseConstants;
 import ces.riccico.common.constants.TokenConstants;
 import ces.riccico.common.constants.UserConstants;
 import ces.riccico.common.constants.Validation;
 import ces.riccico.common.enums.Role;
+import ces.riccico.common.enums.StatusAccount;
 import ces.riccico.common.enums.StatusBooking;
+import ces.riccico.common.enums.StatusHouse;
 import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.Token;
@@ -115,11 +120,11 @@ public class AccountServiceImpl implements AccountService {
 //	Banned account 
 	@Override
 	public ResponseEntity<?> banAccount(int accountId) {
-		
+
 		MessageModel message = new MessageModel();
 		Integer currentId = securityAuditorAware.getCurrentAuditor().get();
 		Account account = accountRepository.findById(accountId).get();
-		
+
 		if (!accountRepository.findById(currentId).get().getRole().equals(Role.ADMIN.getRole())) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
 			message.setStatus(HttpStatus.FORBIDDEN.value());
@@ -245,18 +250,26 @@ public class AccountServiceImpl implements AccountService {
 //		message.setStatus(HttpStatus.OK.value());
 //		return ResponseEntity.ok(message);
 //	}
-
 	@Override
-	public ResponseEntity<?> findAllAccountPageAndSize(int page, int size) {
+	public ResponseEntity<?> findAllAccountPageAndSize(String status, int page, int size) {
 
 		List<Object> listAccountModel = new ArrayList<Object>();
 		List<Account> listAccount = new ArrayList<Account>();
 		PaginationModel paginationModel = new PaginationModel();
 		MessageModel message = new MessageModel();
-		
 		Pageable paging = PageRequest.of(page, size);
-		listAccount = accountRepository.findAll(paging).getContent();
-		int pageMax = accountRepository.findAll(paging).getTotalPages();
+		int pageMax = 0;
+		boolean statusCurrent = Boolean.parseBoolean(status);
+		System.out.println(statusCurrent);
+		if (status == null || status.isEmpty()) {
+			listAccount = accountRepository.findAll(paging).getContent();
+			pageMax = accountRepository.findAll(paging).getTotalPages();
+		
+		} else {
+			listAccount = accountRepository.getAccountsForAdmin(statusCurrent, paging).getContent();
+			pageMax = accountRepository.getAccountsForAdmin(statusCurrent, paging).getTotalPages();
+			
+		}
 
 		if (listAccount.size() == 0) {
 			message.setMessage(CommonConstants.LIST_ACCOUNT_EMPTY);
@@ -265,7 +278,6 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 		for (Account account : listAccount) {
-
 			AccountModel accountModel = mapper.map(account, AccountModel.class);
 			accountModel.setId(account.getAccountId());
 			accountModel.setFirstName(account.getUser().getFirstName());
@@ -274,8 +286,15 @@ public class AccountServiceImpl implements AccountService {
 			accountModel.setCity(account.getUser().getCity());
 			accountModel.setAddress(account.getUser().getAddress());
 			accountModel.setImage(account.getUser().getImage());
+			accountModel.setTotalHouse(accountRepository.countHouse(account.getAccountId()));
 			listAccountModel.add(accountModel);
 
+		}
+
+		if (page >= pageMax) {
+			message.setMessage(CommonConstants.INVALID_PAGE);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		paginationModel.setListObject(listAccountModel);

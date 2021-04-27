@@ -17,7 +17,7 @@ public class BookingConstants {
 
 	public static final String INVALID_DATE_COMPLETE = "Not yet time to complete";
 
-	public static final String INVALID_STATUS = "invalid status";
+	public static final String INVALID_STATUS = "invalid status booking";
 
 	public static final String HOUSE_BOOKED = "The house has been booked";
 

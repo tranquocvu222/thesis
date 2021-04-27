@@ -20,6 +20,16 @@ public class HouseModel {
 
 	private String status;
 	
+	private boolean isBlock;
+	
+	public boolean isBlock() {
+		return isBlock;
+	}
+
+	public void setBlock(boolean isBlock) {
+		this.isBlock = isBlock;
+	}
+
 	private Date modifiedDate;
 
 	public Integer getId() {

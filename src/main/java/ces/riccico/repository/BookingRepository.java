@@ -1,7 +1,6 @@
 package ces.riccico.repository;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,8 +55,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	@Query("Select b from Booking b where b.status ='pending'")
 	List<Booking> getAllBookingPending();
 
-	@Query(value = "select sum(bill), date_part('month',create_check_in) as month from bookings  where (status = 'completed' or status = 'paid') and date_part('year',create_check_in) = ?1 \r\n"
-			+ "group by date_part('month',create_check_in)", nativeQuery = true)
-	List<Object> getMonthlyRevenue(int year);
+	@Query("select new ces.riccico.model.RevenueMonthly("
+			+ "sum(b.bill), MONTH(b.dateCheckIn)) from Booking b  where (b.status = 'completed' or b.status = 'paid') and YEAR(dateCheckIn) = ?1 group by MONTH(dateCheckIn) ")
+	List<RevenueMonthly> getMonthlyRevenue(int year);
 
 }

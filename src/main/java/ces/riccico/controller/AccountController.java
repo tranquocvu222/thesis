@@ -54,9 +54,9 @@ public class AccountController {
 	// find house with pagination
 	@GetMapping("/accounts")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
+	public ResponseEntity<?> findByPageAndSize(@RequestParam(required = false) String status,@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
-		return accountService.findAllAccountPageAndSize(page, size);
+		return accountService.findAllAccountPageAndSize(status, page, size);
 	}
 
 	// this is a forgotten password feature, which helps you recover your password

@@ -40,10 +40,17 @@ public class HouseController {
 	}
 
 	// delete house
-	@DeleteMapping("/{houseId}")
+	@DeleteMapping("/deactiveHouse/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> deleteHouse(@PathVariable int houseId) {
-		return houseService.deleteHouse(houseId);
+	public ResponseEntity<?> deactiveHouse(@PathVariable int houseId) {
+		return houseService.deactiveHouse(houseId);
+	}
+
+	// unlisted house
+	@PutMapping("/unlistedHouse/{houseId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+	public ResponseEntity<?> unlistedHouse(@PathVariable int houseId) {
+		return houseService.unlistedHouse(houseId);
 	}
 
 	// find house with pagination
@@ -53,12 +60,12 @@ public class HouseController {
 		return houseService.findByPageAndSize(page, size);
 	}
 
-	// search by tile of post
-	@GetMapping("/searchTitle")
-	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
-		return houseService.findByTitle(title, page, size);
-	}
+//	// search by tile of post
+//	@GetMapping("/searchTitle")
+//	public ResponseEntity<?> findByTitle(@RequestParam(required = false) String title,
+//			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+//		return houseService.findByTitle(title, page, size);
+//	}
 
 	// find house by username of host
 	@GetMapping("/username/{username}")
@@ -76,9 +83,9 @@ public class HouseController {
 	@GetMapping("/host")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> getHouseForHost(@RequestParam(defaultValue = "0") Integer accountId,
-			@RequestParam(required = false) String status, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(required = false) String status,@RequestParam(required = false) String block, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
-		return houseService.getHouseForHost(accountId, status, page, size);
+		return houseService.getHouseForHost(accountId, block, status, page, size);
 	}
 
 	// post your house on the website

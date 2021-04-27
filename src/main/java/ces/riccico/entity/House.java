@@ -67,6 +67,9 @@ public class House extends Auditable {
 
 	@Column(name = "maxGuest")
 	private byte maxGuest;
+	
+	@Column(name = "isBlock")
+	private boolean isBlock;
 
 	@Column(name = "status")
 	private String status;
@@ -217,5 +220,15 @@ public class House extends Auditable {
 	public void setImages(String images) {
 		this.images = images;
 	}
+
+	public boolean isBlock() {
+		return isBlock;
+	}
+
+	public void setBlock(boolean isBlock) {
+		this.isBlock = isBlock;
+	}
+	
+	
 
 }

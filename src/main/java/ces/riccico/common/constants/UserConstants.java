@@ -46,6 +46,8 @@ public class UserConstants {
 	public static final String INVALID_ACCOUNT = "Username or password is wrong";
 
 	public static final String INVALID_CODE = "invalid code";
+	
+	public static final String IMAGE_DEFAULT = "Default image was attached";
 
 	public static final String LAST_NAME_NULL = "LastName is required!";
 
@@ -61,6 +63,5 @@ public class UserConstants {
 
 	public static final String GET_INFORMATION = "Get information successly";
 	
-	public static final String IMAGE_DEFAULT = "Default image was attached";
 
 }

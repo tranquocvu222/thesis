@@ -311,7 +311,7 @@ public class BookingServiceImpl implements BookingService {
 			List<String> listStatus = Stream.of(StatusBooking.values()).map(StatusBooking::name)
 					.collect(Collectors.toList());
 			if (!listStatus.contains(status.toUpperCase())) {
-				message.setMessage(HouseConstants.INVALID_STATUS);
+				message.setMessage(BookingConstants.INVALID_STATUS);
 				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
@@ -385,7 +385,7 @@ public class BookingServiceImpl implements BookingService {
 			List<String> listStatus = Stream.of(StatusBooking.values()).map(StatusBooking::name)
 					.collect(Collectors.toList());
 			if (!listStatus.contains(status.toUpperCase())) {
-				message.setMessage(HouseConstants.INVALID_STATUS);
+				message.setMessage(BookingConstants.INVALID_STATUS);
 				message.setStatus(HttpStatus.BAD_REQUEST.value());
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 			}
@@ -500,16 +500,23 @@ public class BookingServiceImpl implements BookingService {
 	public ResponseEntity<?> receiveBooking(int houseId, DateModel dateModel) {
 
 		MessageModel message = new MessageModel();
-
-		if (houseRepository.findById(houseId) == null) {
-			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
+		Account account = accountRepository.findById(idCurrent).get();
+		House house = houseRepository.findById(houseId).get();
+		
+		try {
+			house = houseRepository.findById(houseId).get();
+		} catch (Exception e) {
+			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		Account account = accountRepository.findById(idCurrent).get();
-		House house = houseRepository.findById(houseId).get();
+		if (house == null) {
+			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
 
 		if (idCurrent.equals(house.getAccount().getAccountId())) {
 			message.setMessage(BookingConstants.ACCOUNT_WITHOUT_PERMISSION);
@@ -517,10 +524,10 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 
-		if (!StatusHouse.LISTED.getStatusName().equals(house.getStatus())) {
-			message.setMessage(HouseConstants.INVALID_STATUS);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		if (!StatusHouse.LISTED.getStatusName().equals(house.getStatus()) || house.isBlock() == true) {
+			message.setMessage(HouseConstants.UNLISTED_BLOCK);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
@@ -583,6 +590,10 @@ public class BookingServiceImpl implements BookingService {
 		return ResponseEntity.ok(booking);
 
 	}
+	
+	
+	
+	
 
 
 
