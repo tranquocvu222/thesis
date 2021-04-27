@@ -30,6 +30,7 @@ import ces.riccico.model.BookingPaid;
 import ces.riccico.model.HouseBooking;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.RevenueMonthly;
+import ces.riccico.model.TotalHouseMonthly;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
@@ -145,23 +146,25 @@ public class AdminServiceImpl implements AdminService {
 			message.setMessage(UserConstants.GET_INFORMATION);
 			message.setStatus(HttpStatus.OK.value());
 			return ResponseEntity.ok(message);
-	
 
-//		List<RevenueMonthly> lrevenueMonthly = new ArrayList<RevenueMonthly>();
-//		RevenueMonthly revenue = new RevenueMonthly();
-//		String [] vu = null;
-//		for (Object oj : listRevenueMonthly) {
-//			RevenueMonthly revenueMonthly = new RevenueMonthly();
-//			System.out.println("========= " + oj.toString());
-//			revenueMonthly.setMonth(oj.toString().indexOf(1));
-//			revenueMonthly.setRevenue(oj.toString().indexOf(0));
-//			System.out.println("========= " + revenueMonthly.getMonth());
-//			lrevenueMonthly.add(revenueMonthly);
-//			
-//		}
-//		RevenueMonthly revenueMonthly = new RevenueMonthly();
-//		System.out.println("===== " + listRevenueMonthly.get(0).toString());
-//		revenueMonthly.setRevenue(listRevenueMonthly.get(1));
+	}
+	
+	@Override
+	public ResponseEntity<?> totalHouseMonthly(int year) {
+
+		List<TotalHouseMonthly> listTotalHouseMonthly = new ArrayList<TotalHouseMonthly>();
+		MessageModel message = new MessageModel();
+
+		listTotalHouseMonthly = houseRepository.getTotalHouseMonthly(year);
+			if (listTotalHouseMonthly.size() == 0) {
+				message.setMessage(CommonConstants.LIST_HOUSE_EMPTY);			
+				message.setStatus(HttpStatus.NOT_FOUND.value());
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			}
+			message.setData(listTotalHouseMonthly);
+			message.setMessage(UserConstants.GET_INFORMATION);
+			message.setStatus(HttpStatus.OK.value());
+			return ResponseEntity.ok(message);
 
 	}
 
