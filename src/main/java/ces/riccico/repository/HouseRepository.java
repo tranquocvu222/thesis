@@ -40,6 +40,9 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 	@Query("Select h from House h where h.account.id =?1 and h.status =?2 and h.isBlock = ?3")
 	Page<House> getHouseForHost(int accountId, String  status, boolean block, Pageable pageable);
 	
+	@Query("Select h from House h where h.account.id =?1 and h.isBlock = ?2")
+	Page<House> getHouseBlockForHost(int accountId, boolean block, Pageable pageable);
+	
 	@Query("Select h from House h")
 	Page<House> getAllHouseForAdmin(Pageable pageable);
 	

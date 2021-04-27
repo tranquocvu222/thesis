@@ -1,4 +1,4 @@
-
+	
 package ces.riccico.serviceImpl;
 
 import java.text.ParseException;
@@ -215,7 +215,7 @@ public class BookingServiceImpl implements BookingService {
 		message.setData(listBookingPending);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(listBookingPending);
+		return ResponseEntity.ok(message);
 	}
 
 	@Override
@@ -272,7 +272,7 @@ public class BookingServiceImpl implements BookingService {
 		message.setData(booking);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(booking);
+		return ResponseEntity.ok(message);
 	}
 
 	@Override
@@ -343,10 +343,10 @@ public class BookingServiceImpl implements BookingService {
 		paginationModel.setListObject(listBookingModel);
 		paginationModel.setPageMax(pageMax);
 
-		message.setData(listBookingModel);
+		message.setData(paginationModel);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(paginationModel);
+		return ResponseEntity.ok(message);
 	}
 
 	@Override
@@ -417,10 +417,10 @@ public class BookingServiceImpl implements BookingService {
 		paginationModel.setListObject(listBookingModel);
 		paginationModel.setPageMax(pageMax);
 
-		message.setData(listBookingModel);
+		message.setData(paginationModel);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(paginationModel);
+		return ResponseEntity.ok(message);
 	}
 
 	@Override
@@ -430,7 +430,6 @@ public class BookingServiceImpl implements BookingService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		int houseId = bookingRepository.findById(bookingId).get().getHouse().getId();
 		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
-		System.out.println("=" + listBookings.size());
 
 		if (!bookingRepository.findById(bookingId).isPresent()) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
@@ -587,7 +586,7 @@ public class BookingServiceImpl implements BookingService {
 		message.setData(booking);
 		message.setMessage(CommonConstants.SUCCESS);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(booking);
+		return ResponseEntity.ok(message);
 
 	}
 	

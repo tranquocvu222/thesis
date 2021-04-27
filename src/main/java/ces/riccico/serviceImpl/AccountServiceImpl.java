@@ -192,7 +192,6 @@ public class AccountServiceImpl implements AccountService {
 			} else {
 				account.setPassword(encoder.encode(newPassword));
 				accountRepository.saveAndFlush(account);
-				message.setData(account);
 				message.setMessage(CommonConstants.CHANGEPASSWORD_SUCCESS);
 				message.setStatus(HttpStatus.OK.value());
 				return ResponseEntity.ok(message);
@@ -260,7 +259,7 @@ public class AccountServiceImpl implements AccountService {
 		Pageable paging = PageRequest.of(page, size);
 		int pageMax = 0;
 		boolean statusCurrent = Boolean.parseBoolean(status);
-		System.out.println(statusCurrent);
+
 		if (status == null || status.isEmpty()) {
 			listAccount = accountRepository.findAll(paging).getContent();
 			pageMax = accountRepository.findAll(paging).getTotalPages();
@@ -538,7 +537,6 @@ public class AccountServiceImpl implements AccountService {
 		user.setAccount(accountNew);
 		accountRepository.saveAndFlush(accountNew);
 		userRepository.saveAndFlush(user);
-		message.setData(accountNew);
 		message.setMessage(CommonConstants.SUCCESS);
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
@@ -584,7 +582,6 @@ public class AccountServiceImpl implements AccountService {
 
 		account.setPassword(new BCryptPasswordEncoder().encode(password));
 		accountRepository.saveAndFlush(account);
-		message.setData(account);
 		message.setMessage(CommonConstants.SUCCESS);
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
