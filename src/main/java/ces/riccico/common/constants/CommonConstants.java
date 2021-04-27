@@ -23,6 +23,8 @@ public class CommonConstants {
 	
 	public static final String LIST_REVENUE_EMPTY = "List revenue monthly empty";
 	
+	public static final String LIST_HOUSE_EMPTY = "List total house monthly empty";
+	
 	public static final String LOGIN_SUCCESS = "Login successfully";
 
 	public static final String MESSAGE = "message";

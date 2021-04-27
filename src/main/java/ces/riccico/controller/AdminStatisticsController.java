@@ -40,5 +40,12 @@ public class AdminStatisticsController {
 	public ResponseEntity<?> monthlyRevenue(@PathVariable int year) {
 		return adminService.monthlyRevenue(year);
 	}
+	
+	// this is total house monthly
+	@GetMapping("/totalHouse/{year}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+	public ResponseEntity<?> totalHouseMonthly(@PathVariable int year) {
+		return adminService.totalHouseMonthly(year);
+	}
 
 }

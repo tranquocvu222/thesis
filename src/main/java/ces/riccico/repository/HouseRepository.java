@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ces.riccico.entity.House;
+import ces.riccico.model.RevenueMonthly;
+import ces.riccico.model.TotalHouseMonthly;
 
 @Repository
 public interface HouseRepository extends JpaRepository<House, Integer> {
@@ -51,6 +53,13 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 	
 	@Query("Select h from House h where h.isBlock = ?1")
 	Page<House> getHouseBlockForAdmin(boolean block, Pageable pageable);
+
+	
+	@Query("select new ces.riccico.model.TotalHouseMonthly("
+			+ "count(h.id), MONTH(h.createdAt)) from House h  where YEAR(h.createdAt) = ?1 group by MONTH(h.createdAt)")
+	List<TotalHouseMonthly> getTotalHouseMonthly(int year);
+	
+
 
 	@Query("Select h from House h where h.status =?1")
 	Page<House> getHouseForAdmin(String status, Pageable pageable);

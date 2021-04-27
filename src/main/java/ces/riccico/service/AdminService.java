@@ -10,4 +10,6 @@ public interface AdminService {
 	
 	ResponseEntity<?> monthlyRevenue(int year);
 
+	ResponseEntity<?> totalHouseMonthly(int year);
+
 }
