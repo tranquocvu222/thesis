@@ -115,28 +115,6 @@ public class HouseServiceImpl implements HouseService {
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
 
-//		if (StatusHouse.BLOCKED.getStatusName().equals(house.getStatus())) {
-//			house.setStatus(StatusHouse.LISTED.getStatusName());
-//			houseRepository.saveAndFlush(house);
-//			message.setData(house);
-//			message.setMessage(HouseConstants.UNBLOCK_SUCCESS);
-//			message.setStatus(HttpStatus.OK.value());
-//			return ResponseEntity.ok(message);
-//		}
-//
-//		if (StatusHouse.LISTED.getStatusName().equals(house.getStatus())) {
-//			house.setStatus(StatusHouse.BLOCKED.getStatusName());
-//			houseRepository.saveAndFlush(house);
-//			message.setData(house);
-//			message.setMessage(HouseConstants.BLOCK_SUCCESS);
-//			message.setStatus(HttpStatus.OK.value());
-//			return ResponseEntity.ok(message);
-//		}
-
-//		message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
-//		message.setStatus(HttpStatus.NOT_FOUND.value());
-//		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-
 	}
 
 	@Override
@@ -270,26 +248,6 @@ public class HouseServiceImpl implements HouseService {
 		return ResponseEntity.ok(message);
 
 	}
-
-//	@Override
-//	public ResponseEntity<?> findByTitle(String title, int page, int size) {
-//		Pageable paging = PageRequest.of(page, size);
-//		List<House> listHouse = houseRepository.findAll(paging).getContent();
-//		List<House> listHouseByTitle = houseRepository.findByTitle(title, paging).getContent();
-//		MessageModel message = new MessageModel();
-//
-//		if (title == null || title.isEmpty()) {
-//			message.setData(listHouse);
-//			message.setMessage(UserConstants.GET_INFORMATION);
-//			message.setStatus(HttpStatus.OK.value());
-//			return ResponseEntity.ok(message);
-//		} else {
-//			message.setData(listHouseByTitle);
-//			message.setMessage(UserConstants.GET_INFORMATION);
-//			message.setStatus(HttpStatus.OK.value());
-//			return ResponseEntity.ok(message);
-//		}
-//	}
 
 	@Override
 	public ResponseEntity<?> findHouseByUsername(String username) {
@@ -481,7 +439,7 @@ public class HouseServiceImpl implements HouseService {
 				listHouse = houseRepository.getAllHouseForHost(accountId, paging).getContent();
 				pageMax = houseRepository.getAllHouseForHost(accountId, paging).getTotalPages();
 			} else {
-				
+
 				if (blockCurrent == true && status == null) {
 					listHouse = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getContent();
 					pageMax = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getTotalPages();
@@ -502,7 +460,7 @@ public class HouseServiceImpl implements HouseService {
 				}
 				List<String> listStatus = Stream.of(StatusHouse.values()).map(StatusHouse::name)
 						.collect(Collectors.toList());
-				
+
 				try {
 					if (!listStatus.contains(status.toUpperCase())) {
 						message.setMessage(HouseConstants.INVALID_STATUS);
@@ -514,11 +472,11 @@ public class HouseServiceImpl implements HouseService {
 					message.setStatus(HttpStatus.BAD_REQUEST.value());
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 				}
-				
+
 				blockCurrent = false;
 				listHouse = houseRepository.getHouseForHost(accountId, status, blockCurrent, paging).getContent();
 				pageMax = houseRepository.getHouseForHost(accountId, status, blockCurrent, paging).getTotalPages();
-				
+
 			}
 		}
 
@@ -779,10 +737,9 @@ public class HouseServiceImpl implements HouseService {
 		int fromIndex = (page) * size;
 		final int numPages = (int) Math.ceil((double) listHouseModel.size() / (double) size);
 
-		paginationModel
-				.setListObject(listHouseModel.subList(fromIndex, Math.min(fromIndex + size, listHouseModel.size())));
+		paginationModel.setListObject(listHouseModel.subList(fromIndex, Math.min(fromIndex + size, listHouseModel.size())));
 		paginationModel.setPageMax(numPages);
-		message.setData(listHouseModel);
+		message.setData(paginationModel);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
