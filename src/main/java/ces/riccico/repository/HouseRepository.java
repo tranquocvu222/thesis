@@ -25,27 +25,25 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 			+ "and h.status = 'listed'")
 	List<House> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
 			Double highestPrice, byte lowestGuest, byte highestGuest);
-	
+
 	@Query("select count(DISTINCT account) from House ")
 	Integer totalAccountHost();
-	
+
 	@Query("select count(id) from  House ")
 	Integer totalHouse();
-	
+
 	List<House> findByAccountId(int accountId);
-	
+
 	@Query("Select h from House h where h.account.id =?1")
 	Page<House> getAllHouseForHost(int accountId, Pageable pageable);
-	
+
 	@Query("Select h from House h where h.account.id =?1 and h.status =?2")
-	Page<House> getHouseForHost(int accountId, String  status, Pageable pageable);
-	
+	Page<House> getHouseForHost(int accountId, String status, Pageable pageable);
+
 	@Query("Select h from House h")
 	Page<House> getAllHouseForAdmin(Pageable pageable);
-	
-	@Query("Select h from House h where h.status =?1")
-	Page<House> getHouseForAdmin(String  status, Pageable pageable);
-	
 
+	@Query("Select h from House h where h.status =?1")
+	Page<House> getHouseForAdmin(String status, Pageable pageable);
 
 }

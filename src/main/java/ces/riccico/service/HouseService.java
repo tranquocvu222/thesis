@@ -1,5 +1,7 @@
 package ces.riccico.service;
 
+import java.io.IOException;
+
 import org.springframework.http.ResponseEntity;
 import ces.riccico.model.HouseDetailModel;
 
@@ -23,6 +25,8 @@ public interface HouseService {
 	
 	ResponseEntity<?> getHouseForHost(int accountId, String status, int page, int size);
 
+	ResponseEntity<?> getHouseRecommendForUser(int houseId) throws IOException;
+	
 	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
 
 	ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,

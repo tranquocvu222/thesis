@@ -84,7 +84,23 @@
 			<artifactId>decimal4j</artifactId>
 			<version>1.0.3</version>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-mllib -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-mllib_2.12</artifactId>
+			<version>3.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>commons-compiler</artifactId>
+            <version>3.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>3.0.8</version>
+        </dependency>
 	</dependencies>
 
 	<build>
