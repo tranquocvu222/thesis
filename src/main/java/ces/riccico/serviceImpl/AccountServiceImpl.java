@@ -110,7 +110,7 @@ public class AccountServiceImpl implements AccountService {
 		} else {
 			account.setActive(true);
 			accountRepository.saveAndFlush(account);
-			message.setData(account);
+//			message.setData(account);
 			message.setMessage(CommonConstants.ACTIVE_SUCCESS);
 			message.setStatus(HttpStatus.OK.value());
 			return ResponseEntity.ok(message);
@@ -142,7 +142,7 @@ public class AccountServiceImpl implements AccountService {
 
 		account.setBanned(IS_BANNED);
 		accountRepository.saveAndFlush(account);
-		message.setData(account);
+//		message.setData(account);
 		message.setMessage(CommonConstants.BAN_SUCCESS);
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
@@ -461,7 +461,7 @@ public class AccountServiceImpl implements AccountService {
 		} else {
 			Token token = tokenRepository.findByToken(tokenCurrent);
 			tokenRepository.delete(token);
-			message.setData(token.getToken());
+//			message.setData(token.getToken());
 			message.setMessage(CommonConstants.SUCCESS);
 			message.setStatus(HttpStatus.OK.value());
 			return ResponseEntity.ok(message);
