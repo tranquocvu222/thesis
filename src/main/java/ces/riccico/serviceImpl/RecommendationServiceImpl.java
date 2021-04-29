@@ -65,6 +65,13 @@ public class RecommendationServiceImpl implements RecommendationService {
 	public void init() {
 		SPARK_SESSION = SparkSession.builder().master(SPARK_MASTER).appName(SPARK_APP_NAME)
 				.getOrCreate();
+		SPARK_SESSION.conf().set("spark.sql.legacy.setCommandRejectsSparkCoreConfs","false");
+		SPARK_SESSION.conf().set("spark.blockManager.port", "10025");
+		SPARK_SESSION.conf().set("spark.driver.blockManager.port", "10026");
+		SPARK_SESSION.conf().set("spark.driver.port", "10027"); //make all communication ports static (not necessary if you disabled firewalls, or if your nodes located in local network, otherwise you must open this ports in firewall settings)
+		SPARK_SESSION.conf() .set("spark.cores.max", "12") ;
+		SPARK_SESSION.conf().set("spark.executor.memory", "2g");
+		SPARK_SESSION.conf().set("spark.driver.host", "192.168.1.6");
 		ratingDb = SPARK_SESSION.read().format("jdbc").option("url", DATASOURCE_URL)
 				.option("dbtable", DATASOURCE_TABLE_RATING).option("user", DATASOURCE_USERNAME)
 				.option("password", DATASOURCE_PASSWORD).load().select(STAR, BOOKING_ID);

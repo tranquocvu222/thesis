@@ -32,29 +32,29 @@ public class RecommendationController {
 	
 	private static Logger logger = LoggerFactory.getLogger(RecommendationController.class);
 	public static final long DAY = 86400000; // 1 days
-	private static final String FILE = "output2.txt";
+	
 	
 	@Autowired
 	private RecommendationService recommendationService;
 
-	@Async
-	@Scheduled(fixedDelay = 120000 )
+//	@Async
+//	@Scheduled(fixedDelay = 120000 )
 	@GetMapping
 	public ResponseEntity<?> writeFileRecommendForUser() throws IOException {
 		Path path = Paths.get(CommonConstants.FILE_RECOMMEND);
 		if(!Files.exists(path)) { 
 			recommendationService.init();
-			logger.info("train new model successly");
+			logger.info("train new model ");
 			recommendationService.writeFileRecommendForUser();
 			recommendationService.stop();
 			return ResponseEntity.ok("train new model successly");
 		}
 		recommendationService.init();
 		long countDb = recommendationService.countRowDbNew();
-		long countFile = recommendationService.countRowDbOld();
-//		long countFile = 3000;
+//		long countFile = recommendationService.countRowDbOld();
+		long countFile = 3000;
 		if(countDb > (countFile + (countFile*10)/100)) {
-			logger.info("retrain model successly");
+			logger.info("retrain model ");
 			recommendationService.writeFileRecommendForUser();
 			recommendationService.stop();
 			return ResponseEntity.ok("retrain model successly");
