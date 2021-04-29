@@ -60,8 +60,6 @@ public class HouseServiceImpl implements HouseService {
 
 	private static final String BLOCKED = "blocked";
 
-	private static final String FILE = "output2.txt";
-
 	@Autowired
 	private AccountRepository accountRepository;
 
@@ -409,7 +407,7 @@ public class HouseServiceImpl implements HouseService {
 		MessageModel message = new MessageModel();
 		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
 
-		BufferedReader bufReader = new BufferedReader(new FileReader(FILE));
+		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND),  1000 * 8192);
 		List<String> listOfLines = new ArrayList<String>();
 		String lineInFile = bufReader.readLine();
 		while (lineInFile != null) {

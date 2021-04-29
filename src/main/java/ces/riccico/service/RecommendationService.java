@@ -1,5 +1,6 @@
 package ces.riccico.service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.spark.ml.recommendation.ALSModel;
@@ -9,17 +10,25 @@ import org.springframework.http.ResponseEntity;
 
 import ces.riccico.model.RatingModel;
 
-public interface RecommendationService {
+public interface RecommendationService  {
 	
-	Dataset<Row> getDataFromDatabase();
+	Dataset<RatingModel> getDataFromDatabase() ;
 	
 	Dataset<Row> getPrediction();
 	
 	ALSModel trainModel();
 	
+	long countRowDbNew();
+	
+	long countRowDbOld() throws IOException ;
+	
 	double getRMSE();
 	
-	ResponseEntity<?> writeFileRecommendForUser() throws IOException;
+	void writeFileRecommendForUser() throws IOException;
+	
+	void stop();
+	
+	void init();
 	
 	
 }
