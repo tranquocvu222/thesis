@@ -26,6 +26,7 @@ import io.swagger.annotations.Authorization;
 @EnableAsync
 public class BookingController {
 
+	public static final long HOUR = 3600000; // 1 hour
 	@Autowired
 	private BookingService bookingService;
 
@@ -40,7 +41,7 @@ public class BookingController {
 	// this is the feature to confirm the booking has been completed
 	@PutMapping("/completeBooking")
 //	@Async
-//	@Scheduled( fixedDelay = 40000)
+//	@Scheduled( fixedDelay = 1 *HOUR)
 	public ResponseEntity<?> completeBooking() throws InterruptedException {
 		return bookingService.completeBooking̣̣̣();
 	}
@@ -48,17 +49,17 @@ public class BookingController {
 
 	// auto incompleted booking
 //	@Async
-//	@Scheduled(fixedDelay = 500000)
+//	@Scheduled(fixedDelay = 1* HOUR)
 	@PutMapping("/incompleted")
 	public ResponseEntity<?> incompleteBooking() {
 		return bookingService.incompleteBooking();
 	}
 
 	// get list booking of house
-	@GetMapping("/house/{houseId}")
-	public ResponseEntity<?> getBookingByHouseId(@PathVariable int houseId) {
-		return bookingService.findByHouseId(houseId);
-	}
+//	@GetMapping("/house/{houseId}")
+//	public ResponseEntity<?> getBookingByHouseId(@PathVariable int houseId) {
+//		return bookingService.findByHouseId(houseId);
+//	}
 
 	// get booking detail
 	@GetMapping("/detail/{bookingId}")

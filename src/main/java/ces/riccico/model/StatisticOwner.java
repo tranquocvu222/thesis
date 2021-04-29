@@ -15,7 +15,7 @@ public class StatisticOwner {
 	
 	private Float averageRating;
 	
-	private List<Booking> listBooking;
+	private List<BookingDetailModel> listBooking;
 
 	public Long getRevenue() {
 		return revenue;
@@ -49,13 +49,15 @@ public class StatisticOwner {
 		this.averageRating = averageRating;
 	}
 
-	public List<Booking> getListBooking() {
+	public List<BookingDetailModel> getListBooking() {
 		return listBooking;
 	}
 
-	public void setListBooking(List<Booking> listBooking) {
+	public void setListBooking(List<BookingDetailModel> listBooking) {
 		this.listBooking = listBooking;
 	}
+
+	
 	
 	
 

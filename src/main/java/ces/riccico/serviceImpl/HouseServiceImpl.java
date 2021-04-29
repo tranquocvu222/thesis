@@ -483,6 +483,7 @@ public class HouseServiceImpl implements HouseService {
 		if (listHouse.size() == 0) {
 			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
+			message.setData(listHouse);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
@@ -726,6 +727,7 @@ public class HouseServiceImpl implements HouseService {
 		if (listHouseAmenities.size() == 0) {
 			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
+			message.setData(listHouseAmenities);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
