@@ -65,6 +65,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 	public void init() {
 		SPARK_SESSION = SparkSession.builder().master(SPARK_MASTER).appName(SPARK_APP_NAME)
 				.getOrCreate();
+
 		ratingDb = SPARK_SESSION.read().format("jdbc").option("url", DATASOURCE_URL)
 				.option("dbtable", DATASOURCE_TABLE_RATING).option("user", DATASOURCE_USERNAME)
 				.option("password", DATASOURCE_PASSWORD).load().select(STAR, BOOKING_ID);

@@ -43,7 +43,7 @@ public class RecommendationController {
 		Path path = Paths.get(CommonConstants.FILE_RECOMMEND);
 		if(!Files.exists(path)) { 
 			recommendationService.init();
-			logger.info("train new model successly");
+			logger.info("train new model ");
 			recommendationService.writeFileRecommendForUser();
 			recommendationService.stop();
 			return ResponseEntity.ok("train new model successly");
@@ -53,7 +53,7 @@ public class RecommendationController {
 //		long countFile = recommendationService.countRowDbOld();
 		long countFile = 3000;
 		if(countDb > (countFile + (countFile*10)/100)) {
-			logger.info("retrain model successly");
+			logger.info("retrain model ");
 			recommendationService.writeFileRecommendForUser();
 			recommendationService.stop();
 			return ResponseEntity.ok("retrain model successly");
