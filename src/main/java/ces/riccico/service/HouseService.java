@@ -13,7 +13,7 @@ public interface HouseService {
 	
 //	ResponseEntity<?> unBlockHouse(int houseId);
 
-	ResponseEntity<?> findByPageAndSize(int page, int size);
+	ResponseEntity<?> findByPageAndSize(String page, String size);
 
 //	ResponseEntity<?> findByTitle(String title, int page, int size);
 

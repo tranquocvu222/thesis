@@ -1,3 +1,4 @@
+
 package ces.riccico.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,8 +80,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/revenue/**").hasAnyAuthority(ROLE_ADMIN)
 		
 		//permit all 
-		
-//		.anyRequest().authenticated()
+//		.antMatchers(HttpMethod.GET, "/houses/listHouse/**").permitAll().
+//		 anyRequest().authenticated().
+//         and().
+//         anonymous().disable();
 
 //		.and()
 //		.exceptionHandling().accessDeniedPage("/403")

@@ -54,9 +54,9 @@ public class HouseController {
 	}
 
 	// find house with pagination
-	@GetMapping
-	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
+	@GetMapping("/listHouse")
+	public ResponseEntity<?> findByPageAndSize(@RequestParam(required = false) String page,
+			@RequestParam(required = false) String size) {
 		return houseService.findByPageAndSize(page, size);
 	}
 
