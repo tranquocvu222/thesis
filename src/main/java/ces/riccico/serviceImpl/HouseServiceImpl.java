@@ -1,4 +1,5 @@
 
+
 package ces.riccico.serviceImpl;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -218,7 +220,7 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> findByPageAndSize(String page, String size) {
+	public CompletableFuture<?> findByPageAndSize(String page, String size) {
 		List<Object> listHouseModel = new ArrayList<Object>();
 		List<House> listHouse = new ArrayList<House>();
 		PaginationModel paginationModel = new PaginationModel();
@@ -265,7 +267,7 @@ public class HouseServiceImpl implements HouseService {
 		if (pageCurrent >= pageMax) {
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			message.setMessage(CommonConstants.INVALID_PAGE);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+			return CompletableFuture.completedFuture(message);
 		}
 
 		paginationModel.setListObject(listHouseModel);
@@ -273,7 +275,7 @@ public class HouseServiceImpl implements HouseService {
 		message.setData(paginationModel);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(message);
+		return CompletableFuture.completedFuture(message);
 
 	}
 
@@ -312,14 +314,14 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> getHouseDetail(Integer houseId) {
+	public CompletableFuture<?> getHouseDetail(Integer houseId) {
 		MessageModel message = new MessageModel();
 		HouseDetailModel houseDetail;
 
 		if (!houseRepository.findById(houseId).isPresent()) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			return CompletableFuture.completedFuture(message);
 		}
 
 		House house = houseRepository.findById(houseId).get();
@@ -384,7 +386,7 @@ public class HouseServiceImpl implements HouseService {
 		message.setData(houseDetail);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(message);
+		return CompletableFuture.completedFuture(message);
 	}
 
 	@Override
@@ -850,5 +852,6 @@ public class HouseServiceImpl implements HouseService {
 		return ResponseEntity.ok(message);
 
 	}
+	
 
 }

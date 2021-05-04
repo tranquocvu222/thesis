@@ -1,6 +1,7 @@
 package ces.riccico.service;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.ResponseEntity;
 import ces.riccico.model.HouseDetailModel;
@@ -15,13 +16,17 @@ public interface HouseService {
 	
 //	ResponseEntity<?> unBlockHouse(int houseId);
 
-	ResponseEntity<?> findByPageAndSize(String page, String size);
+//	ResponseEntity<?> findByPageAndSize(String page, String size);
+	
+	CompletableFuture<?> findByPageAndSize(String page, String size);
 
 //	ResponseEntity<?> findByTitle(String title, int page, int size);
 
 	ResponseEntity<?> findHouseByUsername(String username);
 
-	ResponseEntity<?> getHouseDetail(Integer houseId);
+//	ResponseEntity<?> getHouseDetail(Integer houseId);
+	
+	CompletableFuture<?> getHouseDetail(Integer houseId);
 	
 	ResponseEntity<?> getHouseForHost(int accountId, String block, String status, int page, int size);
 

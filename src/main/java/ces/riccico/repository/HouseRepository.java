@@ -22,7 +22,7 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 	@Query("Select h from House h where h.isBlock = false and h.status = 'listed'")
 	Page<House> findList(Pageable pageable);
 
-	@Query("Select h from House h where h.country like %?1% and h.city like %?2% and h.size >= ?3 and h.size <= ?4 "
+	@Query("Select h from House h where h.isBlock = false and h.country like %?1% and h.city like %?2% and h.size >= ?3 and h.size <= ?4 "
 			+ "and h.price >= ?5 and h.price <= ?6  and h.maxGuest >= ?7 and h.maxGuest <= ?8 "
 			+ "and h.status = 'listed'")
 	List<House> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,

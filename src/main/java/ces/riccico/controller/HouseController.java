@@ -2,6 +2,7 @@
 package ces.riccico.controller;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -57,7 +58,7 @@ public class HouseController {
 
 	// find house with pagination
 	@GetMapping("/listHouse")
-	public ResponseEntity<?> findByPageAndSize(@RequestParam(required = false) String page,
+	public CompletableFuture<?> findByPageAndSize(@RequestParam(required = false) String page,
 			@RequestParam(required = false) String size) {
 		return houseService.findByPageAndSize(page, size);
 	}
@@ -77,7 +78,7 @@ public class HouseController {
 
 	// see house's detail, service of room and view room
 	@GetMapping("/detail")
-	public ResponseEntity<?> getHouseDetail(@RequestParam Integer houseId) {
+	public CompletableFuture<?> getHouseDetail(@RequestParam Integer houseId) {
 		return houseService.getHouseDetail(houseId);
 	}
 

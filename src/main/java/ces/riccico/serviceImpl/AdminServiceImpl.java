@@ -4,6 +4,7 @@ package ces.riccico.serviceImpl;
 import java.awt.Dialog.ModalityType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import javax.mail.Message;
@@ -114,8 +115,25 @@ public class AdminServiceImpl implements AdminService {
 		return ResponseEntity.ok(message);
 	}
 
+
+//	@Override
+//	public ResponseEntity<?>  statisticsAdmin() {
+//
+//		MessageModel message = new MessageModel();
+//		AdminStatistics statisticsAdmin = new AdminStatistics();
+//		statisticsAdmin.setTotalAccountHost(houseRepository.totalAccountHost());
+//		statisticsAdmin.setTotalRevenue(bookingRepository.totalRevenue());
+//		statisticsAdmin.setTotalHouse(houseRepository.totalHouse());
+//		statisticsAdmin.setTotalBookingPaid(bookingRepository.totalBookingPaid());
+//		statisticsAdmin.setTotalBookingCompleted(bookingRepository.totalBookingCompleted());
+//		message.setData(statisticsAdmin);
+//		message.setMessage(UserConstants.GET_INFORMATION);
+//		message.setStatus(HttpStatus.OK.value());
+//		return ResponseEntity.ok(message);
+//	}
+	
 	@Override
-	public ResponseEntity<?> statisticsAdmin() {
+	public CompletableFuture<?>  statisticsAdmin() {
 
 		MessageModel message = new MessageModel();
 		AdminStatistics statisticsAdmin = new AdminStatistics();
@@ -127,7 +145,7 @@ public class AdminServiceImpl implements AdminService {
 		message.setData(statisticsAdmin);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(message);
+		return CompletableFuture.completedFuture(message);
 	}
 
 	@Override

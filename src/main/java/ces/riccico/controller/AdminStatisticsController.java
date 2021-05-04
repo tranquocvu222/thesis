@@ -1,6 +1,8 @@
 
 package ces.riccico.controller;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,7 +24,7 @@ public class AdminStatisticsController {
 	
 	@GetMapping("/statisticsAdmin")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> findRatingByHouseId() {
+	public CompletableFuture<?> findRatingByHouseId() {
 		return adminService.statisticsAdmin();
 	}
 	
