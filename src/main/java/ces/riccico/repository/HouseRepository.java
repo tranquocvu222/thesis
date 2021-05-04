@@ -27,15 +27,15 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 			+ "and h.status = 'listed'")
 	List<House> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
 			Double highestPrice, byte lowestGuest, byte highestGuest);
-	
+
 	@Query("select count(DISTINCT account) from House ")
 	Integer totalAccountHost();
-	
+
 	@Query("select count(id) from  House ")
 	Integer totalHouse();
-	
+
 	List<House> findByAccountId(int accountId);
-	
+
 	@Query("Select h from House h where h.account.id =?1")
 	Page<House> getAllHouseForHost(int accountId, Pageable pageable);
 	
@@ -53,11 +53,12 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 	
 	@Query("Select h from House h where h.isBlock = ?1")
 	Page<House> getHouseBlockForAdmin(boolean block, Pageable pageable);
-	
+
 	@Query("select new ces.riccico.model.TotalHouseMonthly("
 			+ "count(h.id), MONTH(h.createdAt)) from House h  where YEAR(h.createdAt) = ?1 group by MONTH(h.createdAt)")
 	List<TotalHouseMonthly> getTotalHouseMonthly(int year);
-	
 
+	@Query("Select h from House h where h.status =?1")
+	Page<House> getHouseForAdmin(String status, Pageable pageable);
 
 }

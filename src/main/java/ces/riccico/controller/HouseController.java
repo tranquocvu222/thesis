@@ -1,6 +1,8 @@
 
 package ces.riccico.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -79,13 +81,19 @@ public class HouseController {
 		return houseService.getHouseDetail(houseId);
 	}
 
-	// getHouseForHost
+	// get House For Host
 	@GetMapping("/host")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> getHouseForHost(@RequestParam(defaultValue = "0") Integer accountId,
 			@RequestParam(required = false) String status,@RequestParam(required = false) String block, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
 		return houseService.getHouseForHost(accountId, block, status, page, size);
+	}
+	
+	//get House Recommend For User
+	@GetMapping("/userRecs")
+	public ResponseEntity<?> getHouseRecommendForUser(@RequestParam Integer houseId) throws IOException{
+		return houseService.getHouseRecommendForUser(houseId);
 	}
 
 	// post your house on the website
@@ -113,13 +121,6 @@ public class HouseController {
 				airConditioner, fridge, swimPool, lowestGuest, highestGuest, page, size);
 
 	}
-
-//	// unblock house
-//	@PutMapping("/unBlock/{houseId}")
-//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-//	public ResponseEntity<?> unBlockHouse(@PathVariable int houseId) {
-//		return houseService.unBlockHouse(houseId);
-//	}
 
 	// this is the house update feature
 	@PutMapping("/{houseId}")

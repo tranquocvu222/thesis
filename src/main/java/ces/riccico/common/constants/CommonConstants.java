@@ -31,6 +31,10 @@ public class CommonConstants {
 	
 	public static final String SUCCESS = "Successfully";
 	
+	public static final String FILE_RECOMMEND = "data/output.txt";
+	
+	public static final String FILE_COUNT_ROW = "data/total_row.txt";
+	
 
 
 }

@@ -37,6 +37,7 @@ import ces.riccico.entity.Booking;
 import ces.riccico.entity.Token;
 import ces.riccico.entity.User;
 import ces.riccico.model.AccountModel;
+import ces.riccico.model.BookingDetailModel;
 import ces.riccico.model.LoginModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
@@ -614,13 +615,18 @@ public class AccountServiceImpl implements AccountService {
 			logger.error(e.getMessage());
 		}
 
-		List<Booking> listBooking = new ArrayList<Booking>();
-
+		List<Booking> listBookingDb = new ArrayList<Booking>();
+		List<BookingDetailModel> listBooking =  new ArrayList<BookingDetailModel>();
 		try {
 			for (Booking booking : bookingRepository.findAccountId(accountId)) {
 				if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())
 						|| booking.getStatus().equals(StatusBooking.COMPLETED.getStatusName())) {
-					listBooking.add(booking);
+					BookingDetailModel bookingModel = mapper.map(booking, BookingDetailModel.class);
+					bookingModel.setCustomerId(booking.getAccount().getAccountId());
+					bookingModel.setCustomerName(booking.getAccount().getUsername());
+					bookingModel.setHouseName(booking.getHouse().getTitle());
+					bookingModel.setHouseId(booking.getHouse().getId());
+					listBooking.add(bookingModel);
 				}
 			}
 
