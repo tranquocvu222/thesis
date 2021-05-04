@@ -49,7 +49,7 @@ public class HouseController {
 	}
 
 	// unlisted house
-	@PutMapping("/unlistedHouse/{houseId}")
+	@GetMapping("/unlistedHouse/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> unlistedHouse(@PathVariable int houseId) {
 		return houseService.unlistedHouse(houseId);
