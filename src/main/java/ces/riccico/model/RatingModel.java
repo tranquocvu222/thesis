@@ -1,47 +1,73 @@
 package ces.riccico.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
-public class RatingModel implements Serializable {
+public class RatingModel  {
+	
+	private Date createdAt;
+	
+	private Date modifiedDate;
 
-	private int account_id;
-	private int house_id;
-	private float star;
+	private Integer star;
+	
+	private String content;
+	
+	private String username;
+	
 
 	public RatingModel() {
-	}
-
-	public RatingModel(int account_id, int house_id, float star) {
 		super();
-		this.account_id = account_id;
-		this.house_id = house_id;
+	}
+
+	public RatingModel(Date createdAt, Date modifiedDate, Integer star, String content, String username) {
+		super();
+		this.createdAt = createdAt;
+		this.modifiedDate = modifiedDate;
 		this.star = star;
+		this.content = content;
+		this.username = username;
 	}
 
-
-
-	public int getAccount_id() {
-		return account_id;
+	public Date getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setAccount_id(int account_id) {
-		this.account_id = account_id;
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 
-	public int getHouse_id() {
-		return house_id;
+	public Date getModifiedDate() {
+		return modifiedDate;
 	}
 
-	public void setHouse_id(int house_id) {
-		this.house_id = house_id;
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 
-	public float getStar() {
+	public Integer getStar() {
 		return star;
 	}
 
-	public void setStar(float star) {
+	public void setStar(Integer star) {
 		this.star = star;
 	}
 
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	
 }

@@ -84,35 +84,36 @@ public class RatingServiceImpl implements RatingService {
 //	Find rating by id_house
 	@Override
 	public ResponseEntity<?> findRatingByHouseId(int houseId) {
-		MessageModel message = new MessageModel();
-
-		if (!houseRepository.findById(houseId).isPresent()) {
-			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
-		List<Rating> listRating = ratingRepository.findByBookingHouseId(houseId);
-		List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
-
-		if (listRating.size() == 0) {
-			message.setMessage(RatingConstants.NULL_RATING);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
-		for (Rating rating : listRating) {
-			RatingHouseModel ratingModel = new RatingHouseModel();
-			ratingModel.setRating(rating);
-			ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
-			ratingModel.setCreatedAt(rating.getCreatedAt());
-			listRatingModel.add(ratingModel);
-		}
-
-		message.setData(listRatingModel);
-		message.setMessage(UserConstants.GET_INFORMATION);
-		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(message);
+//		MessageModel message = new MessageModel();
+//
+//		if (!houseRepository.findById(houseId).isPresent()) {
+//			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
+//			message.setStatus(HttpStatus.NOT_FOUND.value());
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//		}
+//
+//		List<Rating> listRating = ratingRepository.findByBookingHouseId(houseId);
+//		List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
+//
+//		if (listRating.size() == 0) {
+//			message.setMessage(RatingConstants.NULL_RATING);
+//			message.setStatus(HttpStatus.NOT_FOUND.value());
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//		}
+//
+//		for (Rating rating : listRating) {
+//			RatingHouseModel ratingModel = new RatingHouseModel();
+//			ratingModel.setRating(rating);
+//			ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
+//			ratingModel.setCreatedAt(rating.getCreatedAt());
+//			listRatingModel.add(ratingModel);
+//		}
+//
+//		message.setData(listRatingModel);
+//		message.setMessage(UserConstants.GET_INFORMATION);
+//		message.setStatus(HttpStatus.OK.value());
+//		return ResponseEntity.ok(message);
+		return null;
 	}
 
 	@Override

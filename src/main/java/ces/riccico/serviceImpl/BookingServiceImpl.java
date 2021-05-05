@@ -34,6 +34,7 @@ import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
 import ces.riccico.entity.Rating;
+import ces.riccico.model.BookingDTO;
 import ces.riccico.model.BookingDetailModel;
 import ces.riccico.model.DateModel;
 import ces.riccico.model.MessageModel;
@@ -81,14 +82,14 @@ public class BookingServiceImpl implements BookingService {
 		Date currentDate = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		String dateNow = dateFormat.format(currentDate);
-		
+
 		try {
 			dateCheckIn = dateFormat.parse(dateCheckIn.toString());
 			dateCheckIn = new Date(dateCheckIn.getTime() + 14 * HOUR);
 			currentDate = dateFormat.parse(dateNow);
 		} catch (ParseException e) {
 			logger.error(e.getMessage());
-		}	
+		}
 		long hours = TimeUnit.MILLISECONDS.toHours(dateCheckIn.getTime() - currentDate.getTime());
 
 		if (!bookingRepository.findById(bookingId).isPresent()) {
@@ -491,20 +492,13 @@ public class BookingServiceImpl implements BookingService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Account account = accountRepository.findById(idCurrent).get();
 		House house = houseRepository.findById(houseId).get();
-
-		try {
-			house = houseRepository.findById(houseId).get();
-		} catch (Exception e) {
-			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
+		
 		if (house == null) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
+
 
 		if (idCurrent.equals(house.getAccount().getAccountId())) {
 			message.setMessage(BookingConstants.ACCOUNT_WITHOUT_PERMISSION);
@@ -518,7 +512,7 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
+		List<BookingDTO> listBookings = bookingRepository.getByHouseId(houseId);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date dateCheckIn = null;
 		Date dateCheckOut = null;
@@ -547,15 +541,15 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		for (Booking booking : listBookings) {
+		for (BookingDTO booking : listBookings) {
 			if ((dateCheckIn.compareTo(booking.getDateCheckIn()) >= 0
 					&& dateCheckIn.compareTo(booking.getDateCheckOut()) < 0
 					|| dateCheckOut.compareTo(booking.getDateCheckIn()) > 0
-							&& dateCheckOut.compareTo(booking.getDateCheckOut()) <= 0)
-					&& (StatusBooking.PAID.getStatusName().equals(booking.getStatus())
-							|| StatusBooking.COMPLETED.getStatusName().equals(booking.getStatus()))) {
+							&& dateCheckOut.compareTo(booking.getDateCheckOut()) <= 0)) {
 				message.setMessage(BookingConstants.HOUSE_BOOKED);
 				message.setStatus(HttpStatus.NOT_FOUND.value());
+
+				logger.info(String.valueOf(booking.getDateCheckIn()));
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 		}
@@ -570,13 +564,11 @@ public class BookingServiceImpl implements BookingService {
 		booking.setDateCheckIn(dateCheckIn);
 		booking.setDateCheckOut(dateCheckOut);
 		booking.setBill(bill);
-		houseRepository.saveAndFlush(house);
 		bookingRepository.saveAndFlush(booking);
 		message.setData(booking);
 		message.setMessage(CommonConstants.SUCCESS);
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
-
 	}
 
 }

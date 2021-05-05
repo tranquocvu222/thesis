@@ -19,10 +19,9 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
 	List<Booking> findByHouseId(int houseId);
 	
-//	@Query("Select new ces.riccico.model.BookingDTO (b.dateCheckIn, b.dateCheckOut) "
-//			+ "from Booking b where h.status = 'listed'")
-//	List<BookingDTO> findByHouseId(int houseId);
-	
+	@Query("Select new ces.riccico.model.BookingDTO (b.dateCheckIn, b.dateCheckOut) "
+			+ "from Booking b where b.status = 'paid' and b.house.id = ?1")
+	List<BookingDTO> getByHouseId(int houseId);
 
 	@Query(value = "SELECT b.booking_id, b.created_at, b.bill, b.create_check_in, "
 			+ "b.create_end, b.status, b.account_id, b.house_id, b.modified_date"
@@ -34,11 +33,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	@Query("select (sum(bill)*15)/100 from Booking where status = 'paid' or status = 'completed' or status = 'canceled'")
 	Double totalRevenue();
 
-//	@Query("select count(id) from Booking where status = 'paid'")
-//	Integer totalBookingPaid();
-//
-//	@Query("select count(id) from Booking where status = 'completed'")
-//	Integer totalBookingCompleted();
 	@Query("select count(id) from Booking where status = ?1")
 	Integer getTotalBookingByStatus(String status);
 

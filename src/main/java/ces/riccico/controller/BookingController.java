@@ -96,6 +96,12 @@ public class BookingController {
 	public ResponseEntity<?> receiveBooking(@PathVariable int houseId, @RequestBody DateModel dateModel) {
 		return bookingService.receiveBooking(houseId, dateModel);
 	}
+	
+	//test
+//	@GetMapping("/test")
+//	public ResponseEntity<?> getAllBooking() {
+//		return bookingService.findList();
+//	}
 
-
+	
 }
