@@ -24,7 +24,7 @@ public class AdminStatisticsController {
 	
 	@GetMapping("/statisticsAdmin")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public CompletableFuture<?> findRatingByHouseId() {
+	public ResponseEntity<?> findRatingByHouseId() {
 		return adminService.statisticsAdmin();
 	}
 	

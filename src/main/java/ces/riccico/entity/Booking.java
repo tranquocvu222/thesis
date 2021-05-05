@@ -1,7 +1,4 @@
 
-
-
-
 package ces.riccico.entity;
 
 import java.util.Date;
@@ -50,11 +47,11 @@ public class Booking extends Auditable {
 	@JoinColumn(name = "houseId", nullable = false)
 	@JsonIgnore
 	private House house;
-	
+
 	@OneToOne(mappedBy = "booking")
 	@JsonIgnore
-    private Rating rating;
-	
+	private Rating rating;
+
 	@Column(name = "status")
 	private String status;
 
@@ -113,13 +110,5 @@ public class Booking extends Auditable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-//	@Override
-//	public String toString() {
-//		return "Booking [id=" + id + ", bill=" + bill + ", dateCheckIn=" + dateCheckIn + ", dateCheckOut="
-//				+ dateCheckOut + ", account=" + account + ", house=" + house + ", status=" + status + "]";
-//	}
-//	
-	
 
 }

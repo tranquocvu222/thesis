@@ -24,5 +24,6 @@ public class BookingConstants {
 	public static final String NULL_BOOKING = "No bookings yet";
 	
 	public static final String CANCEL_BOOKING = "Because you cancel booking in 24h before checkin";
+	public static final String CAN_NOT_CANCEL = "You can not cancel this booking, because  your booking in 24h before checkin";
 
 }
