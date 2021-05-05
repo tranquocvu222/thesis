@@ -57,6 +57,8 @@ public class HouseController {
 	}
 
 	// find house with pagination
+	@Async
+	@Scheduled( fixedDelay = 2000L)
 	@GetMapping("/listHouse")
 	public CompletableFuture<?> findByPageAndSize(@RequestParam(required = false) String page,
 			@RequestParam(required = false) String size) {
@@ -77,6 +79,8 @@ public class HouseController {
 	}
 
 	// see house's detail, service of room and view room
+	@Async
+	@Scheduled( fixedDelay = 2000L)
 	@GetMapping("/detail")
 	public CompletableFuture<?> getHouseDetail(@RequestParam Integer houseId) {
 		return houseService.getHouseDetail(houseId);
