@@ -1,3 +1,4 @@
+
 package ces.riccico.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/houses/host/**").hasAnyAuthority(ROLE_USER,ROLE_ADMIN)
 		.antMatchers(HttpMethod.PUT, "/houses/**").hasAnyAuthority(ROLE_USER)
 		.antMatchers(HttpMethod.POST,"/houses/create").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.PUT, "/unlistedHouse/houses/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.DELETE, "/deactiveHouse/houses/**").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.GET, "/houses/unlistedHouse/**").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.DELETE, "/houses/deactiveHouse/**").hasAnyAuthority(ROLE_USER)
 
 		// booking service
 		.antMatchers(HttpMethod.GET,"/bookings/house/**").hasAnyAuthority(ROLE_USER)
@@ -79,8 +80,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/revenue/**").hasAnyAuthority(ROLE_ADMIN)
 		
 		//permit all 
-		
-//		.anyRequest().authenticated()
+//		.antMatchers(HttpMethod.GET, "/houses/listHouse/**").permitAll().
+//		 anyRequest().authenticated().
+//         and().
+//         anonymous().disable();
 
 //		.and()
 //		.exceptionHandling().accessDeniedPage("/403")

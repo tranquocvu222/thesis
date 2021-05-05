@@ -2,6 +2,7 @@
 package ces.riccico.controller;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -49,16 +50,16 @@ public class HouseController {
 	}
 
 	// unlisted house
-	@PutMapping("/unlistedHouse/{houseId}")
+	@GetMapping("/unlistedHouse/{houseId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> unlistedHouse(@PathVariable int houseId) {
 		return houseService.unlistedHouse(houseId);
 	}
 
 	// find house with pagination
-	@GetMapping
-	public ResponseEntity<?> findByPageAndSize(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
+	@GetMapping("/listHouse")
+	public CompletableFuture<?> findByPageAndSize(@RequestParam(required = false) String page,
+			@RequestParam(required = false) String size) {
 		return houseService.findByPageAndSize(page, size);
 	}
 
@@ -77,7 +78,7 @@ public class HouseController {
 
 	// see house's detail, service of room and view room
 	@GetMapping("/detail")
-	public ResponseEntity<?> getHouseDetail(@RequestParam Integer houseId) {
+	public CompletableFuture<?> getHouseDetail(@RequestParam Integer houseId) {
 		return houseService.getHouseDetail(houseId);
 	}
 

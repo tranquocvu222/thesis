@@ -76,4 +76,5 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 			+ "GROUP BY  b.house_id ORDER BY (round(AVG(r.star),1)) "
 			+ "DESC LIMIT 8 ", nativeQuery = true)
 	List<Integer> getListHousePopular(String city, Integer houseId);
+
 }
