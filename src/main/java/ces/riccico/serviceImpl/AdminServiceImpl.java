@@ -76,21 +76,15 @@ public class AdminServiceImpl implements AdminService {
 								listBooking.add(booking);
 							}
 						}
-
 						houseBooking.setHouseName(house.getTitle());
 						houseBooking.setListBooking(listBooking);
 					}
-
 					listHouseBooking.add(houseBooking);
 				}
-
 				bookingModel.setListHouseBooking(listHouseBooking);
 				listBookingModel.add(bookingModel);
-
 			}
-
 		}
-
 		bookingPaid.setListBookingModel(listBookingModel);
 
 		for (Booking booking : bookingRepository.findAll()) {
@@ -101,88 +95,65 @@ public class AdminServiceImpl implements AdminService {
 		}
 
 		bookingPaid.setNetIncome(netIncome);
-
 		int fromIndex = (page) * size;
 		final int numPages = (int) Math.ceil((double) listBookingModel.size() / (double) size);
-
 		bookingPaid.setListBookingModel(
 				listBookingModel.subList(fromIndex, Math.min(fromIndex + size, listBookingModel.size())));
 		bookingPaid.setPageMax(numPages);
-
 		message.setData(bookingPaid);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
 	}
 
-
-//	@Override
-//	public ResponseEntity<?>  statisticsAdmin() {
-//
-//		MessageModel message = new MessageModel();
-//		AdminStatistics statisticsAdmin = new AdminStatistics();
-//		statisticsAdmin.setTotalAccountHost(houseRepository.totalAccountHost());
-//		statisticsAdmin.setTotalRevenue(bookingRepository.totalRevenue());
-//		statisticsAdmin.setTotalHouse(houseRepository.totalHouse());
-//		statisticsAdmin.setTotalBookingPaid(bookingRepository.totalBookingPaid());
-//		statisticsAdmin.setTotalBookingCompleted(bookingRepository.totalBookingCompleted());
-//		message.setData(statisticsAdmin);
-//		message.setMessage(UserConstants.GET_INFORMATION);
-//		message.setStatus(HttpStatus.OK.value());
-//		return ResponseEntity.ok(message);
-//	}
-	
 	@Override
-	public CompletableFuture<?>  statisticsAdmin() {
-
+	public ResponseEntity<?> statisticsAdmin() {
 		MessageModel message = new MessageModel();
 		AdminStatistics statisticsAdmin = new AdminStatistics();
 		statisticsAdmin.setTotalAccountHost(houseRepository.totalAccountHost());
 		statisticsAdmin.setTotalRevenue(bookingRepository.totalRevenue());
 		statisticsAdmin.setTotalHouse(houseRepository.totalHouse());
-		statisticsAdmin.setTotalBookingPaid(bookingRepository.totalBookingPaid());
-		statisticsAdmin.setTotalBookingCompleted(bookingRepository.totalBookingCompleted());
+		statisticsAdmin.setTotalBookingPaid(bookingRepository.getTotalBookingByStatus(StatusBooking.PAID.getStatusName()));
+		statisticsAdmin.setTotalBookingCompleted(bookingRepository.getTotalBookingByStatus(StatusBooking.COMPLETED.getStatusName()));
 		message.setData(statisticsAdmin);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return CompletableFuture.completedFuture(message);
+		return ResponseEntity.ok(message);
 	}
 
 	@Override
 	public ResponseEntity<?> monthlyRevenue(int year) {
-
 		List<RevenueMonthly> listRevenueMonthly = new ArrayList<RevenueMonthly>();
 		MessageModel message = new MessageModel();
-
-			listRevenueMonthly = bookingRepository.getMonthlyRevenue(year);
-			if (listRevenueMonthly.size() == 0) {
-				message.setMessage(CommonConstants.LIST_REVENUE_EMPTY);			
-				message.setStatus(HttpStatus.NOT_FOUND.value());
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
-			message.setData(listRevenueMonthly);
-			message.setMessage(UserConstants.GET_INFORMATION);
-			message.setStatus(HttpStatus.OK.value());
-			return ResponseEntity.ok(message);
+		listRevenueMonthly = bookingRepository.getMonthlyRevenue(year);
+		
+		if (listRevenueMonthly.size() == 0) {
+			message.setMessage(CommonConstants.LIST_REVENUE_EMPTY);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+		message.setData(listRevenueMonthly);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 
 	}
-	
+
 	@Override
 	public ResponseEntity<?> totalHouseMonthly(int year) {
-
 		List<TotalHouseMonthly> listTotalHouseMonthly = new ArrayList<TotalHouseMonthly>();
 		MessageModel message = new MessageModel();
-
 		listTotalHouseMonthly = houseRepository.getTotalHouseMonthly(year);
-			if (listTotalHouseMonthly.size() == 0) {
-				message.setMessage(CommonConstants.LIST_HOUSE_EMPTY);			
-				message.setStatus(HttpStatus.NOT_FOUND.value());
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-			}
-			message.setData(listTotalHouseMonthly);
-			message.setMessage(UserConstants.GET_INFORMATION);
-			message.setStatus(HttpStatus.OK.value());
-			return ResponseEntity.ok(message);
+		
+		if (listTotalHouseMonthly.size() == 0) {
+			message.setMessage(CommonConstants.LIST_HOUSE_EMPTY);
+			message.setStatus(HttpStatus.NOT_FOUND.value());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+		message.setData(listTotalHouseMonthly);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 
 	}
 

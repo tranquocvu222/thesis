@@ -7,7 +7,7 @@ public class HouseModel {
 	private Integer id;
 
 	private String image;
-	
+
 	private String address;
 
 	private double price;
@@ -20,8 +20,34 @@ public class HouseModel {
 
 	private String status;
 	
+	private String amenities;
+
 	private boolean isBlock;
+
+	private Date modifiedDate;
+
+	public HouseModel() {
+		super();
+	}
 	
+	public HouseModel(Integer id, String image, String address, double price, String city, Double size, String title,
+			String status, String amenities, boolean isBlock, Date modifiedDate) {
+		super();
+		this.id = id;
+		this.image = image;
+		this.address = address;
+		this.price = price;
+		this.city = city;
+		this.size = size;
+		this.title = title;
+		this.status = status;
+		this.amenities = amenities;
+		this.isBlock = isBlock;
+		this.modifiedDate = modifiedDate;
+	}
+
+
+
 	public boolean isBlock() {
 		return isBlock;
 	}
@@ -29,8 +55,6 @@ public class HouseModel {
 	public void setBlock(boolean isBlock) {
 		this.isBlock = isBlock;
 	}
-
-	private Date modifiedDate;
 
 	public Integer getId() {
 		return id;
@@ -102,6 +126,14 @@ public class HouseModel {
 
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	public String getAmenities() {
+		return amenities;
+	}
+
+	public void setAmenities(String amenities) {
+		this.amenities = amenities;
 	}
 	
 	

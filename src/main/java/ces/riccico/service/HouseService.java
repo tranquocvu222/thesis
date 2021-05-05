@@ -11,27 +11,19 @@ public interface HouseService {
 //	ResponseEntity<?> approveHouse(int houseId);
 
 	ResponseEntity<?> deactiveHouse(int houseId);
-	
+
 	ResponseEntity<?> blockHouse(int houseId);
-	
-//	ResponseEntity<?> unBlockHouse(int houseId);
 
-//	ResponseEntity<?> findByPageAndSize(String page, String size);
-	
-	CompletableFuture<?> findByPageAndSize(String page, String size);
-
-//	ResponseEntity<?> findByTitle(String title, int page, int size);
+	ResponseEntity<?> findByPageAndSize(int page, int size);
 
 	ResponseEntity<?> findHouseByUsername(String username);
 
-//	ResponseEntity<?> getHouseDetail(Integer houseId);
-	
-	CompletableFuture<?> getHouseDetail(Integer houseId);
-	
+	ResponseEntity<?> getHouseDetail(Integer houseId);
+
 	ResponseEntity<?> getHouseForHost(int accountId, String block, String status, int page, int size);
 
 	ResponseEntity<?> getHouseRecommendForUser(int houseId) throws IOException;
-	
+
 	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
 
 	ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,

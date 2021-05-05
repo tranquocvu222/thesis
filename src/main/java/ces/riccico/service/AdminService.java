@@ -14,6 +14,6 @@ public interface AdminService {
 
 	ResponseEntity<?> totalHouseMonthly(int year);
 
-	CompletableFuture<?> statisticsAdmin();
+	ResponseEntity<?> statisticsAdmin();
 
 }

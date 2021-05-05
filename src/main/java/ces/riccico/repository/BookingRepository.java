@@ -25,17 +25,16 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 			+ "ORDER BY b.created_at DESC LIMIT 5", nativeQuery = true)
 	List<Booking> findAccountId(int accountId);
 
-	@Query("select sum(bill) from Booking where status = 'paid' or status = 'completed'")
+	@Query("select (sum(bill)*15)/100 from Booking where status = 'paid' or status = 'completed' or status = 'canceled'")
 	Double totalRevenue();
 
-	@Query("select count(id) from Booking where status = 'paid'")
-	Integer totalBookingPaid();
-
-	@Query("select count(id) from Booking where status = 'completed'")
-	Integer totalBookingCompleted();
-
-	@Query("select b from Booking b where b.status = 'paid'")
-	List<Booking> findBookingPaid();
+//	@Query("select count(id) from Booking where status = 'paid'")
+//	Integer totalBookingPaid();
+//
+//	@Query("select count(id) from Booking where status = 'completed'")
+//	Integer totalBookingCompleted();
+	@Query("select count(id) from Booking where status = ?1")
+	Integer getTotalBookingByStatus(String status);
 
 	@Query("Select SUM(b.bill) from Booking b where b.house.account.id = ?1 and (b.status = 'completed' or b.status = 'paid')")
 	Long sumByAccountId(int accountId);
@@ -54,12 +53,18 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
 	@Query("Select b from Booking b where b.house.account.id =?1 and b.status =?2")
 	Page<Booking> getBookingForHost(int accountId, String status, Pageable pageable);
-
-	@Query("Select b from Booking b where b.status ='pending'")
-	List<Booking> getAllBookingPending();
+	
+//	@Query("select b from Booking b where b.status = 'paid'")
+//	List<Booking> findBookingPaid();
+	
+//	@Query("Select b from Booking b where b.status ='pending'")
+//	List<Booking> getAllBookingPending();
+	
+	@Query("select b from Booking b where b.status = ?1")
+	List<Booking> getBookingByStatus(String status);
 
 	@Query("select new ces.riccico.model.RevenueMonthly("
-			+ "sum(b.bill), MONTH(b.dateCheckIn)) from Booking b  where (b.status = 'completed' or b.status = 'paid') and YEAR(dateCheckIn) = ?1 group by MONTH(dateCheckIn) ")
+			+ "(sum(b.bill)*15)/100, MONTH(b.dateCheckIn)) from Booking b  where (b.status = 'completed' or b.status = 'paid' or b.status = 'canceled') and YEAR(dateCheckIn) = ?1 group by MONTH(dateCheckIn) ")
 	List<RevenueMonthly> getMonthlyRevenue(int year);
 
 	@Query("Select b.house.id from Booking b where b.account.id =?1 and b.house.id != ?2")
@@ -72,7 +77,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
  
 	@Query(value = "Select b.house_id from bookings b inner join ratings r"
 			+ " on b.booking_id = r.booking_id inner join houses h "
-			+ "on b.house_id = h.house_id  where h.city=?1 and b.house_id != ?2 and h.status ='listed'"
+			+ "on b.house_id = h.house_id  where h.city=?1 and b.house_id != ?2 and h.status ='listed' and h.isBlock = 'false'"
 			+ "GROUP BY  b.house_id ORDER BY (round(AVG(r.star),1)) "
 			+ "DESC LIMIT 8 ", nativeQuery = true)
 	List<Integer> getListHousePopular(String city, Integer houseId);

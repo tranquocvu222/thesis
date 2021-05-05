@@ -109,14 +109,13 @@ public class AccountServiceImpl implements AccountService {
 			message.setMessage(UserConstants.INVALID_CODE);
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-		} else {
-			account.setActive(true);
-			accountRepository.saveAndFlush(account);
-//			message.setData(account);
-			message.setMessage(CommonConstants.ACTIVE_SUCCESS);
-			message.setStatus(HttpStatus.OK.value());
-			return ResponseEntity.ok(message);
 		}
+		account.setActive(true);
+		accountRepository.saveAndFlush(account);
+		message.setMessage(CommonConstants.ACTIVE_SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
+
 	}
 
 //	Banned account 
@@ -144,7 +143,6 @@ public class AccountServiceImpl implements AccountService {
 
 		account.setBanned(IS_BANNED);
 		accountRepository.saveAndFlush(account);
-//		message.setData(account);
 		message.setMessage(CommonConstants.BAN_SUCCESS);
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
@@ -162,95 +160,44 @@ public class AccountServiceImpl implements AccountService {
 			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-		} else {
-			if (oldPassword == null || oldPassword.isEmpty()) {
-				message.setMessage(UserConstants.PASSWORD_NULL);
-				message.setStatus(HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			if (newPassword == null || newPassword.isEmpty()) {
-				message.setMessage(UserConstants.PASSWORD_NEW_NULL);
-				message.setStatus(HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			if (!encoder.matches(oldPassword, account.getPassword())) {
-				message.setMessage(UserConstants.WRONG_OLD_PASSWORD);
-				message.setStatus(HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			if (!newPassword.matches(Validation.PASSWORD_PATTERN)) {
-				message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
-				message.setStatus(HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			if (newPassword.equals(oldPassword)) {
-				message.setMessage(UserConstants.IS_MATCHING_OLD_PASSWORD);
-				message.setStatus(HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			} else {
-				account.setPassword(encoder.encode(newPassword));
-				accountRepository.saveAndFlush(account);
-				message.setMessage(CommonConstants.CHANGEPASSWORD_SUCCESS);
-				message.setStatus(HttpStatus.OK.value());
-				return ResponseEntity.ok(message);
-			}
-
 		}
+		if (oldPassword == null || oldPassword.isEmpty()) {
+			message.setMessage(UserConstants.PASSWORD_NULL);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		if (newPassword == null || newPassword.isEmpty()) {
+			message.setMessage(UserConstants.PASSWORD_NEW_NULL);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		if (!encoder.matches(oldPassword, account.getPassword())) {
+			message.setMessage(UserConstants.WRONG_OLD_PASSWORD);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		if (!newPassword.matches(Validation.PASSWORD_PATTERN)) {
+			message.setMessage(UserConstants.INVALID_PASSWORD_FORMAT);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		if (newPassword.equals(oldPassword)) {
+			message.setMessage(UserConstants.IS_MATCHING_OLD_PASSWORD);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+		account.setPassword(encoder.encode(newPassword));
+		accountRepository.saveAndFlush(account);
+		message.setMessage(CommonConstants.CHANGEPASSWORD_SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
+
 	}
 
-//	Show list account was banned
-//	@Override
-//	public ResponseEntity<?> findAllIsBanned() {
-//		List<Account> listAccount = new ArrayList<Account>();
-//		MessageModel message = new MessageModel();
-//
-//		for (Account account : accountRepository.findAll()) {
-//			if (account.isBanned() == IS_BANNED) {
-//				listAccount.add(account);
-//			}
-//		}
-//
-//		if (listAccount.size() == 0) {
-//			message.setError("List Account was banned empty");
-//			message.setMessage(CommonConstants.LIST_EMPTY);
-//			message.setStatus(HttpStatus.NOT_FOUND.value());
-//			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-//		}
-//
-//		message.setData(listAccount);
-//		message.setMessage(UserConstants.GET_INFORMATION);
-//		message.setStatus(HttpStatus.OK.value());
-//		return ResponseEntity.ok(message);
-//	}
-
-////	Show list account was not banned
-//	@Override
-//	public ResponseEntity<?> findAll() {
-//		List<Account> listAccount = new ArrayList<Account>();
-//		MessageModel message = new MessageModel();
-//
-//		for (Account account : accountRepository.findAll()) {
-//			if (account.isBanned() == IS_NOT_BANNED) {
-//				listAccount.add(account);
-//			}
-//		}
-//
-//		if (listAccount.size() == 0) {
-//			message.setError("List Account was not banned empty");
-//			message.setMessage(CommonConstants.LIST_EMPTY);
-//			message.setStatus(HttpStatus.NOT_FOUND.value());
-//			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-//		}
-//
-//		message.setData(listAccount);
-//		message.setMessage(UserConstants.GET_INFORMATION);
-//		message.setStatus(HttpStatus.OK.value());
-//		return ResponseEntity.ok(message);
-//	}
 	@Override
 	public ResponseEntity<?> findAllAccountPageAndSize(String status, int page, int size) {
 
@@ -265,17 +212,23 @@ public class AccountServiceImpl implements AccountService {
 		if (status == null || status.isEmpty()) {
 			listAccount = accountRepository.findAll(paging).getContent();
 			pageMax = accountRepository.findAll(paging).getTotalPages();
-		
+
 		} else {
 			listAccount = accountRepository.getAccountsForAdmin(statusCurrent, paging).getContent();
 			pageMax = accountRepository.getAccountsForAdmin(statusCurrent, paging).getTotalPages();
-			
+
 		}
 
 		if (listAccount.size() == 0) {
 			message.setMessage(CommonConstants.LIST_ACCOUNT_EMPTY);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+
+		if (page >= pageMax) {
+			message.setMessage(CommonConstants.INVALID_PAGE);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		for (Account account : listAccount) {
@@ -290,12 +243,6 @@ public class AccountServiceImpl implements AccountService {
 			accountModel.setTotalHouse(accountRepository.countHouse(account.getAccountId()));
 			listAccountModel.add(accountModel);
 
-		}
-
-		if (page >= pageMax) {
-			message.setMessage(CommonConstants.INVALID_PAGE);
-			message.setStatus(HttpStatus.BAD_REQUEST.value());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		paginationModel.setListObject(listAccountModel);
@@ -319,7 +266,7 @@ public class AccountServiceImpl implements AccountService {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		if (account.isActive() == false) {
+		if (!account.isActive()) {
 			message.setMessage(UserConstants.NOT_ACTIVATED);
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
@@ -355,14 +302,13 @@ public class AccountServiceImpl implements AccountService {
 
 		if (account == null) {
 			return null;
-		} else {
-			Set<String> authorities = new HashSet<>();
-			if (account.getRole() != null) {
-				authorities.add(account.getRole());
-			}
-			accountDetail.setUserId(account.getAccountId());
-			accountDetail.setAuthorities(authorities);
 		}
+		Set<String> authorities = new HashSet<>();
+		if (account.getRole() != null) {
+			authorities.add(account.getRole());
+		}
+		accountDetail.setUserId(account.getAccountId());
+		accountDetail.setAuthorities(authorities);
 
 		return accountDetail;
 	}
@@ -403,34 +349,32 @@ public class AccountServiceImpl implements AccountService {
 			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		} else {
-			if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
-				message.setMessage(UserConstants.INVALID_ACCOUNT);
-				message.setStatus(HttpStatus.BAD_REQUEST.value());
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-			}
-
-			if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
-				message.setMessage(UserConstants.ACCOUNT_BANNED);
-				message.setStatus(HttpStatus.FORBIDDEN.value());
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-			}
-
-			if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
-				message.setMessage(UserConstants.NOT_ACTIVATED);
-				message.setStatus(HttpStatus.FORBIDDEN.value());
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-			} else {
-				Token token = new Token();
-				token.setToken(jwtUtil.generateToken(accountDetail));
-				token.setTokenExpDate(jwtUtil.generateExpirationDate());
-				tokenRepository.saveAndFlush(token);
-				message.setData(token.getToken());
-				message.setMessage(CommonConstants.LOGIN_SUCCESS);
-				message.setStatus(HttpStatus.OK.value());
-				return ResponseEntity.ok(message);
-			}
 		}
+		if (!encoder.matches(account.getPassword(), accountDetail.getPassword())) {
+			message.setMessage(UserConstants.INVALID_ACCOUNT);
+			message.setStatus(HttpStatus.BAD_REQUEST.value());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+		}
+
+		if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
+			message.setMessage(UserConstants.ACCOUNT_BANNED);
+			message.setStatus(HttpStatus.FORBIDDEN.value());
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+		}
+
+		if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
+			message.setMessage(UserConstants.NOT_ACTIVATED);
+			message.setStatus(HttpStatus.FORBIDDEN.value());
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+		}
+		Token token = new Token();
+		token.setToken(jwtUtil.generateToken(accountDetail));
+		token.setTokenExpDate(jwtUtil.generateExpirationDate());
+		tokenRepository.saveAndFlush(token);
+		message.setData(token.getToken());
+		message.setMessage(CommonConstants.LOGIN_SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
 
 	}
 
@@ -460,14 +404,13 @@ public class AccountServiceImpl implements AccountService {
 			message.setMessage(TokenConstants.INVALID_TOKEN);
 			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-		} else {
-			Token token = tokenRepository.findByToken(tokenCurrent);
-			tokenRepository.delete(token);
-//			message.setData(token.getToken());
-			message.setMessage(CommonConstants.SUCCESS);
-			message.setStatus(HttpStatus.OK.value());
-			return ResponseEntity.ok(message);
 		}
+		Token token = tokenRepository.findByToken(tokenCurrent);
+		tokenRepository.delete(token);
+		message.setMessage(CommonConstants.SUCCESS);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
+
 	}
 
 //	Register accountby username, email, password	
@@ -617,7 +560,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 		List<Booking> listBookingDb = new ArrayList<Booking>();
-		List<BookingDetailModel> listBooking =  new ArrayList<BookingDetailModel>();
+		List<BookingDetailModel> listBooking = new ArrayList<BookingDetailModel>();
 		try {
 			for (Booking booking : bookingRepository.findAccountId(accountId)) {
 				if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())
