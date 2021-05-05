@@ -2,6 +2,8 @@ package ces.riccico.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class HouseModel {
 
 	private Integer id;
@@ -20,6 +22,7 @@ public class HouseModel {
 
 	private String status;
 	
+	@JsonIgnore
 	private String amenities;
 
 	private boolean isBlock;

@@ -37,6 +37,7 @@ public class HouseDetailModel {
 
 	private String image;
 
+	@JsonIgnore
 	private String imageString;
 
 	private String phoneContact;
