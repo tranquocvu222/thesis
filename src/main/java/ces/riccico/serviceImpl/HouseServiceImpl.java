@@ -44,12 +44,14 @@ import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
 import ces.riccico.entity.Rating;
+import ces.riccico.model.BookingDTO;
 import ces.riccico.model.DateModel;
 import ces.riccico.model.HouseDetailModel;
 import ces.riccico.model.HouseModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
 import ces.riccico.model.RatingHouseModel;
+import ces.riccico.model.RatingModel;
 import ces.riccico.model.UserRecommend;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
@@ -286,17 +288,14 @@ public class HouseServiceImpl implements HouseService {
 	@CacheEvict(value = "houseDetail", allEntries = true)
 	public ResponseEntity<?> getHouseDetail(Integer houseId) {
 		MessageModel message = new MessageModel();
-		HouseDetailModel houseDetail;
-
-		if (!houseRepository.findById(houseId).isPresent()) {
+		HouseDetailModel houseDetail = houseRepository.findByHouseId(houseId);
+		if (houseDetail == null) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
-		House house = houseRepository.findById(houseId).get();
-
-		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
+		List<BookingDTO> listBookings = bookingRepository.getByHouseId(houseId);
 		List<DateModel> listDateModel = new ArrayList<DateModel>();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
 		Date currentDate = new Date();
@@ -308,30 +307,19 @@ public class HouseServiceImpl implements HouseService {
 			logger.error(e.getMessage());
 		}
 
-		for (Booking booking : listBookings) {
-			if (StatusBooking.PAID.getStatusName().equals(booking.getStatus())) {
-				if (TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - currentDate.getTime()) > 0) {
-					DateModel dateModel = new DateModel();
-					dateModel.setDateCheckIn(booking.getDateCheckIn().toString());
-					dateModel.setDateCheckOut(booking.getDateCheckOut().toString());
-					listDateModel.add(dateModel);
-				}
+		for (BookingDTO booking : listBookings) {
+			if (TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - currentDate.getTime()) > 0) {
+				DateModel dateModel = new DateModel();
+				dateModel.setDateCheckIn(booking.getDateCheckIn().toString());
+				dateModel.setDateCheckOut(booking.getDateCheckOut().toString());
+				listDateModel.add(dateModel);
 			}
+
 		}
 
-		List<Rating> listRating = ratingRepository.findByBookingHouseId(houseId);
-		List<RatingHouseModel> listRatingModel = new ArrayList<RatingHouseModel>();
-
-		for (Rating rating : listRating) {
-			RatingHouseModel ratingModel = new RatingHouseModel();
-			ratingModel.setRating(rating);
-			ratingModel.setUsername(rating.getBooking().getAccount().getUsername());
-			ratingModel.setCreatedAt(rating.getCreatedAt());
-			listRatingModel.add(ratingModel);
-		}
-
-		houseDetail = mapper.map(house, HouseDetailModel.class);
-		int amenities = Integer.parseInt(house.getAmenities(), 2);
+		List<RatingModel> listRatings = ratingRepository.findByBookingHouseId(houseId);
+	
+		int amenities = Integer.parseInt(houseDetail.getAmenities(), 2);
 		boolean wifi = ((amenities & Amenities.WIFI.getValue()) != 0) ? true : false;
 		boolean tivi = ((amenities & Amenities.TIVI.getValue()) != 0) ? true : false;
 		boolean airConditioner = ((amenities & Amenities.AC.getValue()) != 0) ? true : false;
@@ -339,7 +327,7 @@ public class HouseServiceImpl implements HouseService {
 		boolean swimPool = ((amenities & Amenities.SWIM_POOL.getValue()) != 0) ? true : false;
 
 		List<String> listImages = new ArrayList<String>();
-		String images = house.getImages();
+		String images = houseDetail.getImageString();
 		for (String image : images.split(",")) {
 			listImages.add(image);
 		}
@@ -351,7 +339,7 @@ public class HouseServiceImpl implements HouseService {
 		houseDetail.setFridge(fridge);
 		houseDetail.setSwimPool(swimPool);
 		houseDetail.setDateBooked(listDateModel);
-		houseDetail.setListRating(listRatingModel);
+		houseDetail.setListRating(listRatings);
 
 		message.setData(houseDetail);
 		message.setMessage(UserConstants.GET_INFORMATION);

@@ -1,11 +1,15 @@
 package ces.riccico.model;
 
-
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class HouseDetailModel {
 
 	private Integer id;
+
+	@JsonIgnore
+	private String amenities;
 
 	private boolean airConditioner;
 
@@ -33,20 +37,47 @@ public class HouseDetailModel {
 
 	private String image;
 
+	private String imageString;
+
 	private String phoneContact;
 
 	private String city;
 
 	private String title;
-	
+
 	private String status;
 
 	private List<String> images;
-	
+
 	private List<DateModel> dateBooked;
-	
-	private List<RatingHouseModel> listRating;
-	
+
+	private List<RatingModel> listRating;
+
+	public HouseDetailModel() {
+		super();
+	}
+
+	public HouseDetailModel(Integer id, String amenities, byte bedroom, byte maxGuest, double price, Double size,
+			String address, String content, String country, String image, String imageString, String phoneContact,
+			String city, String title, String status) {
+		super();
+		this.id = id;
+		this.amenities = amenities;
+		this.bedroom = bedroom;
+		this.maxGuest = maxGuest;
+		this.price = price;
+		this.size = size;
+		this.address = address;
+		this.content = content;
+		this.country = country;
+		this.image = image;
+		this.imageString = imageString;
+		this.phoneContact = phoneContact;
+		this.city = city;
+		this.title = title;
+		this.status = status;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -190,7 +221,7 @@ public class HouseDetailModel {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
 	public List<String> getImages() {
 		return images;
 	}
@@ -207,12 +238,28 @@ public class HouseDetailModel {
 		this.dateBooked = dateBooked;
 	}
 
-	public List<RatingHouseModel> getListRating() {
+	public List<RatingModel> getListRating() {
 		return listRating;
 	}
 
-	public void setListRating(List<RatingHouseModel> listRating) {
+	public void setListRating(List<RatingModel> listRating) {
 		this.listRating = listRating;
 	}
-	
+
+	public String getAmenities() {
+		return amenities;
+	}
+
+	public void setAmenities(String amenities) {
+		this.amenities = amenities;
+	}
+
+	public String getImageString() {
+		return imageString;
+	}
+
+	public void setImageString(String imageString) {
+		this.imageString = imageString;
+	}
+
 }

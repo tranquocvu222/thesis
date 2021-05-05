@@ -11,13 +11,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ces.riccico.entity.House;
+import ces.riccico.model.HouseDetailModel;
 import ces.riccico.model.HouseModel;
 import ces.riccico.model.RevenueMonthly;
 import ces.riccico.model.TotalHouseMonthly;
 
 @Repository
 public interface HouseRepository extends JpaRepository<House, Integer> {
-
+	
+	@Query("Select new ces.riccico.model.HouseDetailModel (h.id, h.amenities, h.bedroom, h.maxGuest, h.price,"
+			+ " h.size, h.address, h.content, h.country, h.image, h.images, h.phoneContact, h.city, h.title, h.status)"
+			+ "from House h where h.id = ?1")
+	HouseDetailModel findByHouseId(int houseId);
+	
 	@Query("Select h from House h where h.title like %?1% ")
 	Page<House> findByTitle(String title, Pageable pageable);
 	

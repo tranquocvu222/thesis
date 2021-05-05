@@ -6,17 +6,17 @@ import ces.riccico.entity.Rating;
 
 public class RatingHouseModel {
 
-	private Rating rating;
+	private RatingModel rating;
 
 	private String username;
 
 	private Date createdAt;
 
-	public Rating getRating() {
+	public RatingModel getRating() {
 		return rating;
 	}
 
-	public void setRating(Rating rating) {
+	public void setRating(RatingModel rating) {
 		this.rating = rating;
 	}
 

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ces.riccico.entity.Rating;
+import ces.riccico.model.RatingModel;
+
+
 
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Integer> {
@@ -15,7 +18,11 @@ public interface RatingRepository extends JpaRepository<Rating, Integer> {
 
 	Rating findByBookingId(int bookingId);
 
-	List<Rating> findByBookingHouseId(int houseId);
+//	List<Rating> findByBookingHouseId(int houseId);
+	
+	@Query("Select new ces.riccico.model.RatingModel (t.createdAt, t.modifiedDate, t.star, t.content, t.booking.account.username) "
+			+ "from Rating t where t.booking.house.id = ?1")
+	List<RatingModel> findByBookingHouseId(int houseId);
 	
 	@Query("Select COUNT(b) from Rating b where b.booking.house.account.id = ?1")
 	Integer countByAccountId (int accountId);
