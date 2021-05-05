@@ -556,22 +556,19 @@ public class HouseServiceImpl implements HouseService {
 			// get 3 random house popular
 			while (listHouseModel.size() < 3) {
 				int randomElement = -1;
-				House house = new House();
 				if (listCopyPopular.size() == 0) {
 					randomElement = listHouseMostBooked.get(random.nextInt(listHouseMostBooked.size()));
 					listHouseMostBooked.remove(Integer.valueOf(randomElement));
 					if (listHouseBooked.contains(randomElement) == false
 							&& listHousePopular.contains(randomElement) == false) {
-						house = houseRepository.findById(randomElement).get();
-						HouseModel houseModel = mapper.map(house, HouseModel.class);
+						HouseModel houseModel = houseRepository.findHouseModel(houseId);
 						listHouseModel.add(houseModel);
 					}
 				} else {
 					randomElement = listCopyPopular.get(random.nextInt(listCopyPopular.size()));
 					listCopyPopular.remove(Integer.valueOf(randomElement));
 					if (listHouseBooked.contains(randomElement) == false) {
-						house = houseRepository.findById(randomElement).get();
-						HouseModel houseModel = mapper.map(house, HouseModel.class);
+						HouseModel houseModel = houseRepository.findHouseModel(houseId);
 						listHouseModel.add(houseModel);
 					}
 				}
@@ -581,36 +578,32 @@ public class HouseServiceImpl implements HouseService {
 		// recommendation for user have account and rating in model
 		while (listHouseModel.size() < 3) {
 			int randomElement = -1;
-			House house = new House();
 			if (listCopyPopular.size() == 0) {
 				randomElement = listHouseMostBooked.get(random.nextInt(listHouseMostBooked.size()));
 				listHouseMostBooked.remove(Integer.valueOf(randomElement));
 				if (listHouseBooked.contains(randomElement) == false
 						&& listHousePopular.contains(randomElement) == false
 						&& listHouseTrain.contains(randomElement) == false) {
-					house = houseRepository.findById(randomElement).get();
-					HouseModel houseModel = mapper.map(house, HouseModel.class);
+					HouseModel houseModel = houseRepository.findHouseModel(houseId);
 					listHouseModel.add(houseModel);
 				}
 				logger.info("house in list house most booked : " + String.valueOf(listHouseModel.size()));
 			} else if (listCopyTrain.size() == 0) {
 				randomElement = listCopyPopular.get(random.nextInt(listCopyPopular.size()));
 				listCopyPopular.remove(Integer.valueOf(randomElement));
-				house = houseRepository.findById(randomElement).get();
 				if (listHouseBooked.contains(randomElement) == false
 						&& listHouseTrain.contains(randomElement) == false) {
-					HouseModel houseModel = mapper.map(house, HouseModel.class);
+					HouseModel houseModel = houseRepository.findHouseModel(houseId);
 					listHouseModel.add(houseModel);
 				}
 				logger.info("house in list house popular : " + String.valueOf(listHouseModel.size()));
 			} else {
 				randomElement = listCopyTrain.get(random.nextInt(listCopyTrain.size()));
 				listCopyTrain.remove(Integer.valueOf(randomElement));
-				house = houseRepository.findById(randomElement).get();
-				if (StatusHouse.LISTED.getStatusName().equals(house.getStatus())
-						&& houseCurrent.getCity().equals(house.getCity())) {
+				HouseModel houseModel = houseRepository.findHouseModel(houseId);
+				if (StatusHouse.LISTED.getStatusName().equals(houseModel.getStatus())
+						&& houseCurrent.getCity().equals(houseModel.getCity())) {
 					if (listHouseBooked.contains(randomElement) == false && randomElement != houseId) {
-						HouseModel houseModel = mapper.map(house, HouseModel.class);
 						listHouseModel.add(houseModel);
 					}
 				}

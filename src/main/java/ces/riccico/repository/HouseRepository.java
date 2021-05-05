@@ -23,6 +23,11 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 			+ "from House h where h.id = ?1")
 	HouseDetailModel findByHouseId(int houseId);
 	
+	@Query("Select new ces.riccico.model.HouseModel (h.id, h.image, h.address, h.price, h.city, h.size,"
+			+ " h.title, h.status, h.amenities, h.isBlock, h.modifiedDate)"
+			+ "from House h where h.id = ?1")
+	HouseModel findHouseModel(int houseId);
+	
 	@Query("Select h from House h where h.title like %?1% ")
 	Page<House> findByTitle(String title, Pageable pageable);
 	
