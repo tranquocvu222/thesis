@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ces.riccico.entity.Booking;
+import ces.riccico.model.BookingDTO;
 import ces.riccico.model.RevenueMonthly;
 
 @Repository
@@ -17,6 +18,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	List<Booking> findByAccountId(int accountId);
 
 	List<Booking> findByHouseId(int houseId);
+	
+//	@Query("Select new ces.riccico.model.BookingDTO (b.dateCheckIn, b.dateCheckOut) "
+//			+ "from Booking b where h.status = 'listed'")
+//	List<BookingDTO> findByHouseId(int houseId);
+	
 
 	@Query(value = "SELECT b.booking_id, b.created_at, b.bill, b.create_check_in, "
 			+ "b.create_end, b.status, b.account_id, b.house_id, b.modified_date"
@@ -54,12 +60,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	@Query("Select b from Booking b where b.house.account.id =?1 and b.status =?2")
 	Page<Booking> getBookingForHost(int accountId, String status, Pageable pageable);
 	
-//	@Query("select b from Booking b where b.status = 'paid'")
-//	List<Booking> findBookingPaid();
-	
-//	@Query("Select b from Booking b where b.status ='pending'")
-//	List<Booking> getAllBookingPending();
-	
 	@Query("select b from Booking b where b.status = ?1")
 	List<Booking> getBookingByStatus(String status);
 
@@ -77,9 +77,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
  
 	@Query(value = "Select b.house_id from bookings b inner join ratings r"
 			+ " on b.booking_id = r.booking_id inner join houses h "
-			+ "on b.house_id = h.house_id  where h.city=?1 and b.house_id != ?2 and h.status ='listed' and h.isBlock = 'false'"
+			+ "on b.house_id = h.house_id  where h.city=?1 and b.house_id != ?2 and h.status ='listed' and h.is_block = 'false'"
 			+ "GROUP BY  b.house_id ORDER BY (round(AVG(r.star),1)) "
 			+ "DESC LIMIT 8 ", nativeQuery = true)
 	List<Integer> getListHousePopular(String city, Integer houseId);
+
 
 }
