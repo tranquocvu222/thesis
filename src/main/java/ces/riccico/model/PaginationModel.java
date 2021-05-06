@@ -2,6 +2,8 @@ package ces.riccico.model;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
+
 public class PaginationModel {
 
 	private int pageMax;
@@ -23,5 +25,10 @@ public class PaginationModel {
 	public void setListObject(List<Object> listObject) {
 		this.listObject = listObject;
 	}
+
+
+
+	
+	
 
 }
