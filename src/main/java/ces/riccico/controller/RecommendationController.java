@@ -36,8 +36,8 @@ public class RecommendationController {
 	@Autowired
 	private RecommendationService recommendationService;
 
-//	@Async
-//	@Scheduled(fixedDelay = 10*DAY )
+	@Async
+	@Scheduled(fixedDelay = 10*DAY )
 	@GetMapping
 	public ResponseEntity<?> writeFileRecommendForUser() throws IOException {
 		Path path = Paths.get(CommonConstants.FILE_RECOMMEND);

@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class RatingCustomerModel {
 
+	private Integer id;
+	
 	private Date createdAt;
 
 	private Date modifiedDate;
@@ -16,12 +18,21 @@ public class RatingCustomerModel {
 		super();
 	}
 
-	public RatingCustomerModel(Date createdAt, Date modifiedDate, Integer star, String content) {
+	public RatingCustomerModel(Integer id, Date createdAt, Date modifiedDate, Integer star, String content) {
 		super();
+		this.id = id;
 		this.createdAt = createdAt;
 		this.modifiedDate = modifiedDate;
 		this.star = star;
 		this.content = content;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public Date getCreatedAt() {
@@ -55,5 +66,6 @@ public class RatingCustomerModel {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	
 
 }

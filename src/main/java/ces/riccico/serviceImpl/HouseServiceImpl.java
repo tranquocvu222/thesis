@@ -226,7 +226,7 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public ResponseEntity<?> findByPageAndSize(int page, int size) {
-		
+
 		List<Object> listHouseModel = new ArrayList<Object>();
 		PaginationModel paginationModel = new PaginationModel();
 		MessageModel message = new MessageModel();
@@ -318,7 +318,7 @@ public class HouseServiceImpl implements HouseService {
 		}
 
 		List<RatingModel> listRatings = ratingRepository.findByBookingHouseId(houseId);
-	
+
 		int amenities = Integer.parseInt(houseDetail.getAmenities(), 2);
 		boolean wifi = ((amenities & Amenities.WIFI.getValue()) != 0) ? true : false;
 		boolean tivi = ((amenities & Amenities.TIVI.getValue()) != 0) ? true : false;
@@ -378,7 +378,7 @@ public class HouseServiceImpl implements HouseService {
 				pageMax = houseRepository.getAllHouseForAdmin(paging).getTotalPages();
 			} else {
 
-				if ( status.equals(StatusHouse.BLOCKED.getStatusName())) {
+				if (status.equals(StatusHouse.BLOCKED.getStatusName())) {
 					listHouse = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getContent();
 					pageMax = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getTotalPages();
 
@@ -431,7 +431,7 @@ public class HouseServiceImpl implements HouseService {
 				if (status.equals(StatusHouse.BLOCKED.getStatusName())) {
 					listHouse = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getContent();
 					pageMax = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getTotalPages();
-					
+
 					if (listHouse.size() == 0) {
 						message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
 						message.setStatus(HttpStatus.NOT_FOUND.value());
@@ -510,7 +510,7 @@ public class HouseServiceImpl implements HouseService {
 		MessageModel message = new MessageModel();
 		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
 
-		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND),  1000 * 8192);
+		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND), 1000 * 8192);
 		List<String> listOfLines = new ArrayList<String>();
 		String lineInFile = bufReader.readLine();
 		while (lineInFile != null) {
@@ -641,6 +641,7 @@ public class HouseServiceImpl implements HouseService {
 		return ResponseEntity.ok(message);
 
 	}
+
 	@Override
 	public ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail) {
 
@@ -735,9 +736,6 @@ public class HouseServiceImpl implements HouseService {
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
 		return ResponseEntity.ok(message);
-
-
-
 
 	}
 
