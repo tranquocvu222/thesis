@@ -467,18 +467,18 @@ public class AccountServiceImpl implements AccountService {
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		SimpleMailMessage messageEmail = new SimpleMailMessage();
-		messageEmail.setTo(account.getEmail());
-		messageEmail.setSubject("Verification Code");
-		messageEmail.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
-				+ "\nPlease enter code on website to complete register");
-		sender.send(messageEmail);
+//		SimpleMailMessage messageEmail = new SimpleMailMessage();
+//		messageEmail.setTo(account.getEmail());
+//		messageEmail.setSubject("Verification Code");
+//		messageEmail.setText("Wellcome " + account.getEmail() + "\nYour Verification Code is: " + code
+//				+ "\nPlease enter code on website to complete register");
+//		sender.send(messageEmail);
 
 		Account accountNew = mapper.map(account, Account.class);
 		accountNew.setRole(Role.USER.getRole());
 		accountNew.setBanned(false);
 		accountNew.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
-		accountNew.setActive(false);
+		accountNew.setActive(true);
 		user.setAccount(accountNew);
 		accountRepository.saveAndFlush(accountNew);
 		userRepository.saveAndFlush(user);
