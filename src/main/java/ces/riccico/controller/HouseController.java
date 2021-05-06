@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -57,10 +58,8 @@ public class HouseController {
 	}
 
 	// find house with pagination
-	@Async
-	@Scheduled( fixedDelay = 2000L)
 	@GetMapping("/listHouse")
-	public CompletableFuture<?> findByPageAndSize(@RequestParam(required = false) String page,
+	public ResponseEntity<?> findByPageAndSize(@RequestParam(required = false) String page,
 			@RequestParam(required = false) String size) {
 		return houseService.findByPageAndSize(page, size);
 	}
@@ -79,10 +78,8 @@ public class HouseController {
 	}
 
 	// see house's detail, service of room and view room
-	@Async
-	@Scheduled( fixedDelay = 2000L)
 	@GetMapping("/detail")
-	public CompletableFuture<?> getHouseDetail(@RequestParam Integer houseId) {
+	public ResponseEntity<?> getHouseDetail(@RequestParam Integer houseId) {
 		return houseService.getHouseDetail(houseId);
 	}
 
@@ -90,14 +87,14 @@ public class HouseController {
 	@GetMapping("/host")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> getHouseForHost(@RequestParam(defaultValue = "0") Integer accountId,
-			@RequestParam(required = false) String status,@RequestParam(required = false) String block, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(required = false) String status, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size) {
-		return houseService.getHouseForHost(accountId, block, status, page, size);
+		return houseService.getHouseForHost(accountId, status, page, size);
 	}
-	
-	//get House Recommend For User
+
+	// get House Recommend For User
 	@GetMapping("/userRecs")
-	public ResponseEntity<?> getHouseRecommendForUser(@RequestParam Integer houseId) throws IOException{
+	public ResponseEntity<?> getHouseRecommendForUser(@RequestParam Integer houseId) throws IOException {
 		return houseService.getHouseRecommendForUser(houseId);
 	}
 

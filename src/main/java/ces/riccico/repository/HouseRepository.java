@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,11 +23,29 @@ public interface HouseRepository extends JpaRepository<House, Integer> {
 	@Query("Select h from House h where h.isBlock = false and h.status = 'listed'")
 	Page<House> findList(Pageable pageable);
 
-	@Query("Select h from House h where h.isBlock = false and h.country like %?1% and h.city like %?2% and h.size >= ?3 and h.size <= ?4 "
-			+ "and h.price >= ?5 and h.price <= ?6  and h.maxGuest >= ?7 and h.maxGuest <= ?8 "
-			+ "and h.status = 'listed'")
+//	@Query(value = "Select h from House h where h.isBlock = false and h.country like %?1% and h.city like %?2% and h.size >= ?3 and h.size <= ?4 "
+//			+ "and h.price >= ?5 and h.price <= ?6  and h.maxGuest >= ?7 and h.maxGuest <= ?8 "
+//			+ "and h.status = 'listed' oder by h.price asc", nativeQuery = true)
+//	List<House> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
+//			Double highestPrice, byte lowestGuest, byte highestGuest, Sort sort);
+	
+	@Query(value = "select * from houses h where h.is_block = false and h.country like %?1% and h.city like %?2% and h.size >= ?3 and h.size <= ?4 "
+			+ "and h.price >= ?5 and h.price <= ?6  and h.max_guest >= ?7 and h.max_guest <= ?8 "
+			+ "and h.status = 'listed'", nativeQuery = true)
 	List<House> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
 			Double highestPrice, byte lowestGuest, byte highestGuest);
+	
+//	@Query(value = "select * from houses h where h.is_block = false and h.country like %?1% and h.city like %?2% and h.size >= ?3 and h.size <= ?4 "
+//			+ "and h.price >= ?5 and h.price <= ?6  and h.max_guest >= ?7 and h.max_guest <= ?8 "
+//			+ "and h.status = 'listed' order by h.price asc", nativeQuery = true)
+//	List<House> searchFilterAsc(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
+//			Double highestPrice, byte lowestGuest, byte highestGuest);
+//	
+//	@Query(value = "select * from houses h where h.is_block = false and h.country like %?1% and h.city like %?2% and h.size >= ?3 and h.size <= ?4 "
+//			+ "and h.price >= ?5 and h.price <= ?6  and h.max_guest >= ?7 and h.max_guest <= ?8 "
+//			+ "and h.status = 'listed' order by h.price desc", nativeQuery = true)
+//	List<House> searchFilterDesc(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice,
+//			Double highestPrice, byte lowestGuest, byte highestGuest);
 
 	@Query("select count(DISTINCT account) from House ")
 	Integer totalAccountHost();

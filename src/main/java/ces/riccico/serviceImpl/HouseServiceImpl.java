@@ -1,5 +1,4 @@
 
-
 package ces.riccico.serviceImpl;
 
 import java.io.BufferedReader;
@@ -10,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -25,8 +25,11 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -220,7 +223,8 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public CompletableFuture<?> findByPageAndSize(String page, String size) {
+	@Cacheable("house")
+	public ResponseEntity<?> findByPageAndSize(String page, String size) {
 		List<Object> listHouseModel = new ArrayList<Object>();
 		List<House> listHouse = new ArrayList<House>();
 		PaginationModel paginationModel = new PaginationModel();
@@ -231,7 +235,7 @@ public class HouseServiceImpl implements HouseService {
 //		System.out.println("======= " + pageCurrent);
 //		System.out.println("======= " + sizeCurrent);
 
-		if (page == null && size == null ) {
+		if (page == null && size == null) {
 			pageCurrent = 0;
 			sizeCurrent = 20;
 			Pageable paging = PageRequest.of(pageCurrent, sizeCurrent);
@@ -267,7 +271,7 @@ public class HouseServiceImpl implements HouseService {
 		if (pageCurrent >= pageMax) {
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			message.setMessage(CommonConstants.INVALID_PAGE);
-			return CompletableFuture.completedFuture(message);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		paginationModel.setListObject(listHouseModel);
@@ -275,7 +279,7 @@ public class HouseServiceImpl implements HouseService {
 		message.setData(paginationModel);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return CompletableFuture.completedFuture(message);
+		return ResponseEntity.ok(message);
 
 	}
 
@@ -314,14 +318,15 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public CompletableFuture<?> getHouseDetail(Integer houseId) {
+	@CacheEvict(value = "houseDetail", allEntries = true)
+	public ResponseEntity<?> getHouseDetail(Integer houseId) {
 		MessageModel message = new MessageModel();
 		HouseDetailModel houseDetail;
 
 		if (!houseRepository.findById(houseId).isPresent()) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return CompletableFuture.completedFuture(message);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 
 		House house = houseRepository.findById(houseId).get();
@@ -386,14 +391,14 @@ public class HouseServiceImpl implements HouseService {
 		message.setData(houseDetail);
 		message.setMessage(UserConstants.GET_INFORMATION);
 		message.setStatus(HttpStatus.OK.value());
-		return CompletableFuture.completedFuture(message);
+		return ResponseEntity.ok(message);
 	}
 
 	@Override
-	public ResponseEntity<?> getHouseForHost(int accountId, String block, String status, int page, int size) {
+	public ResponseEntity<?> getHouseForHost(int accountId, String status, int page, int size) {
 		MessageModel message = new MessageModel();
 		Integer currentId = securityAuditorAware.getCurrentAuditor().get();
-		boolean blockCurrent = Boolean.parseBoolean(block);
+		boolean blockCurrent = true;
 
 		if (!accountRepository.findById(currentId).get().getRole().equals(Role.ADMIN.getRole())
 				&& !currentId.equals(accountId)) {
@@ -415,12 +420,12 @@ public class HouseServiceImpl implements HouseService {
 				message.setStatus(HttpStatus.FORBIDDEN.value());
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
-			if ((status == null || status.isEmpty()) && block == null) {
+			if ((status == null || status.isEmpty())) {
 				listHouse = houseRepository.getAllHouseForAdmin(paging).getContent();
 				pageMax = houseRepository.getAllHouseForAdmin(paging).getTotalPages();
 			} else {
 
-				if (blockCurrent == true && status == null) {
+				if ( status.equals(StatusHouse.BLOCKED.getStatusName())) {
 					listHouse = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getContent();
 					pageMax = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getTotalPages();
 
@@ -465,14 +470,21 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
-			if ((status == null || status.isEmpty()) && block == null) {
+			if ((status == null || status.isEmpty())) {
 				listHouse = houseRepository.getAllHouseForHost(accountId, paging).getContent();
 				pageMax = houseRepository.getAllHouseForHost(accountId, paging).getTotalPages();
 			} else {
 
-				if (blockCurrent == true && status == null) {
+				if (status.equals(StatusHouse.BLOCKED.getStatusName())) {
 					listHouse = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getContent();
 					pageMax = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getTotalPages();
+					
+					if (listHouse.size() == 0) {
+						message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
+						message.setStatus(HttpStatus.NOT_FOUND.value());
+						message.setData(listHouse);
+						return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+					}
 
 					for (House house : listHouse) {
 						HouseModel houseModel = mapper.map(house, HouseModel.class);
@@ -545,7 +557,7 @@ public class HouseServiceImpl implements HouseService {
 		MessageModel message = new MessageModel();
 		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
 
-		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND),  1000 * 8192);
+		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND), 1000 * 8192);
 		List<String> listOfLines = new ArrayList<String>();
 		String lineInFile = bufReader.readLine();
 		while (lineInFile != null) {
@@ -731,50 +743,59 @@ public class HouseServiceImpl implements HouseService {
 			boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size) {
 
 		MessageModel message = new MessageModel();
-
 		List<Object> listHouseModel = new ArrayList<Object>();
 		PaginationModel paginationModel = new PaginationModel();
 		List<House> listHouse = new ArrayList<House>();
 		byte amenities;
 		List<House> listHouseAmenities = new ArrayList<House>();
+//		Sort sortable = null;
+//
+//		if (sort.equals("ASC")) {
+//			
+//		}
+//
+//		if (sort.equals("DESC")) {
+//			sortable = Sort.by("price").descending();
+//		}
+//		Pageable paging = PageRequest.of(page, size, sortable);
 
-		byte wifi_binary = (wifi == true) ? Amenities.WIFI.getValue() : 0;
-		byte tivi_binary = (tivi == true) ? Amenities.TIVI.getValue() : 0;
-		byte ac_binary = (airConditioner == true) ? Amenities.AC.getValue() : 0;
-		byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
-		byte swim_pool_binary = (swimPool == true) ? Amenities.SWIM_POOL.getValue() : 0;
-		amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
+			byte wifi_binary = (wifi == true) ? Amenities.WIFI.getValue() : 0;
+			byte tivi_binary = (tivi == true) ? Amenities.TIVI.getValue() : 0;
+			byte ac_binary = (airConditioner == true) ? Amenities.AC.getValue() : 0;
+			byte fridge_binary = (fridge == true) ? Amenities.FRIDGE.getValue() : 0;
+			byte swim_pool_binary = (swimPool == true) ? Amenities.SWIM_POOL.getValue() : 0;
+			amenities = (byte) (wifi_binary | tivi_binary | ac_binary | fridge_binary | swim_pool_binary);
 
-		listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice,
-				lowestGuest, highestGuest);
+			listHouse = houseRepository.searchFilter(country, city, lowestSize, highestSize, lowestPrice, highestPrice,
+					lowestGuest, highestGuest);
 
-		for (House house : listHouse) {
-			if ((byte) (amenities & Byte.parseByte(house.getAmenities(), 2)) == amenities) {
-				listHouseAmenities.add(house);
+			for (House house : listHouse) {
+				if ((byte) (amenities & Byte.parseByte(house.getAmenities(), 2)) == amenities) {
+					listHouseAmenities.add(house);
+				}
 			}
-		}
 
-		if (listHouseAmenities.size() == 0) {
-			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			message.setData(listHouseAmenities);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
+			if (listHouseAmenities.size() == 0) {
+				message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
+				message.setStatus(HttpStatus.NOT_FOUND.value());
+				message.setData(listHouseAmenities);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+			}
 
-		for (House house : listHouseAmenities) {
-			HouseModel houseModel = mapper.map(house, HouseModel.class);
-			listHouseModel.add(houseModel);
-		}
+			for (House house : listHouseAmenities) {
+				HouseModel houseModel = mapper.map(house, HouseModel.class);
+				listHouseModel.add(houseModel);
+			}
 
-		int fromIndex = (page) * size;
-		final int numPages = (int) Math.ceil((double) listHouseModel.size() / (double) size);
+			int fromIndex = (page) * size;
+			final int numPages = (int) Math.ceil((double) listHouseModel.size() / (double) size);
 
-		paginationModel.setListObject(listHouseModel.subList(fromIndex, Math.min(fromIndex + size, listHouseModel.size())));
-		paginationModel.setPageMax(numPages);
-		message.setData(paginationModel);
-		message.setMessage(UserConstants.GET_INFORMATION);
-		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(message);
+			paginationModel.setListObject(listHouseModel.subList(fromIndex, Math.min(fromIndex + size, listHouseModel.size())));
+			paginationModel.setPageMax(numPages);
+			message.setData(paginationModel);
+			message.setMessage(UserConstants.GET_INFORMATION);
+			message.setStatus(HttpStatus.OK.value());
+			return ResponseEntity.ok(message);
 
 	}
 
@@ -852,6 +873,5 @@ public class HouseServiceImpl implements HouseService {
 		return ResponseEntity.ok(message);
 
 	}
-	
 
 }

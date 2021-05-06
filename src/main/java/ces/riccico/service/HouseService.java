@@ -3,6 +3,7 @@ package ces.riccico.service;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import ces.riccico.model.HouseDetailModel;
 
@@ -16,30 +17,28 @@ public interface HouseService {
 	
 //	ResponseEntity<?> unBlockHouse(int houseId);
 
-//	ResponseEntity<?> findByPageAndSize(String page, String size);
+	ResponseEntity<?> findByPageAndSize(String page, String size);
 	
-	CompletableFuture<?> findByPageAndSize(String page, String size);
-
-//	ResponseEntity<?> findByTitle(String title, int page, int size);
 
 	ResponseEntity<?> findHouseByUsername(String username);
 
-//	ResponseEntity<?> getHouseDetail(Integer houseId);
+	ResponseEntity<?> getHouseDetail(Integer houseId);
 	
-	CompletableFuture<?> getHouseDetail(Integer houseId);
-	
-	ResponseEntity<?> getHouseForHost(int accountId, String block, String status, int page, int size);
+	ResponseEntity<?> getHouseForHost(int accountId, String status, int page, int size);
 
 	ResponseEntity<?> getHouseRecommendForUser(int houseId) throws IOException;
 	
 	ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail);
 
-	ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
-			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner, boolean fridge,
-			boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size);
+//	ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize,
+//			Double lowestPrice, Double highestPrice, boolean tivi, boolean wifi, boolean airConditioner, boolean fridge,
+//			boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size);
 
 	ResponseEntity<?> updateHouse(int houseId, HouseDetailModel houseDetail);
 
 	ResponseEntity<?> unlistedHouse(int houseId);
+
+	ResponseEntity<?> searchFilter(String country, String city, Double lowestSize, Double highestSize, Double lowestPrice, Double highestPrice, boolean tivi,
+			boolean wifi, boolean airConditioner, boolean fridge, boolean swimPool, byte lowestGuest, byte highestGuest, int page, int size);
 
 }
