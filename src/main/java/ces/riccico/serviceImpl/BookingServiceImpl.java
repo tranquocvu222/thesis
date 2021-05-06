@@ -34,11 +34,13 @@ import ces.riccico.entity.Account;
 import ces.riccico.entity.Booking;
 import ces.riccico.entity.House;
 import ces.riccico.entity.Rating;
+import ces.riccico.model.BookingCustomerModel;
 import ces.riccico.model.BookingDTO;
 import ces.riccico.model.BookingDetailModel;
 import ces.riccico.model.DateModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
+import ces.riccico.model.RatingCustomerModel;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
@@ -290,7 +292,7 @@ public class BookingServiceImpl implements BookingService {
 		}
 
 		List<Object> listBookingModel = new ArrayList<Object>();
-		List<Booking> listBooking = new ArrayList<Booking>();
+		List<BookingCustomerModel> listBooking = new ArrayList<BookingCustomerModel>();
 		PaginationModel paginationModel = new PaginationModel();
 		Pageable paging = PageRequest.of(page, size);
 		int pageMax = 0;
@@ -313,17 +315,14 @@ public class BookingServiceImpl implements BookingService {
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
-		for (Booking booking : listBooking) {
-			BookingDetailModel bookingModel = mapper.map(booking, BookingDetailModel.class);
-			bookingModel.setCustomerId(booking.getAccount().getAccountId());
-			bookingModel.setCustomerName(booking.getAccount().getUsername());
-			bookingModel.setHouseName(booking.getHouse().getTitle());
-			bookingModel.setHouseId(booking.getHouse().getId());
-			Rating rating = ratingRepository.findByBookingId(booking.getId());
+		for (BookingCustomerModel booking : listBooking) {
+			long days = TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - booking.getDateCheckIn().getTime());
+			booking.setNight(days);
+			RatingCustomerModel rating = ratingRepository.findByBooking(booking.getId());
 			if (rating != null) {
-				bookingModel.setRating(rating);
+				booking.setRating(rating);;
 			}
-			listBookingModel.add(bookingModel);
+			listBookingModel.add(booking);
 		}
 
 		if (page >= pageMax) {
@@ -389,6 +388,8 @@ public class BookingServiceImpl implements BookingService {
 		}
 		for (Booking booking : listBooking) {
 			BookingDetailModel bookingModel = mapper.map(booking, BookingDetailModel.class);
+			long days = TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - booking.getDateCheckIn().getTime());
+			bookingModel.setNight(days);
 			bookingModel.setCustomerId(booking.getAccount().getAccountId());
 			bookingModel.setCustomerName(booking.getAccount().getUsername());
 			bookingModel.setHouseName(booking.getHouse().getTitle());
