@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ces.riccico.entity.Booking;
+import ces.riccico.model.BookingCustomerModel;
 import ces.riccico.model.BookingDTO;
 import ces.riccico.model.RevenueMonthly;
 
@@ -42,11 +43,20 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	@Query("Select COUNT(b) from Booking b where b.house.account.id = ?1 and (b.status = 'completed' or b.status = 'paid')")
 	Integer countByAccountId(int accountId);
 
-	@Query("Select b from Booking b where b.account.id =?1")
-	Page<Booking> getAllBookingForCustomer(int accountId, Pageable pageable);
+//	@Query("Select b from Booking b where b.account.id =?1")
+//	Page<Booking> getAllBookingForCustomer(int accountId, Pageable pageable);
+	@Query("Select new ces.riccico.model.BookingCustomerModel(b.id, b.bill, b.createdAt, b.dateCheckIn, b.dateCheckOut,"
+			+ "b.status, b.house.title, b.house.id) "
+			+ "from Booking b where b.account.id = ?1")
+	Page<BookingCustomerModel> getAllBookingForCustomer(int accountId, Pageable pageable);
 
-	@Query("Select b from Booking b where b.account.id =?1 and b.status =?2")
-	Page<Booking> getBookingForCustomer(int accountId, String status, Pageable pageable);
+//	@Query("Select b from Booking b where b.account.id =?1 and b.status =?2")
+//	Page<Booking> getBookingForCustomer(int accountId, String status, Pageable pageable);
+	
+	@Query("Select new ces.riccico.model.BookingCustomerModel(b.id, b.bill, b.createdAt, b.dateCheckIn, b.dateCheckOut,"
+			+ "b.status, b.house.title, b.house.id) "
+			+ "from Booking b where b.account.id = ?1 and b.status =?2")
+	Page<BookingCustomerModel> getBookingForCustomer(int accountId, String status, Pageable pageable);
 
 	@Query("Select b from Booking b where b.house.account.id =?1")
 	Page<Booking> getAllBookingForHost(int accountId, Pageable pageable);

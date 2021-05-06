@@ -2,64 +2,52 @@ package ces.riccico.model;
 
 import java.util.Date;
 
-import ces.riccico.entity.Booking;
-import ces.riccico.entity.Rating;
-
-public class BookingDetailModel {
+public class BookingCustomerModel {
 	private Integer id;
 
 	private double bill;
-	
+
 	private Date createdAt;
 
 	private Date dateCheckIn;
-	
+
 	private Date dateCheckOut;
-	
+
 	private String status;
-	
+
 	private String houseName;
-	
-	private int customerId;
 
-	private String customerName;
-	
 	private int houseId;
-	
-	private long night;
-	
-	private Rating rating;
-	
 
-	public int getHouseId() {
-		return houseId;
+	private long night;
+
+	public BookingCustomerModel() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public void setHouseId(int houseId) {
+	public BookingCustomerModel(Integer id, double bill, Date createdAt, Date dateCheckIn, Date dateCheckOut,
+			String status, String houseName, int houseId) {
+		super();
+		this.id = id;
+		this.bill = bill;
+		this.createdAt = createdAt;
+		this.dateCheckIn = dateCheckIn;
+		this.dateCheckOut = dateCheckOut;
+		this.status = status;
+		this.houseName = houseName;
 		this.houseId = houseId;
 	}
 
-	public String getHouseName() {
-		return houseName;
-	}
-
-	public void setHouseName(String houseName) {
-		this.houseName = houseName;
-	}
-
-
-	public Rating getRating() {
-		return rating;
-	}
-
-	public void setRating(Rating rating) {
-		this.rating = rating;
-	}
+	private RatingCustomerModel rating;
 
 	public Integer getId() {
 		return id;
 	}
 
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public double getBill() {
 		return bill;
@@ -67,22 +55,6 @@ public class BookingDetailModel {
 
 	public void setBill(double bill) {
 		this.bill = bill;
-	}
-
-	public int getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(int customerId) {
-		this.customerId = customerId;
-	}
-
-	public String getCustomerName() {
-		return customerName;
-	}
-
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
 	}
 
 	public Date getCreatedAt() {
@@ -117,8 +89,20 @@ public class BookingDetailModel {
 		this.status = status;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public String getHouseName() {
+		return houseName;
+	}
+
+	public void setHouseName(String houseName) {
+		this.houseName = houseName;
+	}
+
+	public int getHouseId() {
+		return houseId;
+	}
+
+	public void setHouseId(int houseId) {
+		this.houseId = houseId;
 	}
 
 	public long getNight() {
@@ -128,5 +112,13 @@ public class BookingDetailModel {
 	public void setNight(long night) {
 		this.night = night;
 	}
-	
+
+	public RatingCustomerModel getRating() {
+		return rating;
+	}
+
+	public void setRating(RatingCustomerModel rating) {
+		this.rating = rating;
+	}
+
 }
