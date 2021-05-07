@@ -67,6 +67,8 @@ public class HouseServiceImpl implements HouseService {
 
 	private static final String BLOCKED = "blocked";
 
+	private static final String IMAGE = "https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg";
+
 	@Autowired
 	private AccountRepository accountRepository;
 
@@ -670,7 +672,13 @@ public class HouseServiceImpl implements HouseService {
 		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
 		house.setAmenities(amenities);
 
-		List<String> listImages = houseDetail.getImages();
+		List<String> listImages = new ArrayList<String>();
+		listImages = houseDetail.getImages();
+		
+		if(listImages.size() == 0) {
+			listImages.add("");
+		}
+
 		String images = "";
 		for (String i : listImages) {
 			images += i + ",";
@@ -798,6 +806,11 @@ public class HouseServiceImpl implements HouseService {
 
 		List<String> listImages = houseDetail.getImages();
 		String images = "";
+		
+		if(listImages.size() == 0) {
+			listImages.add("");
+		}
+		
 		for (String i : listImages) {
 			images += i + ",";
 		}
