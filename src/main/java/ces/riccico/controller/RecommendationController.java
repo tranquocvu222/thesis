@@ -50,8 +50,8 @@ public class RecommendationController {
 		}
 		recommendationService.init();
 		long countDb = recommendationService.countRowDbNew();
-//		long countFile = recommendationService.countRowDbOld();
-		long countFile = 3000;
+		long countFile = recommendationService.countRowDbOld();
+//		long countFile = 3000;
 		if(countDb > (countFile + (countFile*10)/100)) {
 			logger.info("retrain model ");
 			recommendationService.writeFileRecommendForUser();

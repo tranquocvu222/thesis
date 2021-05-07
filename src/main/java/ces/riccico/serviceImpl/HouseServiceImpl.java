@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -310,7 +311,7 @@ public class HouseServiceImpl implements HouseService {
 		}
 
 		List<RatingModel> listRatings = ratingRepository.findByBookingHouseId(houseId);
-	
+
 		int amenities = Integer.parseInt(houseDetail.getAmenities(), 2);
 		boolean wifi = ((amenities & Amenities.WIFI.getValue()) != 0) ? true : false;
 		boolean tivi = ((amenities & Amenities.TIVI.getValue()) != 0) ? true : false;
@@ -495,7 +496,7 @@ public class HouseServiceImpl implements HouseService {
 		MessageModel message = new MessageModel();
 		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
 
-		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND),  1000 * 8192);
+		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND), 1000 * 8192);
 		List<String> listOfLines = new ArrayList<String>();
 		String lineInFile = bufReader.readLine();
 		while (lineInFile != null) {
@@ -626,6 +627,7 @@ public class HouseServiceImpl implements HouseService {
 		return ResponseEntity.ok(message);
 
 	}
+
 	@Override
 	public ResponseEntity<?> postNewHouse(HouseDetailModel houseDetail) {
 
@@ -654,11 +656,22 @@ public class HouseServiceImpl implements HouseService {
 		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
 		house.setAmenities(amenities);
 
-		List<String> listImages = houseDetail.getImages();
+		List<String> listImages = new ArrayList<String>();
+		String[] arr = { "https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg",
+				"https://cdn.luxstay.com/rooms/26803/large/room_26803_6_1561432787.jpg",
+				"https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg"};
+		// convert array to List
+		List<String> list = Arrays.asList(arr);
 		String images = "";
+		listImages = houseDetail.getImages();
+
+		if (listImages.isEmpty() || listImages == null) {
+			listImages = list;
+		}
 		for (String i : listImages) {
 			images += i + ",";
 		}
+
 		images = images.substring(0, images.length() - 1);
 
 		house.setImages(images);
@@ -780,8 +793,18 @@ public class HouseServiceImpl implements HouseService {
 		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
 		house.setAmenities(amenities);
 
-		List<String> listImages = houseDetail.getImages();
+		List<String> listImages = new ArrayList<String>();
+		String[] arr = { "https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg",
+				"https://cdn.luxstay.com/rooms/26803/large/room_26803_6_1561432787.jpg",
+				"https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg"};
+		// convert array to List
+		List<String> list = Arrays.asList(arr);
 		String images = "";
+		listImages = houseDetail.getImages();
+
+		if (listImages.isEmpty() || listImages == null) {
+			listImages = list;
+		}
 		for (String i : listImages) {
 			images += i + ",";
 		}
