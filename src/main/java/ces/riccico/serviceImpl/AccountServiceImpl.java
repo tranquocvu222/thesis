@@ -35,7 +35,6 @@ import ces.riccico.model.AccountModel;
 import ces.riccico.model.LoginModel;
 import ces.riccico.model.MessageModel;
 import ces.riccico.model.PaginationModel;
-import ces.riccico.model.StatisticOwner;
 import ces.riccico.repository.AccountRepository;
 import ces.riccico.repository.BookingRepository;
 import ces.riccico.repository.HouseRepository;
