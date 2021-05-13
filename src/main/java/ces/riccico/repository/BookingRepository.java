@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ces.riccico.entity.Booking;
-import ces.riccico.model.RevenueMonthly;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
