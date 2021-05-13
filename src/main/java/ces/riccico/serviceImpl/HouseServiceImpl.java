@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -65,6 +67,8 @@ public class HouseServiceImpl implements HouseService {
 	private static Logger logger = LoggerFactory.getLogger(HouseServiceImpl.class);
 
 	private static final String BLOCKED = "blocked";
+
+	private static final String IMAGE = "https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg";
 
 	@Autowired
 	private AccountRepository accountRepository;
@@ -236,11 +240,17 @@ public class HouseServiceImpl implements HouseService {
 
 		if (page >= pageMax) {
 			message.setMessage(CommonConstants.INVALID_PAGE);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
 		paginationModel.setListObject(listHouseModel);
 		paginationModel.setPageMax(pageMax);
-		return ResponseEntity.ok(paginationModel);
+
+		message.setData(paginationModel);
+		message.setMessage(UserConstants.GET_INFORMATION);
+		message.setStatus(HttpStatus.OK.value());
+		return ResponseEntity.ok(message);
+
 	}
 
 	@Override
@@ -341,10 +351,10 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public ResponseEntity<?> getHouseForHost(int accountId, String block, String status, int page, int size) {
+	public ResponseEntity<?> getHouseForHost(int accountId, String status, int page, int size) {
 		MessageModel message = new MessageModel();
 		Integer currentId = securityAuditorAware.getCurrentAuditor().get();
-		boolean blockCurrent = Boolean.parseBoolean(block);
+		boolean blockCurrent = true;
 
 		if (!accountRepository.findById(currentId).get().getRole().equals(Role.ADMIN.getRole())
 				&& !currentId.equals(accountId)) {
@@ -366,12 +376,12 @@ public class HouseServiceImpl implements HouseService {
 				message.setStatus(HttpStatus.FORBIDDEN.value());
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 			}
-			if ((status == null || status.isEmpty()) && block == null) {
+			if ((status == null || status.isEmpty())) {
 				listHouse = houseRepository.getAllHouseForAdmin(paging).getContent();
 				pageMax = houseRepository.getAllHouseForAdmin(paging).getTotalPages();
 			} else {
 
-				if (blockCurrent == true && status == null) {
+				if (status.equals(StatusHouse.BLOCKED.getStatusName())) {
 					listHouse = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getContent();
 					pageMax = houseRepository.getHouseBlockForAdmin(blockCurrent, paging).getTotalPages();
 
@@ -416,14 +426,21 @@ public class HouseServiceImpl implements HouseService {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 			}
 
-			if ((status == null || status.isEmpty()) && block == null) {
+			if ((status == null || status.isEmpty())) {
 				listHouse = houseRepository.getAllHouseForHost(accountId, paging).getContent();
 				pageMax = houseRepository.getAllHouseForHost(accountId, paging).getTotalPages();
 			} else {
 
-				if (blockCurrent == true && status == null) {
+				if (status.equals(StatusHouse.BLOCKED.getStatusName())) {
 					listHouse = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getContent();
 					pageMax = houseRepository.getHouseBlockForHost(accountId, blockCurrent, paging).getTotalPages();
+
+					if (listHouse.size() == 0) {
+						message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
+						message.setStatus(HttpStatus.NOT_FOUND.value());
+						message.setData(listHouse);
+						return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+					}
 
 					for (House house : listHouse) {
 						HouseModel houseModel = mapper.map(house, HouseModel.class);
@@ -657,17 +674,14 @@ public class HouseServiceImpl implements HouseService {
 		house.setAmenities(amenities);
 
 		List<String> listImages = new ArrayList<String>();
-		String[] arr = { "https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg",
-				"https://cdn.luxstay.com/rooms/26803/large/room_26803_6_1561432787.jpg",
-				"https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg"};
-		// convert array to List
-		List<String> list = Arrays.asList(arr);
+		listImages = houseDetail.getImages();
+		
+		if(listImages.size() == 0) {
+			listImages.add("");
+		}
 		String images = "";
 		listImages = houseDetail.getImages();
 
-		if (listImages.isEmpty() || listImages == null) {
-			listImages = list;
-		}
 		for (String i : listImages) {
 			images += i + ",";
 		}
@@ -800,11 +814,11 @@ public class HouseServiceImpl implements HouseService {
 		// convert array to List
 		List<String> list = Arrays.asList(arr);
 		String images = "";
-		listImages = houseDetail.getImages();
-
-		if (listImages.isEmpty() || listImages == null) {
-			listImages = list;
+		
+		if(listImages.size() == 0) {
+			listImages.add("");
 		}
+		
 		for (String i : listImages) {
 			images += i + ",";
 		}

@@ -21,9 +21,8 @@ import ces.riccico.service.UserService;
 public class UserServiceImpl implements UserService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-	
+
 	private static String IMAGE = "https://cdn.luxstay.com/users_avatar_default/default-avatar.png";
-	
 
 	@Autowired
 	AccountRepository accountRepository;
@@ -99,13 +98,11 @@ public class UserServiceImpl implements UserService {
 			message.setStatus(HttpStatus.BAD_REQUEST.value());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
-		
+
 		if (model.getImage() == null) {
 			user.setImage(IMAGE);
-			userRepository.saveAndFlush(user);
-			message.setMessage(UserConstants.IMAGE_DEFAULT);
-			message.setStatus(HttpStatus.OK.value());
-			return ResponseEntity.ok(message);
+		} else {
+			user.setImage(model.getImage());
 		}
 
 		user.setFirstName(model.getFirstName());
@@ -114,12 +111,10 @@ public class UserServiceImpl implements UserService {
 		user.setAddress(model.getAddress());
 		user.setCity(model.getCity());
 		user.setCountry(model.getCountry());
-		user.setImage(model.getImage());
 		userRepository.saveAndFlush(user);
 		message.setMessage(UserConstants.UPDATE_SUCCESS);
 		message.setData(user);
 		message.setStatus(HttpStatus.OK.value());
-
 		return ResponseEntity.ok(message);
 
 	}
@@ -134,7 +129,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseEntity<?> findById() {
 
-		
 		MessageModel message = new MessageModel();
 		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
 		if (accountId == null) {

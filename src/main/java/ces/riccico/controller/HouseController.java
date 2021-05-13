@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -86,9 +87,9 @@ public class HouseController {
 	@GetMapping("/host")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
 	public ResponseEntity<?> getHouseForHost(@RequestParam(defaultValue = "0") Integer accountId,
-			@RequestParam(required = false) String status, @RequestParam(required = false) String block,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
-		return houseService.getHouseForHost(accountId, block, status, page, size);
+			@RequestParam(required = false) String status, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		return houseService.getHouseForHost(accountId, status, page, size);
 	}
 
 	// get House Recommend For User

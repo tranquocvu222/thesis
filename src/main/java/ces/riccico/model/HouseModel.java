@@ -12,7 +12,7 @@ public class HouseModel {
 
 	private String address;
 
-	private double price;
+	private Double price;
 
 	private String city;
 

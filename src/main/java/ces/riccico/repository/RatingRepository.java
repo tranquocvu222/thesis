@@ -19,7 +19,8 @@ public interface RatingRepository extends JpaRepository<Rating, Integer> {
 
 	Rating findByBookingId(int bookingId);
 	
-	@Query("Select new ces.riccico.model.RatingCustomerModel (r.createdAt, r.modifiedDate, r.star, r.content) "
+
+	@Query("Select new ces.riccico.model.RatingCustomerModel (r.id,r.createdAt, r.modifiedDate, r.star, r.content) "
 			+ "from Rating r where r.booking.id = ?1")
 	RatingCustomerModel findByBooking(int bookingId);
 

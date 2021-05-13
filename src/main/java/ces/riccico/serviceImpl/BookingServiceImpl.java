@@ -316,11 +316,13 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
 		for (BookingCustomerModel booking : listBooking) {
-			long days = TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - booking.getDateCheckIn().getTime());
+			long days = TimeUnit.MILLISECONDS
+					.toDays(booking.getDateCheckOut().getTime() - booking.getDateCheckIn().getTime());
 			booking.setNight(days);
 			RatingCustomerModel rating = ratingRepository.findByBooking(booking.getId());
 			if (rating != null) {
-				booking.setRating(rating);;
+				booking.setRating(rating);
+				;
 			}
 			listBookingModel.add(booking);
 		}
@@ -388,7 +390,8 @@ public class BookingServiceImpl implements BookingService {
 		}
 		for (Booking booking : listBooking) {
 			BookingDetailModel bookingModel = mapper.map(booking, BookingDetailModel.class);
-			long days = TimeUnit.MILLISECONDS.toDays(booking.getDateCheckOut().getTime() - booking.getDateCheckIn().getTime());
+			long days = TimeUnit.MILLISECONDS
+					.toDays(booking.getDateCheckOut().getTime() - booking.getDateCheckIn().getTime());
 			bookingModel.setNight(days);
 			bookingModel.setCustomerId(booking.getAccount().getAccountId());
 			bookingModel.setCustomerName(booking.getAccount().getUsername());
@@ -493,7 +496,6 @@ public class BookingServiceImpl implements BookingService {
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		Account account = accountRepository.findById(idCurrent).get();
 		House house = houseRepository.findById(houseId).get();
-		
 		if (house == null) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
