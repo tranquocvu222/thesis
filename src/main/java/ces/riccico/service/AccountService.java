@@ -31,8 +31,6 @@ public interface AccountService {
 
 	ResponseEntity<?> resetPassword(String email, String password);
 
-	ResponseEntity<?> getStatisticOwner(int accountId);
-
 	ResponseEntity<?> findAllAccountPageAndSize(int page, int size);
 
 }

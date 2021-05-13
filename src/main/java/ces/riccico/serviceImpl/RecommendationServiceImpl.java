@@ -33,12 +33,12 @@ import ces.riccico.service.RecommendationService;
 public class RecommendationServiceImpl implements RecommendationService {
 	private static Logger logger = LoggerFactory.getLogger(RecommendationServiceImpl.class);
 	private static final String SPARK_APP_NAME = "Recommendation Engine";
-	private static final String SPARK_MASTER = "local";
-	private static final String DATASOURCE_URL = "jdbc:postgresql://ec2-3-216-92-193.compute-1.amazonaws.com:5432/df98ln5fvc2egi";
+	private static final String SPARK_MASTER = "spark://192.168.1.6:7077";
+	private static final String DATASOURCE_URL = "jdbc:postgresql://localhost/login";
 	private static final String DATASOURCE_TABLE_RATING = "public.ratings";
 	private static final String DATASOURCE_TABLE_BOOKING = "public.bookings";
-	private static final String DATASOURCE_USERNAME = "qaesnrejlgjifq";
-	private static final String DATASOURCE_PASSWORD = "c8c9b1b19a20814b1b21df019b2d452542ef16b18219822013b0c17d383b9e4c";
+	private static final String DATASOURCE_USERNAME = "postgres";
+	private static final String DATASOURCE_PASSWORD = "123456";
 	private static SparkSession SPARK_SESSION ;
 
 	// parametter of model to training
@@ -110,26 +110,6 @@ public class RecommendationServiceImpl implements RecommendationService {
 		Dataset<Row> predictions = model.transform(TEST);
 		predictions.show();
 		return predictions;
-	}
-	
-	@Override
-	public long countRowDbNew()  {
-		long count = -1;
-		count = ratingDb.count();
-		return count;
-	}
-	
-	@Override
-	public long countRowDbOld() throws IOException {
-		BufferedReader bufReader  = new BufferedReader(new FileReader(CommonConstants.FILE_COUNT_ROW));
-		long count = 0;
-		String lineInFile = bufReader.readLine();
-		while (lineInFile != null) {
-			count = Integer.parseInt(lineInFile);
-			break;
-		}
-		bufReader.close();
-		return count;
 	}
 
 	@Override

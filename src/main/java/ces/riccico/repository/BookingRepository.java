@@ -26,15 +26,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 			+ "ORDER BY b.created_at DESC LIMIT 5", nativeQuery = true)
 	List<Booking> findAccountId(int accountId);
 
-	@Query("select sum(bill) from Booking where status = 'paid' or status = 'completed'")
-	Double totalRevenue();
-
-	@Query("select count(id) from Booking where status = 'paid'")
-	Integer totalBookingPaid();
-
-	@Query("select count(id) from Booking where status = 'completed'")
-	Integer totalBookingCompleted();
-
 	@Query("select b from Booking b where b.status = 'paid'")
 	List<Booking> findBookingPaid();
 
@@ -59,19 +50,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 	@Query("Select b from Booking b where b.status ='pending'")
 	List<Booking> getAllBookingPending();
 
-	@Query(value = "select sum(bill), date_part('month',create_check_in) as month "
-			+ "from bookings  where (status = 'completed' or status = 'paid') "
-			+ "and date_part('year',create_check_in) = ?1 \r\n"
-			+ "group by date_part('month',create_check_in)", nativeQuery = true)
-	List<Object> getMonthlyRevenue(int year);
-
 	@Query("Select b.house.id from Booking b where b.account.id =?1 and b.house.id != ?2")
 	List<Integer> getListHouseUserBooked(int accountId, Integer houseId);
-	
-	
-	@Query(value ="Select b.house_id from bookings b where b.house_id != ?1 "
-			+ "GROUP BY b.house_id ORDER BY (COUNT(b.booking_id)) DESC LIMIT 6", nativeQuery = true)
-	List<Integer> getListHouseMostBooked(Integer houseId);
  
 	@Query(value = "Select b.house_id from bookings b inner join ratings r"
 			+ " on b.booking_id = r.booking_id inner join houses h "

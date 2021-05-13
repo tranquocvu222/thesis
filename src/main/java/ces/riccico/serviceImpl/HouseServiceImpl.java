@@ -407,7 +407,7 @@ public class HouseServiceImpl implements HouseService {
 		MessageModel message = new MessageModel();
 		Integer accountId = securityAuditorAware.getCurrentAuditor().get();
 
-		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND),  1000 * 8192);
+		BufferedReader bufReader = new BufferedReader(new FileReader(CommonConstants.FILE_RECOMMEND), 1000 * 8192);
 		List<String> listOfLines = new ArrayList<String>();
 		String lineInFile = bufReader.readLine();
 		while (lineInFile != null) {
@@ -449,8 +449,6 @@ public class HouseServiceImpl implements HouseService {
 		}
 
 		House houseCurrent = houseRepository.findById(houseId).get();
-		// get list house have most booking
-		List<Integer> listHouseMostBooked = bookingRepository.getListHouseMostBooked(houseId);
 		// get list house has high average of rating in city of house detail
 		List<Integer> listHousePopular = bookingRepository.getListHousePopular(houseCurrent.getCity(), houseId);
 
@@ -460,52 +458,14 @@ public class HouseServiceImpl implements HouseService {
 		List<Integer> listHouseBooked = bookingRepository.getListHouseUserBooked(accountId, houseId);
 		// random index
 		Random random = new Random();
-
-		// recommendation for user don't have account or account haven't rating in model
 		List<Integer> listCopyPopular = new ArrayList<>(listHousePopular);
-		if ((accountId.toString() == null || accountId.toString().isEmpty())
-				|| listAccountId.contains(accountId) == false) {
-			// get 3 random house popular
-			while (listHouseModel.size() < 3) {
-				int randomElement = -1;
-				House house = new House();
-				if (listCopyPopular.size() == 0) {
-					randomElement = listHouseMostBooked.get(random.nextInt(listHouseMostBooked.size()));
-					listHouseMostBooked.remove(Integer.valueOf(randomElement));
-					if (listHouseBooked.contains(randomElement) == false
-							&& listHousePopular.contains(randomElement) == false) {
-						house = houseRepository.findById(randomElement).get();
-						HouseModel houseModel = mapper.map(house, HouseModel.class);
-						listHouseModel.add(houseModel);
-					}
-				} else {
-					randomElement = listCopyPopular.get(random.nextInt(listCopyPopular.size()));
-					listCopyPopular.remove(Integer.valueOf(randomElement));
-					if (listHouseBooked.contains(randomElement) == false) {
-						house = houseRepository.findById(randomElement).get();
-						HouseModel houseModel = mapper.map(house, HouseModel.class);
-						listHouseModel.add(houseModel);
-					}
-				}
-			}
-		}
+
 		List<Integer> listCopyTrain = new ArrayList<>(listHouseTrain);
 		// recommendation for user have account and rating in model
 		while (listHouseModel.size() < 3) {
 			int randomElement = -1;
 			House house = new House();
-			if (listCopyPopular.size() == 0) {
-				randomElement = listHouseMostBooked.get(random.nextInt(listHouseMostBooked.size()));
-				listHouseMostBooked.remove(Integer.valueOf(randomElement));
-				if (listHouseBooked.contains(randomElement) == false
-						&& listHousePopular.contains(randomElement) == false
-						&& listHouseTrain.contains(randomElement) == false) {
-					house = houseRepository.findById(randomElement).get();
-					HouseModel houseModel = mapper.map(house, HouseModel.class);
-					listHouseModel.add(houseModel);
-				}
-				logger.info("house in list house most booked : " + String.valueOf(listHouseModel.size()));
-			} else if (listCopyTrain.size() == 0) {
+			if (listCopyTrain.size() == 0) {
 				randomElement = listCopyPopular.get(random.nextInt(listCopyPopular.size()));
 				listCopyPopular.remove(Integer.valueOf(randomElement));
 				house = houseRepository.findById(randomElement).get();

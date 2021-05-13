@@ -41,33 +41,11 @@ public class RecommendationController {
 //	@Scheduled(fixedDelay = 120000 )
 	@GetMapping
 	public ResponseEntity<?> writeFileRecommendForUser() throws IOException {
-		Path path = Paths.get(CommonConstants.FILE_RECOMMEND);
-		if(!Files.exists(path)) { 
 			recommendationService.init();
-			logger.info("train new model ");
 			recommendationService.writeFileRecommendForUser();
 			recommendationService.stop();
 			return ResponseEntity.ok("train new model successly");
-		}
-		recommendationService.init();
-		long countDb = recommendationService.countRowDbNew();
-//		long countFile = recommendationService.countRowDbOld();
-		long countFile = 3000;
-		if(countDb > (countFile + (countFile*10)/100)) {
-			logger.info("retrain model ");
-			recommendationService.writeFileRecommendForUser();
-			recommendationService.stop();
-			return ResponseEntity.ok("retrain model successly");
-			
-		}
-		recommendationService.stop();
-		logger.info("Model existed");
-		return ResponseEntity.ok("Model existed");
 	}
 	
-	@GetMapping("/count")
-	public long countRowModel() throws IOException {
-		return recommendationService.countRowDbOld();
-	}
 	
 }

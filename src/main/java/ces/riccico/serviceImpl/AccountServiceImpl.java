@@ -572,54 +572,5 @@ public class AccountServiceImpl implements AccountService {
 
 	}
 
-	@Override
-	public ResponseEntity<?> getStatisticOwner(int accountId) {
-		StatisticOwner statisticOwner = new StatisticOwner();
-		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		MessageModel message = new MessageModel();
 
-		if (!idCurrent.equals(accountId)) {
-			message.setMessage(UserConstants.ACCOUNT_NOT_PERMISSION);
-			message.setStatus(HttpStatus.FORBIDDEN.value());
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-		}
-		Long revenue = 0l;
-		try {
-			revenue = (bookingRepository.sumByAccountId(accountId) * 85) / 100;
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-		}
-		Integer totalBooking = bookingRepository.countByAccountId(accountId);
-		Integer totalRating = ratingRepository.countByAccountId(accountId);
-		Float averageRating = 0f;
-		try {
-			averageRating = (float) DoubleRounder.round(ratingRepository.averageRatingByAccountId(accountId), 1);
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-		}
-
-		List<Booking> listBooking = new ArrayList<Booking>();
-
-		try {
-			for (Booking booking : bookingRepository.findAccountId(accountId)) {
-				if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())
-						|| booking.getStatus().equals(StatusBooking.COMPLETED.getStatusName())) {
-					listBooking.add(booking);
-				}
-			}
-
-		} catch (NullPointerException e) {
-			logger.error(e.getMessage());
-		}
-
-		statisticOwner.setRevenue(revenue);
-		statisticOwner.setTotalBooking(totalBooking);
-		statisticOwner.setTotalRating(totalRating);
-		statisticOwner.setAverageRating(averageRating);
-		statisticOwner.setListBooking(listBooking);
-		message.setData(statisticOwner);
-		message.setMessage(UserConstants.GET_INFORMATION);
-		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(message);
-	}
 }

@@ -99,11 +99,4 @@ public class AccountController {
 	public ResponseEntity<?> resetPassword(@PathVariable String email, @PathVariable String password) {
 		return accountService.resetPassword(email, password);
 	}
-	
-	//this is statistic for the owner
-	@GetMapping("/statisticOwner/{accountId}")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> getStatisticOwner(@PathVariable int accountId){
-		return accountService.getStatisticOwner(accountId);
-	}
 }
