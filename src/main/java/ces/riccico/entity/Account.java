@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 @Entity
 @Table(name = "accounts")
 public class Account {
@@ -42,13 +43,13 @@ public class Account {
 	@Column(name = "isBanned")
 	private boolean isBanned;
 
-	@OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JsonIgnore
-	private Set<House> houses = new HashSet<>();
+//	@OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//	@JsonIgnore
+//	private Set<House> houses = new HashSet<>();
 
-	@OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JsonIgnore
-	private Set<Booking> bookings = new HashSet<>();
+//	@OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//	@JsonIgnore
+//	private Set<Booking> bookings = new HashSet<>();
 	
 	@OneToOne(mappedBy="account")
 	@JsonIgnore
@@ -102,21 +103,21 @@ public class Account {
 		this.email = email;
 	}
 
-	public Set<House> getHouses() {
-		return houses;
-	}
-
-	public void setHouses(Set<House> houses) {
-		this.houses = houses;
-	}
-
-	public Set<Booking> getBookings() {
-		return bookings;
-	}
-
-	public void setBookings(Set<Booking> bookings) {
-		this.bookings = bookings;
-	}
+//	public Set<House> getHouses() {
+//		return houses;
+//	}
+//
+//	public void setHouses(Set<House> houses) {
+//		this.houses = houses;
+//	}
+//
+//	public Set<Booking> getBookings() {
+//		return bookings;
+//	}
+//
+//	public void setBookings(Set<Booking> bookings) {
+//		this.bookings = bookings;
+//	}
 
 	public String getRole() {
 		return role;

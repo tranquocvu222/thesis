@@ -26,7 +26,7 @@ public interface AccountService {
 
 	AccountDetail loadUserByUsername(String username);
 
-	ResponseEntity<?> register(Account account, User user);
+	ResponseEntity<?> register(Account account);
 
 	ResponseEntity<?> resetPassword(String email, String password);
 

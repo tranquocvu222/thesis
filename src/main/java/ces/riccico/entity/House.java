@@ -79,9 +79,9 @@ public class House extends Auditable {
 	@JsonIgnore
 	private Account account;
 
-	@OneToMany(mappedBy = "house", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JsonIgnore
-	private Set<Booking> bookings = new HashSet<>();
+//	@OneToMany(mappedBy = "house", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//	@JsonIgnore
+//	private Set<Booking> bookings = new HashSet<>();
 
 //	private Set<String> image_url = new HashSet<>();
 
@@ -101,13 +101,13 @@ public class House extends Auditable {
 		this.account = account;
 	}
 
-	public Set<Booking> getBookings() {
-		return bookings;
-	}
-
-	public void setBookings(Set<Booking> bookings) {
-		this.bookings = bookings;
-	}
+//	public Set<Booking> getBookings() {
+//		return bookings;
+//	}
+//
+//	public void setBookings(Set<Booking> bookings) {
+//		this.bookings = bookings;
+//	}
 
 	public double getPrice() {
 		return price;

@@ -29,12 +29,12 @@ public class AdminStatisticsController {
 	}
 	
 	// this is list home booking paid
-	@GetMapping("/listBookingsPaid")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
-	public ResponseEntity<?> findByBookingPaid(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "20") int size) {
-		return adminService.findByBookingPaid(page, size);
-	}
+//	@GetMapping("/listBookingsPaid")
+//	@ApiOperation(value = "", authorizations = { @Authorization(value = "jwtToken") })
+//	public ResponseEntity<?> findByBookingPaid(@RequestParam(defaultValue = "0") int page,
+//			@RequestParam(defaultValue = "20") int size) {
+//		return adminService.findByBookingPaid(page, size);
+//	}
 	
 	// this is revenue monthly
 	@GetMapping("/revenue/{year}")

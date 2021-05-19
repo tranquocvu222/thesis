@@ -53,57 +53,59 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public ResponseEntity<?> findByBookingPaid(int page, int size) {
-		BookingPaid bookingPaid = new BookingPaid();
-		Double netIncome = 0d;
-		List<BookingModel> listBookingModel = new ArrayList<BookingModel>();
-		MessageModel message = new MessageModel();
-
-		for (Account account : accountRepository.findAll()) {
-			if (account.getHouses().size() != 0) {
-				BookingModel bookingModel = new BookingModel();
-				List<HouseBooking> listHouseBooking = new ArrayList<HouseBooking>();
-				bookingModel.setHostName(account.getUsername());
-
-				for (House house : houseRepository.findByAccountId(account.getAccountId())) {
-					HouseBooking houseBooking = new HouseBooking();
-
-					if (StatusHouse.LISTED.getStatusName().equals(house.getStatus())) {
-						List<Booking> listBooking = new ArrayList<Booking>();
-
-						for (Booking booking : bookingRepository.findByHouseId(house.getId())) {
-							if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())
-									|| booking.getStatus().equals(StatusBooking.COMPLETED.getStatusName())) {
-								listBooking.add(booking);
-							}
-						}
-						houseBooking.setHouseName(house.getTitle());
-						houseBooking.setListBooking(listBooking);
-					}
-					listHouseBooking.add(houseBooking);
-				}
-				bookingModel.setListHouseBooking(listHouseBooking);
-				listBookingModel.add(bookingModel);
-			}
-		}
-		bookingPaid.setListBookingModel(listBookingModel);
-
-		for (Booking booking : bookingRepository.findAll()) {
-			if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())) {
-				netIncome += ((booking.getBill() * 15) / 100);
-				CommonConstants.NET_INCOME = netIncome;
-			}
-		}
-
-		bookingPaid.setNetIncome(netIncome);
-		int fromIndex = (page) * size;
-		final int numPages = (int) Math.ceil((double) listBookingModel.size() / (double) size);
-		bookingPaid.setListBookingModel(
-				listBookingModel.subList(fromIndex, Math.min(fromIndex + size, listBookingModel.size())));
-		bookingPaid.setPageMax(numPages);
-		message.setData(bookingPaid);
-		message.setMessage(UserConstants.GET_INFORMATION);
-		message.setStatus(HttpStatus.OK.value());
-		return ResponseEntity.ok(message);
+//		BookingPaid bookingPaid = new BookingPaid();
+//		Double netIncome = 0d;
+//		List<BookingModel> listBookingModel = new ArrayList<BookingModel>();
+//		MessageModel message = new MessageModel();
+//
+//		for (Account account : accountRepository.findAll()) {
+////			if (account.getHouses().size() != 0) {
+//			if (true) {
+//				BookingModel bookingModel = new BookingModel();
+//				List<HouseBooking> listHouseBooking = new ArrayList<HouseBooking>();
+//				bookingModel.setHostName(account.getUsername());
+//
+//				for (House house : houseRepository.findByAccountId(account.getAccountId())) {
+//					HouseBooking houseBooking = new HouseBooking();
+//
+//					if (StatusHouse.LISTED.getStatusName().equals(house.getStatus())) {
+//						List<Booking> listBooking = new ArrayList<Booking>();
+//
+//						for (Booking booking : bookingRepository.findByHouseId(house.getId())) {
+//							if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())
+//									|| booking.getStatus().equals(StatusBooking.COMPLETED.getStatusName())) {
+//								listBooking.add(booking);
+//							}
+//						}
+//						houseBooking.setHouseName(house.getTitle());
+//						houseBooking.setListBooking(listBooking);
+//					}
+//					listHouseBooking.add(houseBooking);
+//				}
+//				bookingModel.setListHouseBooking(listHouseBooking);
+//				listBookingModel.add(bookingModel);
+//			}
+//		}
+//		bookingPaid.setListBookingModel(listBookingModel);
+//
+//		for (Booking booking : bookingRepository.findAll()) {
+//			if (booking.getStatus().equals(StatusBooking.PAID.getStatusName())) {
+//				netIncome += ((booking.getBill() * 15) / 100);
+//				CommonConstants.NET_INCOME = netIncome;
+//			}
+//		}
+//
+//		bookingPaid.setNetIncome(netIncome);
+//		int fromIndex = (page) * size;
+//		final int numPages = (int) Math.ceil((double) listBookingModel.size() / (double) size);
+//		bookingPaid.setListBookingModel(
+//				listBookingModel.subList(fromIndex, Math.min(fromIndex + size, listBookingModel.size())));
+//		bookingPaid.setPageMax(numPages);
+//		message.setData(bookingPaid);
+//		message.setMessage(UserConstants.GET_INFORMATION);
+//		message.setStatus(HttpStatus.OK.value());
+//		return ResponseEntity.ok(message);
+		return null;
 	}
 
 	@Override

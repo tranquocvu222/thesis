@@ -91,7 +91,7 @@ public class AccountController {
 	@ResponseBody
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody Account account, User user) {
-		return accountService.register(account, user);
+		return accountService.register(account);
 	}
 
 	// this is reset password feature

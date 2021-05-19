@@ -48,9 +48,9 @@ public class Booking extends Auditable {
 	@JsonIgnore
 	private House house;
 
-	@OneToOne(mappedBy = "booking")
-	@JsonIgnore
-	private Rating rating;
+//	@OneToOne(mappedBy = "booking")
+//	@JsonIgnore
+//	private Rating rating;
 
 	@Column(name = "status")
 	private String status;

@@ -344,8 +344,8 @@ public class AccountServiceImpl implements AccountService {
 
 		AccountDetail accountDetail = loadUserByUsername(usernameOrEmail);
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-		if (accountRepository.findByUsername(usernameOrEmail) == null) {
+		Account currentAccount = accountRepository.findByUsername(usernameOrEmail);
+		if (currentAccount == null) {
 			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -356,13 +356,13 @@ public class AccountServiceImpl implements AccountService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}
 
-		if (accountRepository.findByUsername(usernameOrEmail).isBanned()) {
+		if (currentAccount.isBanned()) {
 			message.setMessage(UserConstants.ACCOUNT_BANNED);
 			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
 
-		if (!accountRepository.findByUsername(usernameOrEmail).isActive()) {
+		if (!currentAccount.isActive()) {
 			message.setMessage(UserConstants.NOT_ACTIVATED);
 			message.setStatus(HttpStatus.FORBIDDEN.value());
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
@@ -415,7 +415,7 @@ public class AccountServiceImpl implements AccountService {
 
 //	Register accountby username, email, password	
 	@Override
-	public ResponseEntity<?> register(Account account, User user) {
+	public ResponseEntity<?> register(Account account) {
 		MessageModel message = new MessageModel();
 		int code = (int) Math.floor(((Math.random() * 899999) + 100000));
 		CONFIRM_CODE = code;
@@ -479,6 +479,7 @@ public class AccountServiceImpl implements AccountService {
 		accountNew.setBanned(false);
 		accountNew.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
 		accountNew.setActive(true);
+		User user = new User();
 		user.setAccount(accountNew);
 		accountRepository.saveAndFlush(accountNew);
 		userRepository.saveAndFlush(user);

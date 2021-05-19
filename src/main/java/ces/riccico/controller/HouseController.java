@@ -72,10 +72,10 @@ public class HouseController {
 //	}
 
 	// find house by username of host
-	@GetMapping("/username/{username}")
-	public ResponseEntity<?> getHouseByUsername(@PathVariable String username) {
-		return houseService.findHouseByUsername(username);
-	}
+//	@GetMapping("/username/{username}")
+//	public ResponseEntity<?> getHouseByUsername(@PathVariable String username) {
+//		return houseService.findHouseByUsername(username);
+//	}
 
 	// see house's detail, service of room and view room
 	@GetMapping("/detail")

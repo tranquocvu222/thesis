@@ -285,12 +285,6 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
 
-		if (account.get().getBookings().size() == 0) {
-			message.setMessage(BookingConstants.NULL_BOOKING);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
 		List<Object> listBookingModel = new ArrayList<Object>();
 		List<BookingCustomerModel> listBooking = new ArrayList<BookingCustomerModel>();
 		PaginationModel paginationModel = new PaginationModel();
@@ -358,12 +352,6 @@ public class BookingServiceImpl implements BookingService {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
 		}
 
-		if (accountRepository.findById(accountId).get().getBookings().size() == 0) {
-			message.setMessage(BookingConstants.NULL_BOOKING);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
 		List<Object> listBookingModel = new ArrayList<Object>();
 		List<Booking> listBooking = new ArrayList<Booking>();
 		PaginationModel paginationModel = new PaginationModel();
@@ -423,9 +411,9 @@ public class BookingServiceImpl implements BookingService {
 		Booking bookingCurrent = bookingRepository.findById(bookingId).get();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
 		int houseId = bookingRepository.findById(bookingId).get().getHouse().getId();
-		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
 
-		if (!bookingRepository.findById(bookingId).isPresent()) {
+
+		if (bookingCurrent == null) {
 			message.setMessage(BookingConstants.BOOKING_NOT_EXITST);
 			message.setStatus(HttpStatus.NOT_FOUND.value());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
@@ -436,7 +424,8 @@ public class BookingServiceImpl implements BookingService {
 			message.setStatus(HttpStatus.UNAUTHORIZED.value());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
-
+//		List<BookingDTO> listBookings = bookingRepository.getByHouseId(houseId);
+		List<Booking> listBookings = bookingRepository.findByHouseId(houseId);
 		Date dateCheckIn = bookingCurrent.getDateCheckIn();
 		Date dateCheckOut = bookingCurrent.getDateCheckOut();
 
@@ -494,7 +483,7 @@ public class BookingServiceImpl implements BookingService {
 
 		MessageModel message = new MessageModel();
 		Integer idCurrent = securityAuditorAware.getCurrentAuditor().get();
-		Account account = accountRepository.findById(idCurrent).get();
+//		Account account = accountRepository.findById(idCurrent).get();
 		House house = houseRepository.findById(houseId).get();
 		if (house == null) {
 			message.setMessage(HouseConstants.HOUSE_NOT_EXIST);
@@ -561,6 +550,7 @@ public class BookingServiceImpl implements BookingService {
 		double price = house.getPrice();
 		double bill = price * days;
 		Booking booking = new Booking();
+		Account account = accountRepository.findById(idCurrent).get();
 		booking.setAccount(account);
 		booking.setHouse(house);
 		booking.setStatus(StatusBooking.PENDING.getStatusName());

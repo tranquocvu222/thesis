@@ -256,35 +256,35 @@ public class HouseServiceImpl implements HouseService {
 	@Override
 	public ResponseEntity<?> findHouseByUsername(String username) {
 
-		MessageModel message = new MessageModel();
-		Integer idAccount = accountRepository.findByUsername(username).getAccountId();
-
-		if (!accountRepository.findById(idAccount).isPresent()) {
-			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
-		if (accountRepository.findById(idAccount).get().getHouses().size() == 0) {
-			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
-			message.setStatus(HttpStatus.NOT_FOUND.value());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
-		}
-
-		Set<House> listHouses = new HashSet<House>();
-		listHouses = accountRepository.findById(idAccount).get().getHouses();
-		Set<House> listHousesListed = new HashSet<House>();
-
-		for (House house : listHouses) {
-			if (StatusHouse.LISTED.equals(house.getStatus())) {
-				listHousesListed.add(house);
-			}
-		}
-		message.setData(listHousesListed);
-		message.setMessage(UserConstants.GET_INFORMATION);
-		message.setStatus(HttpStatus.NOT_FOUND.value());
-		return ResponseEntity.ok(message);
-
+//		MessageModel message = new MessageModel();
+//		Integer idAccount = accountRepository.findByUsername(username).getAccountId();
+//
+//		if (!accountRepository.findById(idAccount).isPresent()) {
+//			message.setMessage(UserConstants.ACCOUNT_NOT_EXISTS);
+//			message.setStatus(HttpStatus.NOT_FOUND.value());
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//		}
+//
+//		if (accountRepository.findById(idAccount).get().getHouses().size() == 0) {
+//			message.setMessage(HouseConstants.HOUSE_NOT_FOUND);
+//			message.setStatus(HttpStatus.NOT_FOUND.value());
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+//		}
+//
+//		Set<House> listHouses = new HashSet<House>();
+//		listHouses = accountRepository.findById(idAccount).get().getHouses();
+//		Set<House> listHousesListed = new HashSet<House>();
+//
+//		for (House house : listHouses) {
+//			if (StatusHouse.LISTED.equals(house.getStatus())) {
+//				listHousesListed.add(house);
+//			}
+//		}
+//		message.setData(listHousesListed);
+//		message.setMessage(UserConstants.GET_INFORMATION);
+//		message.setStatus(HttpStatus.NOT_FOUND.value());
+//		return ResponseEntity.ok(message);
+		return null;
 	}
 
 	@Override
