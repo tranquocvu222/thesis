@@ -675,9 +675,9 @@ public class HouseServiceImpl implements HouseService {
 
 		List<String> listImages = houseDetail.getImages();
 		
-//		if(listImages.size() == 0) {
-//			listImages.add("");
-//		}
+		if(listImages.size() == 0) {
+			listImages.add("");
+		}
 		String images = "";
 
 		for (String i : listImages) {
@@ -813,9 +813,9 @@ public class HouseServiceImpl implements HouseService {
 //		List<String> list = Arrays.asList(arr);
 		
 		
-//		if(listImages.size() == 0) {
-//			listImages.add("");
-//		}
+		if(listImages.size() == 0) {
+			listImages.add("");
+		}
 		
 		String images = "";
 		for (String i : listImages) {
