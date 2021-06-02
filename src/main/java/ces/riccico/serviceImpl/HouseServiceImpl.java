@@ -673,14 +673,12 @@ public class HouseServiceImpl implements HouseService {
 		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
 		house.setAmenities(amenities);
 
-		List<String> listImages = new ArrayList<String>();
-		listImages = houseDetail.getImages();
+		List<String> listImages = houseDetail.getImages();
 		
-		if(listImages.size() == 0) {
-			listImages.add("");
-		}
+//		if(listImages.size() == 0) {
+//			listImages.add("");
+//		}
 		String images = "";
-		listImages = houseDetail.getImages();
 
 		for (String i : listImages) {
 			images += i + ",";
@@ -807,18 +805,19 @@ public class HouseServiceImpl implements HouseService {
 		String amenities = Integer.toBinaryString(wifi | tivi | ac | fridge | swim_pool);
 		house.setAmenities(amenities);
 
-		List<String> listImages = new ArrayList<String>();
-		String[] arr = { "https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg",
-				"https://cdn.luxstay.com/rooms/26803/large/room_26803_6_1561432787.jpg",
-				"https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg"};
+		List<String> listImages = houseDetail.getImages();
+//		String[] arr = { "https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg",
+//				"https://cdn.luxstay.com/rooms/26803/large/room_26803_6_1561432787.jpg",
+//				"https://cdn.luxstay.com/rooms/26803/large/room_26803_15_1561433191.jpg"};
 		// convert array to List
-		List<String> list = Arrays.asList(arr);
+//		List<String> list = Arrays.asList(arr);
+		
+		
+//		if(listImages.size() == 0) {
+//			listImages.add("");
+//		}
+		
 		String images = "";
-		
-		if(listImages.size() == 0) {
-			listImages.add("");
-		}
-		
 		for (String i : listImages) {
 			images += i + ",";
 		}

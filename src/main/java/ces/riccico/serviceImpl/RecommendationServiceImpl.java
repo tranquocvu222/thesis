@@ -13,8 +13,12 @@ import java.util.stream.Stream;
 
 
 import org.apache.spark.ml.evaluation.RegressionEvaluator;
+import org.apache.spark.ml.param.ParamMap;
 import org.apache.spark.ml.recommendation.ALS;
 import org.apache.spark.ml.recommendation.ALSModel;
+import org.apache.spark.ml.tuning.CrossValidator;
+import org.apache.spark.ml.tuning.CrossValidatorModel;
+import org.apache.spark.ml.tuning.ParamGridBuilder;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
@@ -42,9 +46,10 @@ public class RecommendationServiceImpl implements RecommendationService {
 	private static SparkSession SPARK_SESSION ;
 
 	// parametter of model to training
-	private static final double REG_PARAM = 0.2;
+	private static final double [] REG_PARAM = {0,01,0.1,0.2};
 //	private static final int RANK = 10;
-	private static final int MAX_ITER = 5;
+	private static final int [] MAX_ITER =  {8,15,20};
+	private static final int [] RANK =  {1,4,10};
 	private static final String COLD_STAR = "drop";
 
 	// column of model
@@ -91,10 +96,17 @@ public class RecommendationServiceImpl implements RecommendationService {
 		Dataset<RatingModel>[] splits = ratings.randomSplit(new double[] { 0.8, 0.2 });
 		Dataset<RatingModel> training = splits[0];
 		TEST = splits[1];
-		ALS als = new ALS().setMaxIter(MAX_ITER).setRegParam(REG_PARAM).setUserCol(ACCOUNT_ID)
+		ALS als = new ALS().setUserCol(ACCOUNT_ID)
 				.setItemCol(HOUSE_ID).setRatingCol(STAR).setColdStartStrategy(COLD_STAR).setImplicitPrefs(false)
 				.setNonnegative(true);
-		ALSModel model = als.fit(training);
+		ParamMap[] paramGrid = new ParamGridBuilder()
+				.addGrid(als.maxIter(), RANK)
+				.addGrid(als.rank(), MAX_ITER)
+				.addGrid(als.regParam(), REG_PARAM).build();
+		RegressionEvaluator evaluatorR = new RegressionEvaluator().setMetricName("rmse").setLabelCol("star");
+		CrossValidator cv = new CrossValidator().setEstimator(als).setEvaluator(evaluatorR).setEstimatorParamMaps(paramGrid);	
+		CrossValidatorModel modelCross = cv.fit(training);
+		ALSModel model = (ALSModel) modelCross.bestModel();
 		return model;
 	}
 
