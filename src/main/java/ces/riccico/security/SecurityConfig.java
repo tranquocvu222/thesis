@@ -20,6 +20,7 @@ import ces.riccico.common.enums.Role;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String ROLE_ADMIN = Role.ADMIN.getRole();
+	private static final String ROLE_HOST = Role.HOST.getRole();
 	private static final String ROLE_USER = Role.USER.getRole();
 
 	
@@ -38,41 +39,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// user service
 		.antMatchers(HttpMethod.GET, "/users").hasAnyAuthority(ROLE_ADMIN)
-		.antMatchers(HttpMethod.GET, "/userDetail/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
-		.antMatchers(HttpMethod.PUT, "/editUser/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
+		.antMatchers(HttpMethod.GET, "/userDetail/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN, ROLE_HOST)
+		.antMatchers(HttpMethod.PUT, "/editUser/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN, ROLE_HOST)
 
 		// account service
 		.antMatchers(HttpMethod.GET,"/accounts").hasAnyAuthority(ROLE_ADMIN)
 		.antMatchers(HttpMethod.GET,"/accounts/isBanned").hasAnyAuthority(ROLE_ADMIN)
-		.antMatchers(HttpMethod.GET,"/statisticOwner/**").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.GET,"/statisticOwner/**").hasAnyAuthority(ROLE_HOST)
 		.antMatchers(HttpMethod.PUT,"/ban/**").hasAnyAuthority(ROLE_ADMIN)
-		.antMatchers(HttpMethod.PUT,"/changePassword/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
-		.antMatchers(HttpMethod.DELETE,"/log-out").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
+		.antMatchers(HttpMethod.PUT,"/changePassword/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN, ROLE_HOST )
+		.antMatchers(HttpMethod.DELETE,"/log-out").hasAnyAuthority(ROLE_USER, ROLE_ADMIN, ROLE_HOST)
 
 		// house service
 		.antMatchers(HttpMethod.GET,"/houses/block/**").hasAnyAuthority(ROLE_ADMIN)
-		.antMatchers(HttpMethod.GET, "/houses/host/**").hasAnyAuthority(ROLE_USER,ROLE_ADMIN)
-		.antMatchers(HttpMethod.PUT, "/houses/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.POST,"/houses/create").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.GET, "/houses/unlistedHouse/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.DELETE, "/houses/deactiveHouse/**").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.GET, "/houses/host/**").hasAnyAuthority(ROLE_HOST,ROLE_ADMIN)
+		.antMatchers(HttpMethod.PUT, "/houses/**").hasAnyAuthority(ROLE_HOST)
+		.antMatchers(HttpMethod.POST,"/houses/create").hasAnyAuthority(ROLE_HOST)
+		.antMatchers(HttpMethod.GET, "/houses/unlistedHouse/**").hasAnyAuthority(ROLE_HOST)
+		.antMatchers(HttpMethod.DELETE, "/houses/deactiveHouse/**").hasAnyAuthority(ROLE_HOST)
+		.antMatchers(HttpMethod.POST, "/registerHost").hasAnyAuthority(ROLE_USER)
 
 		// booking service
-		.antMatchers(HttpMethod.GET,"/bookings/house/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.GET,"/bookings/detail/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
-		.antMatchers(HttpMethod.GET,"/bookings/customer/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.GET,"/bookings/host/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.POST,"/bookings/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.PUT,"/bookings/cancelBooking/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.PUT,"/bookings/payment/**").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.GET,"/bookings/house/**").hasAnyAuthority(ROLE_USER,ROLE_HOST)
+		.antMatchers(HttpMethod.GET,"/bookings/detail/**").hasAnyAuthority(ROLE_USER, ROLE_ADMIN, ROLE_HOST)
+		.antMatchers(HttpMethod.GET,"/bookings/customer/**").hasAnyAuthority(ROLE_USER, ROLE_HOST)
+		.antMatchers(HttpMethod.GET,"/bookings/host/**").hasAnyAuthority(ROLE_HOST)
+		.antMatchers(HttpMethod.POST,"/bookings/**").hasAnyAuthority(ROLE_USER, ROLE_HOST)
+		.antMatchers(HttpMethod.PUT,"/bookings/cancelBooking/**").hasAnyAuthority(ROLE_USER, ROLE_HOST)
+		.antMatchers(HttpMethod.PUT,"/bookings/payment/**").hasAnyAuthority(ROLE_USER, ROLE_HOST)
 //		.antMatchers(HttpMethod.PUT,"/bookings/revenue/**").hasAnyAuthority(ROLE_ADMIN)
 
 
 		// rating service
 //		.antMatchers(HttpMethod.GET, "/ratings/account/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.GET, "/ratings/detail/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.POST, "/ratings/write/**").hasAnyAuthority(ROLE_USER)
-		.antMatchers(HttpMethod.PUT, "/ratings/**").hasAnyAuthority(ROLE_USER)
+		.antMatchers(HttpMethod.GET, "/ratings/detail/**").hasAnyAuthority(ROLE_USER, ROLE_HOST)
+		.antMatchers(HttpMethod.POST, "/ratings/write/**").hasAnyAuthority(ROLE_USER, ROLE_HOST)
+		.antMatchers(HttpMethod.PUT, "/ratings/**").hasAnyAuthority(ROLE_USER, ROLE_HOST)
 		
 		//Admin statistics
 		.antMatchers(HttpMethod.GET, "/statisticsAdmin").hasAnyAuthority(ROLE_ADMIN)

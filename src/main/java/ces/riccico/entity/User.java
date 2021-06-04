@@ -4,6 +4,7 @@ package ces.riccico.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -47,7 +49,8 @@ public class User {
 	@JsonIgnore
 	@JoinColumn(name = "accountId", nullable = false)
 	private Account account;
-
+	
+	
 	public User() {
 
 	}
@@ -123,7 +126,6 @@ public class User {
 	public void setImage(String image) {
 		this.image = image;
 	}
-
-
-
+	
+	
 }

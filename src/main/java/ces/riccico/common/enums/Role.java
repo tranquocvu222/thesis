@@ -4,7 +4,9 @@ public enum Role {
 
 	ADMIN("admin"),
 
-	USER("user");
+	USER("user"),
+	
+	HOST("host");
 
 	private String role;
 

@@ -485,6 +485,7 @@ public class AccountServiceImpl implements AccountService {
 		userRepository.saveAndFlush(user);
 		message.setMessage(CommonConstants.SUCCESS);
 		message.setStatus(HttpStatus.OK.value());
+		message.setData(accountNew);
 		return ResponseEntity.ok(message);
 
 	}

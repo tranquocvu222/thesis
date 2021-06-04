@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -54,7 +55,11 @@ public class Account {
 	@OneToOne(mappedBy="account")
 	@JsonIgnore
 	private User user;
-
+	
+	@OneToOne(mappedBy="account")
+	@JsonIgnore
+	private Host host;
+	
 	public Integer getAccountId() {
 		return id;
 	}
@@ -135,8 +140,11 @@ public class Account {
 		this.user = user;
 	}
 
+	public Host getHost() {
+		return host;
+	}
 
-	
-	
-
+	public void setHost(Host host) {
+		this.host = host;
+	}
 }

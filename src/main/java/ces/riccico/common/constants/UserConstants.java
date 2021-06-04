@@ -30,10 +30,14 @@ public class UserConstants {
 	public static final String USER_NOT_EXISTS = "User is not existed!";
 
 	public static final String USERNAME_EXISTS = "Username has been existed!";
+	
+	public static final String CARD_EXISTS = "Identification card has been existed!";
 
 	public static final String USERNAME_NULL = "Username is required!";
 
 	public static final String FIRST_NAME_NULL = "FirstName is required!";
+	
+	public static final String IDENTIFICATION_CARD_NULL = "Identification card is require !";
 
 	public static final String IS_MATCHING_OLD_PASSWORD = "The new password is matching the old password!";
 
@@ -44,6 +48,8 @@ public class UserConstants {
 	public static final String INVALID_EMAIL_FORMAT = "Incorrect email format";
 
 	public static final String INVALID_ACCOUNT = "Username or password is wrong";
+	
+	public static final String INVALID_CARD = "Identification card";
 
 	public static final String INVALID_CODE = "invalid code";
 	
